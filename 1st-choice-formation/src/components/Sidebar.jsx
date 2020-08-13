@@ -18,6 +18,7 @@ import { withRouter } from 'react-router-dom';
 
     /**** FUNCTION DEFINATION TO CHECK ACTIVE CLASS ****/
     isActivePage = () => {
+        //document.getElementsByClassName('nav-link')
         let pageName = (localStorage.getItem(SITENAMEALIAS + '_current_page'));
 
         return pageName
@@ -45,7 +46,7 @@ import { withRouter } from 'react-router-dom';
                <ul className="nav">
                   <li className="nav-item">
                      <Link className={"nav-link "+ (this.isActivePage() == '/dashboard' ? "active" : "")} to="/dashboard" >
-        <i className="nav-icon fas fa-home" style={this.isActivePage() == '/dashboard' ? {color:'#3a6a91'} : {color:'#cccccc'}}></i>Dashboard </Link>
+                    <i className="fas fa-home mr-2" ></i>Dashboard </Link>
                   </li>
                   {/* <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,8 +92,8 @@ import { withRouter } from 'react-router-dom';
 					</div>
 				  </li> */}
 				 <li className="nav-item dropdown">
-					<Link className="nav-link dropdown-toggle"  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
-					  <i className="nav-icon fas fa-cog"></i>Settings
+					<Link  className={"nav-link dropdown-toggle "+ (this.isActivePage() == '/' ? "active" : "")}  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					  <i className="fas fa-cog mr-2"></i>Settings
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdownSettings">
 					  <Link className={"dropdown-item "+ (this.isActivePage() == '/' ? "active" : "")} to="/">Menu Item</Link>
