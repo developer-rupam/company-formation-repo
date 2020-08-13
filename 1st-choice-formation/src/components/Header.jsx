@@ -40,18 +40,18 @@ import { withRouter } from 'react-router-dom';
                     </button>
                     <ul className="nav navbar-nav d-md-down-none">
                         <li className="nav-item px-3">
-                        <Link className="nav-link" to="/dashboard"><i className="nav-icon fas fa-home"></i>Dashboard</Link>
+                        <Link className="nav-link" to="/dashboard"><i className="nav-icon fas fa-home mr-1" style={{marginTop:'2.1px'}}></i>Dashboard</Link>
                         </li>
                     </ul>
                      <ul className="nav navbar-nav ml-auto top_menu">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-question-circle"></i>Help</Link>
+                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-rocket"></i>Apps</Link>
+                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-rocket mr-1" style={{marginTop:'2.1px'}}></i>Apps</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-sign-out-alt"></i>Logout</Link>
+                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-sign-out-alt mr-1" style={{marginTop:'2.1px'}}></i>Logout</Link>
                         </li> 
                     </ul> 
                 </header> 
