@@ -9,7 +9,34 @@ import { withRouter } from 'react-router-dom';
     constructor(props) {
         super(props);
         this.state = {}
+
+        /**** BINDING FUNCTION ****/
+        this.isActivePage = this.isActivePage.bind(this);
+        this.toggleNavigationDropdown = this.toggleNavigationDropdown.bind(this);
     }
+
+
+    /**** FUNCTION DEFINATION TO CHECK ACTIVE CLASS ****/
+    isActivePage = () => {
+        let pageName = (localStorage.getItem(SITENAMEALIAS + '_current_page'));
+
+        return pageName
+
+    }
+
+    /**** FUNCTION DEFINATION FOR TOGGLING DROPDOWN OF NAVIGATION ****/
+    toggleNavigationDropdown = (e) => {
+        let node = document.getElementById(e.target.id)
+        if(node.parentElement.classList.contains('show')){
+            node.parentElement.classList.remove('show')
+            node.nextSibling.classList.remove('show')
+        }else{
+            node.parentElement.classList.add('show')
+            node.nextSibling.classList.add('show')
+        }
+    }
+
+
     render() {
         return (
             <Fragment>
@@ -17,8 +44,8 @@ import { withRouter } from 'react-router-dom';
             <nav className="sidebar-nav">
                <ul className="nav">
                   <li className="nav-item">
-                     <Link className="nav-link" to="/dashboard">
-                     <i className="nav-icon fas fa-home"></i>Dashboard</Link>
+                     <Link className={"nav-link "+ (this.isActivePage() == '/dashboard' ? "active" : "")} to="/dashboard" >
+        <i className="nav-icon fas fa-home" style={this.isActivePage() == '/dashboard' ? {color:'#3a6a91'} : {color:'#cccccc'}}></i>Dashboard </Link>
                   </li>
                   {/* <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -63,14 +90,14 @@ import { withRouter } from 'react-router-dom';
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-envelope"></i>Resend Welcome Emails</Link>
 					</div>
 				  </li> */}
-				  {/* <li className="nav-item dropdown">
-					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				 <li className="nav-item dropdown">
+					<Link className="nav-link dropdown-toggle"  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className="nav-icon fas fa-cog"></i>Settings
 					</Link>
-					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					  <Link className="dropdown-item" href="#">Menu Item</Link>
+					<div className="dropdown-menu" aria-labelledby="navbarDropdownSettings">
+					  <Link className={"dropdown-item "+ (this.isActivePage() == '/' ? "active" : "")} to="/">Menu Item</Link>
 					</div>
-				  </li> */}
+				  </li> 
                </ul>
             </nav>
          </div> 
