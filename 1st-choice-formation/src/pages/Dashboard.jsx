@@ -10,8 +10,8 @@ export default class Dashboard extends React.Component {
                 <Header/>
                 <div className="app-body">
                     <Sidebar/>
-                    <h1>Dashboard</h1>
-                    {/* <main className="main">
+                    
+                     <main className="main">
                         <div className="container-fluid">
                         <div id="ui-view">
                             <div className="row">
@@ -247,7 +247,7 @@ export default class Dashboard extends React.Component {
                             </div>
                         </div>
                         </div>
-                    </main> */}
+                    </main> 
                 </div>
                 
                </Fragment>
