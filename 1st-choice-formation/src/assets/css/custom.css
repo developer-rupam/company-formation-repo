@@ -100,7 +100,7 @@ p {
 }
 
 .login_right::before {
-  background: #b365db url(../images/Illustration.png) center 100% no-repeat;
+ /*  background: #b365db url(./images/Illustration.png) center 100% no-repeat; */
   content: '';
   left: 0;
   height: 100%;
@@ -141,7 +141,7 @@ button {
 }
 
 .sts-app__logo {
-  background: url(../images/logo.svg) center center no-repeat;
+  /* background: url(./images/logo.svg) center center no-repeat; */
   background-size: contain;
   background-position: left center;
   background-repeat: no-repeat;
@@ -454,7 +454,7 @@ button {
 }
 
 .gl_logo {
-  background: url(../images/g_logo.svg.png) center center no-repeat;
+ /*  background: url(./images/g_logo.svg.png) center center no-repeat; */
   display: inline-block;
   height: 1.875rem;
   width: 60px;
@@ -492,7 +492,7 @@ button {
 }
 
 .form-control.slct_box {
-  background: #fff url(../images/slct_box.svg)0 0 no-repeat !important;
+  /* background: #fff url(./images/slct_box.svg)0 0 no-repeat !important; */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -1252,7 +1252,7 @@ width: auto;
 }
 #ad_new_task_tabs li.nav-item a.active span {
   border-color:#7d56d1; 
-  background:#fff url(../images/tick.svg) 0 0 no-repeat;
+ /*  background:#fff url(./images/tick.svg) 0 0 no-repeat; */
 }
 #ad_new_task_tabs li.nav-item a.active p {
   color: #7d56d1;
@@ -1431,7 +1431,7 @@ border: none;
 	-moz-transition: all 0.4s ease-in-out;
 	-ms-transition: all 0.4s ease-in-out;
 	-o-transition: all 0.4s ease-in-out;
-	background: #ffffff url(../images/maps-and-flags.svg)0 0 no-repeat;
+/* 	background: #ffffff url(./images/maps-and-flags.svg)0 0 no-repeat; */
 	width: 100%;
 	padding: 9px 45px 9px 38px;
   border-radius: 3px;
