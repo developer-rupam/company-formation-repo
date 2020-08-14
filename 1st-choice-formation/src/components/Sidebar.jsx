@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,NavLink } from 'react-router-dom';
 import { SITENAME,SITENAMEALIAS } from '../utils/init';
 import { storeCurrentRoute } from '../utils/library';
 import { withRouter } from 'react-router-dom';
@@ -45,8 +45,8 @@ import { withRouter } from 'react-router-dom';
             <nav className="sidebar-nav">
                <ul className="nav">
                   <li className="nav-item">
-                     <Link className={"nav-link "+ (this.isActivePage() == '/dashboard' ? "active" : "")} to="/dashboard" >
-                    <i className="fas fa-home mr-2" ></i>Dashboard </Link>
+                     <NavLink className="nav-link" activeClassName="active" to="/dashboard" >
+                    <i className="fas fa-home mr-2" ></i>Dashboard </NavLink>
                   </li>
                   {/* <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -92,11 +92,11 @@ import { withRouter } from 'react-router-dom';
 					</div>
 				  </li> */}
 				 <li className="nav-item dropdown">
-					<Link  className={"nav-link dropdown-toggle "+ (this.isActivePage() == '/' ? "active" : "")}  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					<Link  className="nav-link dropdown-toggle "  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className="fas fa-cog mr-2"></i>Settings
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdownSettings">
-					  <Link className={"dropdown-item "+ (this.isActivePage() == '/' ? "active" : "")} to="/">Menu Item</Link>
+					  <NavLink className="dropdown-item " to="/" activeClassName="active">Menu Item</NavLink>
 					</div>
 				  </li> 
                </ul>

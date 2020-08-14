@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Dashboard from './pages/Dashboard'
-import {BrowserRouter as Router, Switch,Route,withRouter} from 'react-router-dom';
+import {BrowserRouter as Router, Switch,Route,withRouter,NavLink} from 'react-router-dom';
 import { SITENAMEALIAS } from './utils/init';
 
 function App() {
