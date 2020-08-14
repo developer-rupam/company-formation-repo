@@ -92,11 +92,11 @@ import { withRouter } from 'react-router-dom';
 					</div>
 				  </li> */}
 				 <li className="nav-item dropdown">
-					<Link  className="nav-link dropdown-toggle "  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					<Link className="nav-link dropdown-toggle "  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className="fas fa-cog mr-2"></i>Settings
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdownSettings">
-					  <NavLink className="dropdown-item " to="/" activeClassName="active">Menu Item</NavLink>
+					  <NavLink className="dropdown-item " to="/menu-item" activeClassName="active">Menu Item</NavLink>
 					</div>
 				  </li> 
                </ul>
