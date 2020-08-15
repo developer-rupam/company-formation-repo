@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
 
 
 export default class NotFound extends React.Component {
@@ -26,7 +27,7 @@ export default class NotFound extends React.Component {
                         </div>
                     </main> 
                 </div>
-                
+                <Footer/>
                </Fragment>
                
         )

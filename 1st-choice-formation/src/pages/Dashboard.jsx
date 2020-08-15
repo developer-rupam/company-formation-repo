@@ -1,6 +1,9 @@
 import React, { Fragment } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
+import Loader from '../components/Loader';
+import { SITENAMEALIAS } from '../utils/init';
 
 
 export default class Dashboard extends React.Component {
@@ -249,12 +252,14 @@ export default class Dashboard extends React.Component {
                         </div>
                     </main> 
                 </div>
-                
+                <Footer/>
+                <Loader show={this.state.showLoader}/>
                </Fragment>
                
         )
     }
 
+   
     
 }
 
