@@ -9,7 +9,9 @@ export default class Login extends React.Component {
         super(props);
         this.state = {
             showLoader : false,
-            isRememberMe : false
+            isRememberMe : false,
+            username:'',
+            password:''
         };
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
@@ -29,7 +31,7 @@ export default class Login extends React.Component {
         e.preventDefault();
         if(this.usernameRef.current.value != '' && this.passwordRef.current.value != ''){
             //TODO: set localstorage after API call i.e in callback function
-            console.log(this.state.isRememberMe)
+            
             if(this.state.isRememberMe){
                 localStorage.setItem(SITENAMEALIAS + '_remember_me','true')
                 localStorage.setItem(SITENAMEALIAS + '_credentials',btoa(JSON.stringify({username : this.usernameRef.current.value,password : this.passwordRef.current.value})));
@@ -37,6 +39,11 @@ export default class Login extends React.Component {
                 localStorage.setItem(SITENAMEALIAS + '_remember_me','false')
                 localStorage.removeItem(SITENAMEALIAS + '_credentials')
             }
+
+            //TODO : setting mock session remove it after API call
+            localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify({loggedInUserName : 'Dev Admin', loggedInUserId : 1})));
+
+            this.props.history.push('/dashboard')
         }else{
             showToast('error','Please provide username & password')
         }
@@ -65,7 +72,7 @@ export default class Login extends React.Component {
                                         <form onSubmit={this.handleLogin}>
                                             <div className="form-group">
                                                 <div className="input-group">
-                                                <input type="text" className="form-control" placeholder="Username" ref={this.usernameRef}/>
+                                                <input type="text" className="form-control" placeholder="Username" ref={this.usernameRef} value={this.state.username}/>
                                                 <div className="input-group-prepend">
                                                     <span className="input-group-text"><i className="fas fa-user"></i></span>
                                                 </div>
@@ -73,7 +80,7 @@ export default class Login extends React.Component {
                                             </div>
                                             <div className="form-group ">
                                                 <div className="input-group">
-                                                <input type="password" className="form-control" placeholder="Password" ref={this.passwordRef}/>
+                                                <input type="password" className="form-control" placeholder="Password" ref={this.passwordRef} value={this.state.password}/>
                                                 <div className="input-group-prepend">
                                                     <span className="input-group-text"><i className="fas fa-key"></i></span>
                                                 </div>
@@ -118,12 +125,21 @@ export default class Login extends React.Component {
         
         /*** INITIALIZING REMEMBER ME VALUE ON BASIS OF VALUE STORED IN LOCAL STORAGE ***/
         let rememberMeStatus = this.state.isRememberMe
+        let username = this.state.username
+        let password = this.state.password
         if(localStorage.getItem(SITENAMEALIAS + '_remember_me') == 'true'){
-             rememberMeStatus = true
+             rememberMeStatus = true;
+            username = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_credentials'))).username;
+            password = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_credentials'))).password
+             
         }else{
              rememberMeStatus = false
         }
-        this.setState({isRememberMe : rememberMeStatus});
+        this.setState({
+            isRememberMe : rememberMeStatus,
+            username,
+            password
+        });
  
      }
     

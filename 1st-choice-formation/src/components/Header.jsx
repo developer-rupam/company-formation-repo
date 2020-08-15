@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { SITENAME,SITENAMEALIAS } from '../utils/init';
-import { storeCurrentRoute } from '../utils/library';
+import { storeCurrentRoute,logout } from '../utils/library';
 import { withRouter } from 'react-router-dom';
 
 
@@ -15,6 +15,7 @@ import { withRouter } from 'react-router-dom';
 
         /***  BIND FUNCTIONS ***/
         this.toggleSidebar = this.toggleSidebar.bind(this)
+        this.logout = this.logout.bind(this)
     }
 
     /*** FUNCTION DEFINATION FOR TOGGLING SIDEBAR ***/
@@ -25,6 +26,11 @@ import { withRouter } from 'react-router-dom';
        }else{
         element.classList.add('sidebar-lg-show')
        }
+    }
+    /*** FUNCTION DEFINATION FOR LOGOUT ***/
+    logout = () =>{
+        localStorage.removeItem(SITENAMEALIAS + '_session');
+        this.props.history.push('/')
     }
 
 
@@ -63,7 +69,7 @@ import { withRouter } from 'react-router-dom';
                             <Link className="nav-link" to="/"><i className="nav-icon fas fa-rocket mr-1" style={{marginTop:'2.1px'}}></i>Apps</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-sign-out-alt mr-1" style={{marginTop:'2.1px'}}></i>Logout</Link>
+                            <Link className="nav-link" to="/" onClick={this.logout}><i className="nav-icon fas fa-sign-out-alt mr-1" style={{marginTop:'2.1px'}}></i>Logout</Link>
                         </li> 
                     </ul> 
                 </header> 
