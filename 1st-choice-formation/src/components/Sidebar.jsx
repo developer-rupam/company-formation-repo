@@ -77,20 +77,20 @@ import { withRouter } from 'react-router-dom';
 					  <Link className="dropdown-item" href="#">Menu Item</Link>
 					</div>
 				  </li> */}
-				  {/* <li className="nav-item dropdown">
-					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					  <i className="nav-icon fas fa-user-friends"></i>People
+				  <li className="nav-item dropdown">
+					<Link className="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					  <i className=" fas fa-user-friends"></i>People
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					  <Link className="dropdown-item" href="personalfolders.html"> <i className="nav-icon fas fa-users"></i>Manage Users Home</Link>
-					  <Link className="dropdown-item" href="sharedfolders.html"> <i className="nav-icon fas fa-user"></i>Browse Employes</Link>
-					  <Link className="dropdown-item" href="favorites.html"> <i className="nav-icon fas fa-user"></i>Browse Clients</Link>
-					   <Link className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-location-arrow"></i>Shared Address Book</Link>
+					 {/*  <Link className="dropdown-item" href="personalfolders.html"> <i className="nav-icon fas fa-users"></i>Manage Users Home</Link>
+					  <Link className="dropdown-item" href="sharedfolders.html"> <i className="nav-icon fas fa-user"></i>Browse Employes</Link> */}
+					  <NavLink className="dropdown-item" to="/browse-clients" activeClassName="active"> <i className="fas fa-user"></i>Browse Clients</NavLink>
+					   {/* <Link className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-location-arrow"></i>Shared Address Book</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-location-arrow"></i>Personal Address Book</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-users"></i>Distribution Groups</Link>
-					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-envelope"></i>Resend Welcome Emails</Link>
+					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-envelope"></i>Resend Welcome Emails</Link> */}
 					</div>
-				  </li> */}
+				  </li>
 				 <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle "  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className="fas fa-cog mr-2"></i>Settings
