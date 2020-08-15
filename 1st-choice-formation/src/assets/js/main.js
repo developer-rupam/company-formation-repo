@@ -1,5 +1,5 @@
  jQuery(document).ready(function () {
-        jQuery('.table_all_update').DataTable();
+        jQuery('.table_all').DataTable();
       });
 
     jQuery(function () {
@@ -37,3 +37,25 @@ $(document).mouseup(function (e) {
 		
 }); 	
 }); 
+
+jQuery(document).ready(function(){
+    jQuery('#check_all').on('click',function(){
+        if(this.checked){
+            jQuery('.checkbox').each(function(){
+                this.checked = true;
+            });
+        }else{
+             jQuery('.checkbox').each(function(){
+                this.checked = false;
+            });
+        }
+    });
+    
+    jQuery('.checkbox').on('click',function(){
+        if(jQuery('.checkbox:checked').length == $('.checkbox').length){
+            jQuery('#check_all').prop('checked',true);
+        }else{
+            jQuery('#check_all').prop('checked',false);
+        }
+    });
+});
