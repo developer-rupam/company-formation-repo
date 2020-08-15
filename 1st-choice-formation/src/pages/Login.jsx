@@ -15,7 +15,6 @@ export default class Login extends React.Component {
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.usernameRef = React.createRef();
         this.passwordRef = React.createRef();
-        this.rememberMeRef = React.createRef();
 
         /***  BINDING FUNCTIONS  ***/
         this.handleLogin = this.handleLogin.bind(this)
@@ -83,7 +82,7 @@ export default class Login extends React.Component {
                                             <div className="rempass">
                                                 <div className="remb">
                                                 <div className="custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" name="" id="remember" ref={this.rememberMeRef} defaultChecked={this.state.isRememberMe} onClick={this.handleRememberMe}/>
+                                                    <input type="checkbox" className="custom-control-input" name="" id="remember"  defaultChecked={this.state.isRememberMe} onClick={this.handleRememberMe}/>
                                                     <label className="custom-control-label" htmlFor="remember">Remember me</label>
                                                 </div>
                                                 </div>

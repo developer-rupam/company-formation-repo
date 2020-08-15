@@ -7,6 +7,16 @@ import { SITENAMEALIAS } from '../utils/init';
 
 
 export default class Dashboard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showLoader : false,
+        };
+
+        
+
+      
+    }
     render() {
         return (
                <Fragment>

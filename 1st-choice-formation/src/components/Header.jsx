@@ -9,6 +9,10 @@ import { withRouter } from 'react-router-dom';
     constructor(props) {
         super(props);
         this.state = {}
+
+        /*** REFERENCE FOR INPUT DATA FIELD ***/
+        this.searchFieldRef = React.createRef();
+
         /***  BIND FUNCTIONS ***/
         this.toggleSidebar = this.toggleSidebar.bind(this)
     }
@@ -44,6 +48,14 @@ import { withRouter } from 'react-router-dom';
                         </li>
                     </ul>
                      <ul className="nav navbar-nav ml-auto top_menu">
+                        <li className="nav-item">
+                            <div className="searchheader">
+                                <form>
+                                    <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef}/>
+                                    <button type="submit"><i className="fas fa-search"></i></button>
+                                </form>
+                            </div>
+                        </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/"><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
                         </li>
