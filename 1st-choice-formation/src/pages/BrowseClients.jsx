@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import Pagination from "react-js-pagination";
+import { Link } from 'react-router-dom';
 
 export default class BrowseClients extends React.Component {
     constructor(props) {
@@ -93,7 +94,7 @@ export default class BrowseClients extends React.Component {
                                                 </form>
                                                 </div>
                                                 <button type="submit" className="deleteclient"><i className="fas fa-user-minus"></i>Delete Selected Client</button>
-                                                <a href="createclient.html" className="addclient"><i className="fas fa-user-plus"></i>Create Client</a>
+                                                <Link to="/create-client" className="addclient"><i className="fas fa-user-plus"></i>Create Client</Link>
                                             </div>
                                         </div>
                                     </div>

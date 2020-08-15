@@ -79,7 +79,7 @@ import { withRouter } from 'react-router-dom';
 				  </li> */}
 				  <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
-					  <i className=" fas fa-user-friends"></i>People
+					  <i className=" fas fa-user-friends mr-1"></i>People
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 					 {/*  <Link className="dropdown-item" href="personalfolders.html"> <i className="nav-icon fas fa-users"></i>Manage Users Home</Link>
