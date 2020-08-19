@@ -9,15 +9,29 @@ export default class CreateClient extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            addClientList : [{index : 1, name : '',email : '',company :'',password : ''}],
             showLoader : false,
             
         };
          /***  BINDING FUNCTIONS  ***/
-        
+        this.handleAddClientRow = this.handleAddClientRow.bind(this)
+        this.handleSubmitClient = this.handleSubmitClient.bind(this)
       
     }
 
-    
+    /**** function defination for adding clients ****/
+    handleAddClientRow = () =>{
+        let clientListArr = this.state.addClientList
+        let nextIndex = (this.state.addClientList).length+1
+        let clientListObj = {index : nextIndex, name: '',email : '',company :'',password : ''}
+        clientListArr.push(clientListObj)
+        this.setState({addClientList : clientListArr})
+    }
+
+    /**** function defination for submit clients ****/
+    handleSubmitClient = () =>{
+      
+    }
 
 
     render() {
@@ -51,31 +65,39 @@ export default class CreateClient extends React.Component {
                                                 <div className="row">
                                                 <div className="col-md-12">
                                                     <div className="createclient_main_body">
-                                                        <form>
+                                                    {this.state.addClientList.map((list) =>
+                                                        <form key={list.index}>
                                                             <div className="detailcreate_area">
                                                             <span className="delete_add_row"><i className="fas fa-trash"></i></span>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-md-4">
-                                                                    <label>Name</label>
-                                                                    <input type="text" className="form-control" placeholder="Name"/>
+                                                            
+                                                                <div className="form-row addClientRow" >
+                                                                    <div className="form-group col-md-4">
+                                                                        <label>Name</label>
+                                                                        <input type="text" className="form-control" placeholder="Name"
+                                                                        defaultChecked={list.name}/>
+                                                                    </div>
+                                                                    <div className="form-group col-md-4">
+                                                                        <label>Email</label>
+                                                                        <input type="text" className="form-control" placeholder="Email" 
+                                                                        defaultChecked={list.email}/>
+                                                                    </div>
+                                                                    <div className="form-group col-md-4">
+                                                                        <label>Company(optional)</label>
+                                                                        <input type="text" className="form-control" placeholder="Company"
+                                                                        defaultChecked={list.company}/>
+                                                                    </div>
+                                                                    <div className="form-group col-md-4">
+                                                                        <label>Password</label>
+                                                                        <input type="text" className="form-control" placeholder="Password" 
+                                                                        defaultChecked={list.password}/>
+                                                                    </div>
                                                                 </div>
-                                                                <div className="form-group col-md-4">
-                                                                    <label>Email</label>
-                                                                    <input type="text" className="form-control" placeholder="Email"/>
-                                                                </div>
-                                                                <div className="form-group col-md-4">
-                                                                    <label>Company(optional)</label>
-                                                                    <input type="text" className="form-control" placeholder="Company"/>
-                                                                </div>
-                                                                <div className="form-group col-md-4">
-                                                                    <label>Password</label>
-                                                                    <input type="text" className="form-control" placeholder="Password"/>
-                                                                </div>
-                                                            </div>
+                                                            
                                                             </div>
                                                         </form>
+                                                        )}
                                                         <div className="add_new_row">
-                                                            <button type="button"><i className="fas fa-plus"></i>Add Another</button>
+                                                            <button type="button" onClick={this.handleAddClientRow}><i className="fas fa-plus"></i>Add Another</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -162,8 +184,8 @@ export default class CreateClient extends React.Component {
                                             </div>
                                         </div>
                                         <div className="modal_button_area">
-                                            <button type="submit" className="submit">Submit</button>
-                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancle</button>
+                                            <button type="button" className="submit" onClick={this.addClients}>Submit</button>
+                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
                                         </div>
                                     </div>
                                     </div>
