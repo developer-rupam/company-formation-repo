@@ -16,6 +16,7 @@ export default class CreateClient extends React.Component {
          /***  BINDING FUNCTIONS  ***/
         this.handleAddClientRow = this.handleAddClientRow.bind(this)
         this.handleSubmitClient = this.handleSubmitClient.bind(this)
+        this.handleDeleteClientRow = this.handleDeleteClientRow.bind(this)
       
     }
 
@@ -31,6 +32,14 @@ export default class CreateClient extends React.Component {
     /**** function defination for submit clients ****/
     handleSubmitClient = () =>{
       
+    }
+
+    /*** FUNCTION DEFINATION FOR DELETING CLIENT ROW ***/
+    handleDeleteClientRow = (param) =>{
+       
+        let addClientList = this.state.addClientList
+        addClientList = addClientList.filter(list => list.index != param)
+        this.setState({addClientList:addClientList})
     }
 
 
@@ -68,7 +77,7 @@ export default class CreateClient extends React.Component {
                                                     {this.state.addClientList.map((list) =>
                                                         <form key={list.index}>
                                                             <div className="detailcreate_area">
-                                                            <span className="delete_add_row"><i className="fas fa-trash"></i></span>
+                                                            <span className="delete_add_row" onClick={() => this.handleDeleteClientRow(list.index)}><i className="fas fa-trash"></i></span>
                                                             
                                                                 <div className="form-row addClientRow" >
                                                                     <div className="form-group col-md-4">
