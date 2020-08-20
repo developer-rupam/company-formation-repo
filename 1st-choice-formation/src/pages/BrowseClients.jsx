@@ -6,8 +6,9 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default class BrowseClients extends React.Component {
+ class BrowseClients extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,7 +43,7 @@ export default class BrowseClients extends React.Component {
     }
 
 
-    render() {
+    render() { 
         return (
                <Fragment>
                 <Header/>
@@ -240,7 +241,23 @@ export default class BrowseClients extends React.Component {
         )
     }
 
-   
+    componentDidMount(){
+        
+    }
+
+    componentWillReceiveProps(){
+        setTimeout(() => {
+            
+            console.log(this.props)
+        }, 1000);
+    }
     
 }
 
+const mapStateToProps = state => {
+    return {
+        globalState : state
+    }
+}
+
+export default connect(mapStateToProps,null)(BrowseClients)

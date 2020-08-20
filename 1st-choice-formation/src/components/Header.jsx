@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { SITENAME,SITENAMEALIAS } from '../utils/init';
 import { storeCurrentRoute,logout } from '../utils/library';
 import { withRouter } from 'react-router-dom';
+import {setSearch } from "../utils/redux/action"
+import { connect } from 'react-redux';
 
 
  class Header extends React.Component {
@@ -16,6 +18,7 @@ import { withRouter } from 'react-router-dom';
         /***  BIND FUNCTIONS ***/
         this.toggleSidebar = this.toggleSidebar.bind(this)
         this.logout = this.logout.bind(this)
+        this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
     }
 
     /*** FUNCTION DEFINATION FOR TOGGLING SIDEBAR ***/
@@ -27,11 +30,25 @@ import { withRouter } from 'react-router-dom';
         element.classList.add('sidebar-lg-show')
        }
     }
+
+
     /*** FUNCTION DEFINATION FOR LOGOUT ***/
     logout = () =>{
         localStorage.removeItem(SITENAMEALIAS + '_session');
         this.props.history.push('/')
     }
+
+    handleSearchSubmit = (e) => {
+        e.preventDefault();
+        console.log(this.searchFieldRef.current.value)
+        this.props.setSearch(this.searchFieldRef.current.value);
+        setTimeout(() => {
+            
+            console.log(this.props) 
+        }, 1000);
+      
+    }
+
 
 
     render() {
@@ -56,7 +73,7 @@ import { withRouter } from 'react-router-dom';
                      <ul className="nav navbar-nav ml-auto top_menu">
                         <li className="nav-item">
                             <div className="searchheader">
-                                <form>
+                                <form onSubmit={this.handleSearchSubmit}>
                                     <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef}/>
                                     <button type="submit"><i className="fas fa-search"></i></button>
                                 </form>
@@ -83,4 +100,11 @@ import { withRouter } from 'react-router-dom';
     }
 }
 
-export default withRouter(Header);
+const mapDispatchToProps = dispatch => {
+    return {
+        setSearch : (text) => dispatch(setSearch(text)),
+    }
+}
+
+
+export default connect(null,mapDispatchToProps)(withRouter(Header))
