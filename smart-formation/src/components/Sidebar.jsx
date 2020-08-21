@@ -31,7 +31,6 @@ import { withRouter } from 'react-router-dom';
 
 
     render() {
-		console.log(this.props.location.pathname)
         return (
             <Fragment>
                 <div className="sidebar">

@@ -4,9 +4,10 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
-import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
+import {setEmployeeList,setClientList } from "../utils/redux/action"
 import { connect } from 'react-redux';
+
 
  class ManageUseHome extends React.Component {
     constructor(props) {
@@ -125,10 +126,11 @@ import { connect } from 'react-redux';
     
 }
 
-const mapStateToProps = state => {
+const mapDispatchToProps = dispatch => {
     return {
-        globalState : state
+        setEmployeeList : (array) => dispatch(setEmployeeList(array)),
+        setClientList : (array) => dispatch(setClientList(array)),
     }
 }
 
-export default connect(mapStateToProps,null)(ManageUseHome)
+export default connect(null,mapDispatchToProps)(ManageUseHome)

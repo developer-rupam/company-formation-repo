@@ -247,7 +247,6 @@ import { connect } from 'react-redux';
 
     componentWillReceiveProps(){
         setTimeout(() => {
-            
             console.log(this.props)
         }, 1000);
     }
