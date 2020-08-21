@@ -71,21 +71,21 @@ import { connect } from 'react-redux';
                                             
                                             <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
-                                                                <a href="#!">
+                                                                <Link to="/create-employee">
                                                                     <div className="createclient_main_body_item_icon">
-                                                                        <span><i class="fas fa-user-plus"></i>{/*  <i className="fas fa-user-plus"></i>  */}</span>
+                                                                        <span><i className="fas fa-user-plus"></i>{/*  <i className="fas fa-user-plus"></i>  */}</span>
                                                                     </div>
                                                                     <div className="createclient_main_body_item_content">
                                                                         <span>Create Employee</span>
                                                                     </div>
-                                                                </a>
+                                                                </Link>
                                                             </div>
                                                             </div>
                                             <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <Link to="/create-client">
                                                                     <div className="createclient_main_body_item_icon">
-                                                                        <span><i class="fas fa-user-plus"></i>{/* <i className="fas fa-user-plus"></i> */}</span>
+                                                                        <span><i className="fas fa-user-plus"></i>{/* <i className="fas fa-user-plus"></i> */}</span>
                                                                     </div>
                                                                     <div className="createclient_main_body_item_content">
                                                                         <span>Create Client</span>

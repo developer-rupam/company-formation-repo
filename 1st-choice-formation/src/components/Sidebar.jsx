@@ -72,13 +72,13 @@ import { withRouter } from 'react-router-dom';
 				  </li> */}
 				  <li className="nav-item dropdown">
 					<Link className={
-						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients') ||  (this.props.location.pathname == '/manage-user-home')  ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
+						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients') ||  (this.props.location.pathname == '/manage-user-home') || (this.props.location.pathname == '/create-employee') || (this.props.location.pathname == '/browse-employees') ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
 						}  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className=" fas fa-user-friends mr-1"></i>People
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 					  <NavLink className="dropdown-item" to="/manage-user-home" activeClassName="active"> <i className="fas fa-users"></i>Manage Users Home</NavLink>
-					  {/* <Link className="dropdown-item" href="sharedfolders.html"> <i className="nav-icon fas fa-user"></i>Browse Employes</Link> */}
+					  <NavLink className="dropdown-item" activeClassName="active" to="/browse-employees"> <i className="fas fa-user"></i>Browse Employees</NavLink>
 					  <NavLink className="dropdown-item" to="/browse-clients" activeClassName="active"> <i className="fas fa-user"></i>Browse Clients</NavLink>
 					   {/* <Link className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-location-arrow"></i>Shared Address Book</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-location-arrow"></i>Personal Address Book</Link>
