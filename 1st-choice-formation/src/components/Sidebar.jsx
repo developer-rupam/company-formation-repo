@@ -11,26 +11,18 @@ import { withRouter } from 'react-router-dom';
         this.state = {}
 
         /**** BINDING FUNCTION ****/
-        this.isActivePage = this.isActivePage.bind(this);
         this.toggleNavigationDropdown = this.toggleNavigationDropdown.bind(this);
     }
 
 
-    /**** FUNCTION DEFINATION TO CHECK ACTIVE CLASS ****/
-    isActivePage = () => {
-        //document.getElementsByClassName('nav-link')
-        let pageName = (localStorage.getItem(SITENAMEALIAS + '_current_page'));
-
-        return pageName
-
-    }
+    
 
     /**** FUNCTION DEFINATION FOR TOGGLING DROPDOWN OF NAVIGATION ****/
     toggleNavigationDropdown = (e) => {
         let node = document.getElementById(e.target.id)
         if(node.parentElement.classList.contains('show')){
             node.parentElement.classList.remove('show')
-            node.nextSibling.classList.remove('show')
+			node.nextSibling.classList.remove('show')
         }else{
             node.parentElement.classList.add('show')
             node.nextSibling.classList.add('show')
@@ -39,6 +31,7 @@ import { withRouter } from 'react-router-dom';
 
 
     render() {
+		console.log(this.props.location.pathname)
         return (
             <Fragment>
                 <div className="sidebar">
@@ -78,7 +71,9 @@ import { withRouter } from 'react-router-dom';
 					</div>
 				  </li> */}
 				  <li className="nav-item dropdown">
-					<Link className="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					<Link className={
+						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients')  ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
+						}  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className=" fas fa-user-friends mr-1"></i>People
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
