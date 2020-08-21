@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { showToast } from '../utils/library'
 import { Link } from 'react-router-dom';
 import Loader from '../components/Loader';
-import { SITENAMEALIAS } from '../utils/init';
+import { SITENAMEALIAS,SITENAME } from '../utils/init';
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -105,7 +105,7 @@ export default class Login extends React.Component {
                                     <div className="loginFormRight">
                                         <div className="loginFormRight_box">
                                             <img src={require("../assets/image/logo.png")} className="img-fluid"/>
-                                            <h2>Welcome ! <br/> 1st Choice Formations</h2>
+        <h2>Welcome ! <br/> {SITENAME}</h2>
                                         </div>
                                     </div>
                                     </div>

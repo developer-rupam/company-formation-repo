@@ -1,3 +1,12 @@
+@import url('./assets/plugins/bootstrap/css/bootstrap.min.css'); 
+@import url('./assets/plugins/select_bootstrap/css/bootstrap-select.css');
+@import url('./assets/plugins/datatable/css/datatables.min.css');
+@import url('./assets/plugins/coreui/css/style.css');
+@import url('./assets/plugins/coreui/css/buttons.css');
+@import url('./assets/plugins/pace/css/pace.min.css');
+@import url('./assets/font/font_awesome_5/css/all.css'); 
+@import url('./assets/css/custom.css');
+
 /* Page Loader ================================= */
 .page-loader-wrapper,
 .lodr-overlay {
