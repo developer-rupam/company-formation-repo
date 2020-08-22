@@ -251,39 +251,7 @@ export default class CreateClient extends React.Component {
                         </div>
                     </main>
                 </div>
-                <div className="modal fade" id="importModal" tabIndex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="false">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="importModalLabel">Import Multiple Users With Excel</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <div className="importmodal_content">
-                                    <div className="importmodal_contentfirst">
-                                        <strong>Step 1</strong>
-                                        <p>To Add Multiple Users Download the <a href="#!">Template Spreadsheet</a> And Add As Many users as desired</p>
-                                    </div>
-                                    <div className="importmodal_contentsecond">
-                                        <strong>Step 2</strong>
-                                        <form>
-                                        <div className="form-group">
-                                            <label>Upload The Completed Excel Spreadsheet</label>
-                                            <input type="file" className="form-control-file"/>
-                                        </div>
-                                        <div className="modal_button_area">
-                                            <button type="submit" className="submit">Import Users</button>
-                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancle</button>
-                                        </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
+                
 
                     <Modal
                         show={this.state.showImportModal}
