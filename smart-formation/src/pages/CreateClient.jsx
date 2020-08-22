@@ -11,6 +11,8 @@ export default class CreateClient extends React.Component {
         this.state = {
             addClientList : [{index : 1, name : '',email : '',company :'',password : ''}],
             showLoader : false,
+            hasPermissionToChangePassword : false,
+            hasPermissionToAccessPersonalSettings : false
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -83,22 +85,22 @@ export default class CreateClient extends React.Component {
                                                                     <div className="form-group col-md-4">
                                                                         <label>Name</label>
                                                                         <input type="text" className="form-control" placeholder="Name"
-                                                                        defaultChecked={list.name}/>
+                                                                        defaultValue={list.name}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultChecked={list.email}/>
+                                                                        defaultValue={list.email}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>
                                                                         <input type="text" className="form-control" placeholder="Company"
-                                                                        defaultChecked={list.company}/>
+                                                                        defaultValue={list.company}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Password</label>
                                                                         <input type="text" className="form-control" placeholder="Password" 
-                                                                        defaultChecked={list.password}/>
+                                                                        defaultValue={list.password}/>
                                                                     </div>
                                                                 </div>
                                                             
@@ -125,11 +127,11 @@ export default class CreateClient extends React.Component {
                                                     <div className="createclient_main_body">
                                                         <form>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck1"/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck1" defaultChecked={this.state.hasPermissionToChangePassword}/>
                                                             <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck2"/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck2" defaultChecked={this.state.hasPermissionToAccessPersonalSettings}/>
                                                             <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
                                                             </div>
                                                         </form>
