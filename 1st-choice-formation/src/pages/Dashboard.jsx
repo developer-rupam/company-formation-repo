@@ -4,6 +4,8 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
+import { Link } from 'react-router-dom';
+
 
 
 export default class Dashboard extends React.Component {
@@ -170,12 +172,12 @@ export default class Dashboard extends React.Component {
                                     <div className="card-body custom_card_body_sortcut">
                                         <div className="sortcut_area">
                                             <ul>
-                                                <li><a href="#!"><span><i className="fas fa-share"></i></span>Share Files</a></li>
-                                                <li><a href="#!"><span><i className="fas fa-reply"></i></span>Request Files</a></li>
-                                                <li><a href="#!"><span><i className="fas fa-user-plus"></i></span>Create New User</a></li>
-                                                <li><a href="#!"><span><i className="fas fa-user"></i></span>Personal Folders</a></li>
-                                                <li><a href="#!"><span><i className="fas fa-user-friends"></i></span>Shared Folders</a></li>
-                                                <li><a href="#!"><span><i className="fas fa-star"></i></span>Favorites</a></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li>
+                                                <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-user"></i></span>Personal Folders</Link></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-user-friends"></i></span>Shared Folders</Link></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
                                             </ul>
                                         </div>
                                     </div>
