@@ -4,6 +4,9 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
+import { Modal } from 'react-bootstrap';
+import { showToast } from '../utils/library'
+import readXlsxFile from 'read-excel-file'
 
 export default class CreateClient extends React.Component {
     constructor(props) {
@@ -12,13 +15,17 @@ export default class CreateClient extends React.Component {
             addClientList : [{index : 1, name : '',email : '',company :'',password : ''}],
             showLoader : false,
             hasPermissionToChangePassword : false,
-            hasPermissionToAccessPersonalSettings : false
+            hasPermissionToAccessPersonalSettings : false,
+            showImportModal : false,
             
         };
          /***  BINDING FUNCTIONS  ***/
         this.handleAddClientRow = this.handleAddClientRow.bind(this)
         this.handleSubmitClient = this.handleSubmitClient.bind(this)
         this.handleDeleteClientRow = this.handleDeleteClientRow.bind(this)
+        this.handleCsvFile = this.handleCsvFile.bind(this)
+        this.openImportModal = this.openImportModal.bind(this)
+        this.closeImportModal = this.closeImportModal.bind(this)
       
     }
 
@@ -42,6 +49,44 @@ export default class CreateClient extends React.Component {
         let addClientList = this.state.addClientList
         addClientList = addClientList.filter(list => list.index != param)
         this.setState({addClientList:addClientList})
+    }
+
+    /*** FUNCTION DEFINATION FOR HANDLING CSV FILE TO ADD CLIENT ***/
+    handleCsvFile = () => {
+       let file = document.getElementById('uploadFile');
+       let type = (file.files[0].name.split('.'))[1];
+       if(type == 'xls' || type == 'xlsx' ){
+        readXlsxFile(file.files[0]).then((rows) => {
+            let arr = [];
+            for(let i=0;i<rows.length;i++){
+                if(i != 0){
+                    let obj = {
+                        index : i,
+                        name : rows[i][0],
+                        email : rows[i][1],
+                        company : rows[i][2],
+                        password : rows[i][3],
+                    } 
+                    arr.push(obj);
+                    
+                }
+            }
+            this.setState({addClientList : arr})
+            this.closeImportModal()
+          })
+       }else{
+            showToast('error','Please select a valid file')
+       }
+    }
+
+
+    /*** FUNCTION DEFINATION FOR OPENING UPLOAD MODAL ***/
+    openImportModal = () => {
+       this.setState({showImportModal : true})
+    }
+    /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
+    closeImportModal = () => {
+        this.setState({showImportModal : false})
     }
 
 
@@ -68,7 +113,7 @@ export default class CreateClient extends React.Component {
                                                 <div className="d-flex justify-content-between align-items-center">
                                                 <div className="lft-hdr"><span>1</span>Basic Info</div>
                                                 <div className="addbutton">
-                                                    <button type="button" data-toggle="modal" data-target="#importModal" className="addclient"><i className="fas fa-user-plus"></i>Import Multiple Users With Excel</button>
+                                                    <button type="button" onClick={this.openImportModal} className="addclient"><i className="fas fa-user-plus"></i>Import Multiple Users With Excel</button>
                                                 </div>
                                                 </div>
                                             </div>
@@ -206,6 +251,74 @@ export default class CreateClient extends React.Component {
                         </div>
                     </main>
                 </div>
+                <div className="modal fade" id="importModal" tabIndex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="false">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="importModalLabel">Import Multiple Users With Excel</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="importmodal_content">
+                                    <div className="importmodal_contentfirst">
+                                        <strong>Step 1</strong>
+                                        <p>To Add Multiple Users Download the <a href="#!">Template Spreadsheet</a> And Add As Many users as desired</p>
+                                    </div>
+                                    <div className="importmodal_contentsecond">
+                                        <strong>Step 2</strong>
+                                        <form>
+                                        <div className="form-group">
+                                            <label>Upload The Completed Excel Spreadsheet</label>
+                                            <input type="file" className="form-control-file"/>
+                                        </div>
+                                        <div className="modal_button_area">
+                                            <button type="submit" className="submit">Import Users</button>
+                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancle</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Modal
+                        show={this.state.showImportModal}
+                        onHide={this.closeImportModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Import Multiple Users With Excel</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                                    <div className="importmodal_contentfirst">
+                                        <strong>Step 1</strong>
+                                        <p>To Add Multiple Users Download the <a href="#!">Template Spreadsheet</a> And Add As Many users as desired</p>
+                                    </div>
+                                    <div className="importmodal_contentsecond">
+                                        <strong>Step 2</strong>
+                                        <form>
+                                        <div className="form-group">
+                                            <label>Upload The Completed Excel Spreadsheet</label>
+                                           
+                                             <input type="file" className="form-control-file" id="uploadFile"/> 
+                                         
+                                        </div>
+                                        <div className="modal_button_area">
+                                            <button type="button" className="submit" onClick={this.handleCsvFile}>Import Users</button>
+                                            <button type="button" className="cancle" onClick={this.closeImportModal}>Cancel</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                        </Modal.Body>
+                        
+                    </Modal>
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
