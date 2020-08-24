@@ -5,7 +5,8 @@ import {SITENAMEALIAS} from '../utils/init'
 export default class ProtectedRoute extends React.Component{
     render(){
         const Component = this.props.component;
-        const isAuthenticated = localStorage.getItem(SITENAMEALIAS + '_session'); //TODO : check with user id from local storage 
+        const session = localStorage.getItem(SITENAMEALIAS + '_session');
+        const isAuthenticated =  atob(session).user_id;
        
         return isAuthenticated ? (
             <Component />

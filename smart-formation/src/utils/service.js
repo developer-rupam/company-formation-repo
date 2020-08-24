@@ -5,9 +5,12 @@ const axios = require('axios');
 /*** Initializing headers ***/
 const headers = {headers: {'Content-Type': 'application/json',}}
 
-/*** function defination for signup ***/
-export const signup = (obj) => {
+
+
+/*** FUNCTION DEFINATION FOR LOGIN SERVICE ***/
+export const login = (obj) => {
     var payload = JSON.stringify(obj);
 
-    return axios.post(WEBSERVICE + '/Signup', payload,headers);
+    return axios.post(WEBSERVICE + '/user/login_user', payload,headers);
+
 }

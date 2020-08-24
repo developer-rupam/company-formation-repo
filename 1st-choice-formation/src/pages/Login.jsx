@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
-import { showToast } from '../utils/library'
+import { showToast,showHttpError } from '../utils/library'
 import { Link } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS,SITENAME } from '../utils/init';
+import {login} from '../utils/service'
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -30,20 +31,35 @@ export default class Login extends React.Component {
       handleLogin = (e) => {
         e.preventDefault();
         if(this.usernameRef.current.value != '' && this.passwordRef.current.value != ''){
-            //TODO: set localstorage after API call i.e in callback function
-            
-            if(this.state.isRememberMe){
-                localStorage.setItem(SITENAMEALIAS + '_remember_me','true')
-                localStorage.setItem(SITENAMEALIAS + '_credentials',btoa(JSON.stringify({username : this.usernameRef.current.value,password : this.passwordRef.current.value})));
-            }else{
-                localStorage.setItem(SITENAMEALIAS + '_remember_me','false')
-                localStorage.removeItem(SITENAMEALIAS + '_credentials')
+            let payload = {
+                user_email : this.usernameRef.current.value,
+                user_password : this.passwordRef.current.value
             }
-
-            //TODO : setting mock session remove it after API call
-            localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify({loggedInUserName : 'Dev Admin', loggedInUserId : 1})));
-
-            this.props.history.push('/dashboard')
+            this.setState({showLoader : true})
+            login(payload).then(function(res){
+                this.setState({showLoader : false})
+                var response = res.data;
+                if(response.error.errorStatusCode != 1000){
+                    showToast('error',response.error.errorStatusType);
+                }else{
+                    if(this.state.isRememberMe){
+                        localStorage.setItem(SITENAMEALIAS + '_remember_me','true')
+                        localStorage.setItem(SITENAMEALIAS + '_credentials',btoa(JSON.stringify({username : this.usernameRef.current.value,password : this.passwordRef.current.value})));
+                    }else{
+                        localStorage.setItem(SITENAMEALIAS + '_remember_me','false')
+                        localStorage.removeItem(SITENAMEALIAS + '_credentials')
+                    }
+        
+                    localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify(response.response)));
+        
+                    this.props.history.push('/dashboard')
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+            
+            
         }else{
             showToast('error','Please provide username & password')
         }
@@ -105,7 +121,7 @@ export default class Login extends React.Component {
                                     <div className="loginFormRight">
                                         <div className="loginFormRight_box">
                                             <img src={require("../assets/image/logo.png")} className="img-fluid"/>
-        <h2>Welcome ! <br/> {SITENAME}</h2>
+                                            <h2>Welcome ! <br/> {SITENAME}</h2>
                                         </div>
                                     </div>
                                     </div>

@@ -1,4 +1,4 @@
-const DEVELOPMENTOBJ = {url : 'http://localhost:3000',api : 'http://localhost:8000'};
+const DEVELOPMENTOBJ = {url : 'http://localhost:3000',api : 'http://127.0.0.1:6000/v1'};
 const PRODUCTIONOBJ = {url : '',api : ''};
 
 export const mode = "dev" //dev : development; prod : production
