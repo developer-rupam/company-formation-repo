@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { SITENAME,SITENAMEALIAS } from '../utils/init';
+import { SITENAME,SITENAMEALIAS,BASEURL } from '../utils/init';
 import { storeCurrentRoute,logout } from '../utils/library';
 import { withRouter } from 'react-router-dom';
 import {setSearch } from "../utils/redux/action"
@@ -35,7 +35,7 @@ import { connect } from 'react-redux';
     /*** FUNCTION DEFINATION FOR LOGOUT ***/
     logout = () =>{
         localStorage.removeItem(SITENAMEALIAS + '_session');
-        this.props.history.push('/')
+        this.props.history.push(BASEURL)
     }
 
     handleSearchSubmit = (e) => {

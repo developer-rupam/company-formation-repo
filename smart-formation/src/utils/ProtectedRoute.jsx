@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Route,Redirect} from 'react-router-dom'
-import {SITENAMEALIAS} from '../utils/init'
+import {SITENAMEALIAS,BASEURL} from '../utils/init'
 
 export default class ProtectedRoute extends React.Component{
     render(){
@@ -11,7 +11,7 @@ export default class ProtectedRoute extends React.Component{
         return isAuthenticated ? (
             <Component />
         ) : (
-            <Redirect to={{ pathname: '/' }} />
+            <Redirect to={{ pathname: BASEURL }} />
         );
     }
 }
