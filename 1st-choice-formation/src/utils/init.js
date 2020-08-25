@@ -1,5 +1,5 @@
 const DEVELOPMENTOBJ = {url : 'http://localhost:3000',api : 'http://127.0.0.1:6000/v1'};
-const PRODUCTIONOBJ = {url : '',api : ''};
+const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/1st-choice-formation/dev',api : 'http://127.0.0.1:6000/v1'};
 
 export const mode = "dev" //dev : development; prod : production
 
