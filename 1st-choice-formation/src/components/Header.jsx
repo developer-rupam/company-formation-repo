@@ -80,13 +80,13 @@ import { connect } from 'react-redux';
                             </div>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
+                            <Link className="nav-link" to={BASEURL}><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/"><i className="nav-icon fas fa-rocket mr-1" style={{marginTop:'2.1px'}}></i>Apps</Link>
+                            <Link className="nav-link" to={BASEURL}><i className="nav-icon fas fa-rocket mr-1" style={{marginTop:'2.1px'}}></i>Apps</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/" onClick={this.logout}><i className="nav-icon fas fa-sign-out-alt mr-1" style={{marginTop:'2.1px'}}></i>Logout</Link>
+                            <Link className="nav-link"  onClick={this.logout}><i className="nav-icon fas fa-sign-out-alt mr-1" style={{marginTop:'2.1px'}}></i>Logout</Link>
                         </li> 
                     </ul> 
                 </header> 
