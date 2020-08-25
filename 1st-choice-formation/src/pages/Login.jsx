@@ -35,13 +35,13 @@ export default class Login extends React.Component {
                 user_email : this.usernameRef.current.value,
                 user_password : this.passwordRef.current.value
             }
-            this.setState({showLoader : true})
-            login(payload).then(function(res){
+            /*this.setState({showLoader : true})
+             login(payload).then(function(res){
                 this.setState({showLoader : false})
                 var response = res.data;
                 if(response.error.errorStatusCode != 1000){
                     showToast('error',response.error.errorStatusType);
-                }else{
+                }else{ */
                     if(this.state.isRememberMe){
                         localStorage.setItem(SITENAMEALIAS + '_remember_me','true')
                         localStorage.setItem(SITENAMEALIAS + '_credentials',btoa(JSON.stringify({username : this.usernameRef.current.value,password : this.passwordRef.current.value})));
@@ -50,14 +50,15 @@ export default class Login extends React.Component {
                         localStorage.removeItem(SITENAMEALIAS + '_credentials')
                     }
         
-                    localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify(response.response)));
+                   // localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify(response.response)));
+                   localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify({user_id : 'US-1598184419015',user_email: 'Admin@gmail.com'})))
         
                     this.props.history.push('/dashboard')
-                }
-            }.bind(this)).catch(function(err){
+               /* }
+             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
                 showHttpError(err)
-            }.bind(this))
+            }.bind(this)) */
             
             
         }else{

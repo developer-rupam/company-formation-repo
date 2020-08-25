@@ -6,7 +6,7 @@ export default class ProtectedRoute extends React.Component{
     render(){
         const Component = this.props.component;
         const session = localStorage.getItem(SITENAMEALIAS + '_session');
-        const isAuthenticated =  atob(session).user_id;
+        const isAuthenticated = session;
        
         return isAuthenticated ? (
             <Component />
