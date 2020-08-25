@@ -8,11 +8,11 @@ export const storeCurrentRoute = (route) =>{
 }
 
 /*** function defination for confirm message  ***/
-export const showConfirm = (callback) => {
+export const showConfirm = (title,text,type,callback) => {
     Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
+        title: title,
+        text: text,
+        icon: type,
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',

@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast } from '../utils/library'
+import { showToast,showConfirm } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
 
 export default class CreateClient extends React.Component {
@@ -17,6 +17,7 @@ export default class CreateClient extends React.Component {
             hasPermissionToChangePassword : false,
             hasPermissionToAccessPersonalSettings : false,
             showImportModal : false,
+            assignedFolder : [],
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -26,6 +27,7 @@ export default class CreateClient extends React.Component {
         this.handleCsvFile = this.handleCsvFile.bind(this)
         this.openImportModal = this.openImportModal.bind(this)
         this.closeImportModal = this.closeImportModal.bind(this)
+        this.handleValueChangeInField = this.handleValueChangeInField.bind(this)
       
     }
 
@@ -40,6 +42,30 @@ export default class CreateClient extends React.Component {
 
     /**** function defination for submit clients ****/
     handleSubmitClient = () =>{
+
+        let isAbleForSubmission = false;
+
+        let clientList = this.state.addClientList;
+        for(let i=0;i<clientList.length;i++){
+            if(clientList[i].name !='' && clientList[i].email != '' && clientList[i].password != ''){
+                isAbleForSubmission = true
+            }else{
+                isAbleForSubmission = false
+            }
+        }
+
+        if(isAbleForSubmission == true){
+            if(this.state.assignedFolder.length == 0){
+                showConfirm('Are You Sure?','No file assigned','warning',() => {
+                    //TODO: add client API call
+                })
+            }else{
+                 //TODO: add client API call
+            }
+        }else{
+            showToast('error','Please provide valid information before adding client')
+        }
+
       
     }
 
@@ -89,6 +115,19 @@ export default class CreateClient extends React.Component {
         this.setState({showImportModal : false})
     }
 
+    /*** function defination for changing value and store in state ***/
+    handleValueChangeInField = (value,index,key) =>{
+       // console.log(e.target.value);
+       // console.log(e.target.value);
+       let addClientList = this.state.addClientList;
+       for(let i=0;i<addClientList.length;i++){
+           if(addClientList[i].index == index){
+               addClientList[i][key] = value;
+           }
+       }
+       this.setState({addClientList : addClientList})
+    }
+
 
     render() {
         return (
@@ -130,22 +169,22 @@ export default class CreateClient extends React.Component {
                                                                     <div className="form-group col-md-4">
                                                                         <label>Name</label>
                                                                         <input type="text" className="form-control" placeholder="Name"
-                                                                        defaultValue={list.name}/>
+                                                                        defaultValue={list.name} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'name')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultValue={list.email}/>
+                                                                        defaultValue={list.email} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'email')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>
                                                                         <input type="text" className="form-control" placeholder="Company"
-                                                                        defaultValue={list.company}/>
+                                                                        defaultValue={list.company} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'company')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Password</label>
                                                                         <input type="text" className="form-control" placeholder="Password" 
-                                                                        defaultValue={list.password}/>
+                                                                        defaultValue={list.password} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'password')}}/>
                                                                     </div>
                                                                 </div>
                                                             
@@ -240,7 +279,7 @@ export default class CreateClient extends React.Component {
                                             </div>
                                         </div>
                                         <div className="modal_button_area">
-                                            <button type="button" className="submit" onClick={this.addClients}>Submit</button>
+                                            <button type="button" className="submit" onClick={this.handleSubmitClient}>Submit</button>
                                             <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
                                         </div>
                                     </div>
