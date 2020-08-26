@@ -1,5 +1,5 @@
 const DEVELOPMENTOBJ = {url : 'http://localhost:3000',api : 'http://127.0.0.1:6000/v1',baseurl : '/'};
-const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/smart-formation/dev ',api : 'http://127.0.0.1:6000/v1',baseurl : 'https://hostingfordevelopment.000webhostapp.com/smart-formation/dev'};
+const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/1st-choice-formation/dev ',api : 'http://127.0.0.1:6000/v1',baseurl : 'https://hostingfordevelopment.000webhostapp.com/smart-formation/dev/'};
 
 export const mode = "prod" //dev : development; prod : production
 
