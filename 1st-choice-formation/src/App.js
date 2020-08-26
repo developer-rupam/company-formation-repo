@@ -15,7 +15,7 @@ import ProtectedRoute from './utils/ProtectedRoute'
 function App() {
   return (
     <div className="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show  pace-done">
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route path="/" component={Login} exact/>
           <ProtectedRoute path="/dashboard" component={Dashboard} />

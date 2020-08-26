@@ -15,6 +15,33 @@ export default class CreateEmployee extends React.Component {
             addEmployeeList : [{index : 1, name : '',email : '',company :'',password : ''}],
             showLoader : false,
             showImportModal : false,
+            hasPermissionToChangePassword : false,
+            hasPermissionToAccessPersonalSettings : false,
+            hasPermissionToAccessCompanyAccount : false,
+            hasPermissionToCreateRootLevelFolderInSharedFolder : false,
+            hasPermissionToUsePersonalFileBox : false,
+            hasPermissionToAccessOtherUserFileBox : false,
+            hasPermissionToManageClients : false,
+            hasPermissionToManageEmployee : false,
+            hasPermissionToAccessCompanyAccountPermission : false,
+            hasPermissionToEditSharedAddressBook : false,
+            hasPermissionToShareDistributionGroup : false,
+            hasPermissionToEditOtherUserDistributionGroup : false,
+            hasPermissionToManageSuperUserGroup : false,
+            hasPermissionToEditAccountPreference : false,
+            hasPermissionToAccessReporting : false,
+            hasPermissionToViewNotificationHistory : false,
+            hasPermissionToConfigureSingleSignOnSettings : false,
+            hasPermissionToViewEditBillingInformation : false,
+            hasPermissionToRequestPlanChanges : false,
+            hasPermissionToViewReceiptsBillingNotification : false,
+            hasPermissionToCreateManageConnectors : false,
+            hasPermissionToCreateSharepointConnectors : false,
+            hasPermissionToCreateNetworkShareConnectors : false,
+            hasPermissionToManageFolderTemplate : false,
+            hasPermissionToManageRemoteUploadForms : false,
+            hasPermissionToManageFileDrops : false,
+            assignedFolder : [],
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -24,6 +51,7 @@ export default class CreateEmployee extends React.Component {
         this.handleCsvFile = this.handleCsvFile.bind(this)
         this.openImportModal = this.openImportModal.bind(this)
         this.closeImportModal = this.closeImportModal.bind(this)
+        this.handlePermissionChange = this.handlePermissionChange.bind(this)
       
     }
 
@@ -86,6 +114,12 @@ export default class CreateEmployee extends React.Component {
      /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
      closeImportModal = () => {
          this.setState({showImportModal : false})
+     }
+
+     /**** FUNCTION DEFINATION TO CHANGE PERMISSION ****/
+     handlePermissionChange = (key,value) =>{
+       
+     
      }
 
     render() {
@@ -170,12 +204,108 @@ export default class CreateEmployee extends React.Component {
                                                     <div className="createclient_main_body">
                                                         <form>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck1"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToChangePassword}  id="customCheck1"/>
+                                                                <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck2"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessPersonalSettings} id="customCheck2"/>
+                                                                <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccount} id="customCheck3" />
+                                                                <label className="custom-control-label" htmlFor="customCheck3" >Access Company account permission</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateRootLevelFolderInSharedFolder} id="customCheck4" />
+                                                                <label className="custom-control-label" htmlFor="customCheck4" >Create root level folders in "Shared Folder"</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToUsePersonalFileBox} id="customCheck4" />
+                                                                <label className="custom-control-label" htmlFor="customCheck4" >Use Personal File Box</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessOtherUserFileBox} id="customCheck5" />
+                                                                <label className="custom-control-label" htmlFor="customCheck5" >Access other user File Box and sent items</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageClients} id="customCheck6" />
+                                                                <label className="custom-control-label" htmlFor="customCheck6" >Manage Clients</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageEmployee} id="customCheck7" />
+                                                                <label className="custom-control-label" htmlFor="customCheck7" >Manage Employees</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccountPermission} id="customCheck8" />
+                                                                <label className="custom-control-label" htmlFor="customCheck8" >Access Company account permission</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditSharedAddressBook} id="customCheck9" />
+                                                                <label className="custom-control-label" htmlFor="customCheck9" >Edit shared address book</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToShareDistributionGroup} id="customCheck10" />
+                                                                <label className="custom-control-label" htmlFor="customCheck10" >Share Distribution groups</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditOtherUserDistributionGroup} id="customCheck11" />
+                                                                <label className="custom-control-label" htmlFor="customCheck11" >Edit other user's distribution group</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageSuperUserGroup} id="customCheck12" />
+                                                                <label className="custom-control-label" htmlFor="customCheck12" >Manage Super user group</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditAccountPreference} id="customCheck13" />
+                                                                <label className="custom-control-label" htmlFor="customCheck13" >Edit Account preference</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessReporting} id="customCheck14" />
+                                                                <label className="custom-control-label" htmlFor="customCheck14" >Access reporting</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewNotificationHistory} id="customCheck15" />
+                                                                <label className="custom-control-label" htmlFor="customCheck15" >View notification history</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToConfigureSingleSignOnSettings} id="customCheck16" />
+                                                                <label className="custom-control-label" htmlFor="customCheck16" >Configure single sign-on settings</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewEditBillingInformation} id="customCheck17" />
+                                                                <label className="custom-control-label" htmlFor="customCheck17" >View/Edit billing information</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToRequestPlanChanges} id="customCheck18" />
+                                                                <label className="custom-control-label" htmlFor="customCheck18" >Request plan changes</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewReceiptsBillingNotification} id="customCheck19" />
+                                                                <label className="custom-control-label" htmlFor="customCheck19" >View receipts and billing notification</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateManageConnectors} id="customCheck20" />
+                                                                <label className="custom-control-label" htmlFor="customCheck20" >Create and manage Connectors</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateSharepointConnectors} id="customCheck21" />
+                                                                <label className="custom-control-label" htmlFor="customCheck21" >Create Sharepoint connectors</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateNetworkShareConnectors} id="customCheck22" />
+                                                                <label className="custom-control-label" htmlFor="customCheck22" >Create Network share connectors</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFolderTemplate} id="customCheck23" />
+                                                                <label className="custom-control-label" htmlFor="customCheck23" >Manage folder template</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageRemoteUploadForms} id="customCheck24" />
+                                                                <label className="custom-control-label" htmlFor="customCheck24" >Manage remote upload forms</label>
+                                                            </div>
+                                                            <div className="custom-control custom-checkbox">
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFileDrops} id="customCheck25" />
+                                                                <label className="custom-control-label" htmlFor="customCheck25" >Manage file drops</label>
                                                             </div>
                                                         </form>
                                                     </div>
