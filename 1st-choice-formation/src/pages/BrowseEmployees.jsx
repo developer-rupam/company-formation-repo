@@ -95,7 +95,7 @@ import { connect } from 'react-redux';
                                                 </form>
                                                 </div>
                                                 <button type="submit" className="deleteclient"><i className="fas fa-user-minus"></i>Delete Selected Employee</button>
-                                                <Link to="/create-client" className="addclient"><i className="fas fa-user-plus"></i>Create Employee</Link>
+                                                <Link to="/create-employee" className="addclient"><i className="fas fa-user-plus"></i>Create Employee</Link>
                                             </div>
                                         </div>
                                     </div>
