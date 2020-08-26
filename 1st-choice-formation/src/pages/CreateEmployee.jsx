@@ -204,107 +204,107 @@ export default class CreateEmployee extends React.Component {
                                                     <div className="createclient_main_body">
                                                         <form>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToChangePassword}  id="customCheck1"/>
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToChangePassword}  id="customCheck1" onClick={()=>{this.setState({hasPermissionToChangePassword : !this.state.hasPermissionToChangePassword})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessPersonalSettings} id="customCheck2"/>
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessPersonalSettings} id="customCheck2" onClick={()=>{this.setState({hasPermissionToAccessPersonalSettings : !this.state.hasPermissionToAccessPersonalSettings})}}/>
                                                                 <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccount} id="customCheck3" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccount} id="customCheck3" onClick={()=>{this.setState({hasPermissionToAccessCompanyAccount : !this.state.hasPermissionToAccessCompanyAccount})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck3" >Access Company account permission</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateRootLevelFolderInSharedFolder} id="customCheck4" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateRootLevelFolderInSharedFolder} id="customCheck4" onClick={()=>{this.setState({hasPermissionToCreateRootLevelFolderInSharedFolder : !this.state.hasPermissionToCreateRootLevelFolderInSharedFolder})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck4" >Create root level folders in "Shared Folder"</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToUsePersonalFileBox} id="customCheck4" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToUsePersonalFileBox} id="customCheck4" onClick={()=>{this.setState({hasPermissionToUsePersonalFileBox : !this.state.hasPermissionToUsePersonalFileBox})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck4" >Use Personal File Box</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessOtherUserFileBox} id="customCheck5" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessOtherUserFileBox} id="customCheck5" onClick={()=>{this.setState({hasPermissionToAccessOtherUserFileBox : !this.state.hasPermissionToAccessOtherUserFileBox})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck5" >Access other user File Box and sent items</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageClients} id="customCheck6" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageClients} id="customCheck6" onClick={()=>{this.setState({hasPermissionToManageClients : !this.state.hasPermissionToManageClients})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck6" >Manage Clients</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageEmployee} id="customCheck7" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageEmployee} id="customCheck7" onClick={()=>{this.setState({hasPermissionToManageEmployee : !this.state.hasPermissionToManageEmployee})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck7" >Manage Employees</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccountPermission} id="customCheck8" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessCompanyAccountPermission} id="customCheck8" onClick={()=>{this.setState({hasPermissionToAccessCompanyAccountPermission : !this.state.hasPermissionToAccessCompanyAccountPermission})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck8" >Access Company account permission</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditSharedAddressBook} id="customCheck9" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditSharedAddressBook} id="customCheck9" onClick={()=>{this.setState({hasPermissionToEditSharedAddressBook : !this.state.hasPermissionToEditSharedAddressBook})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck9" >Edit shared address book</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToShareDistributionGroup} id="customCheck10" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToShareDistributionGroup} id="customCheck10" onClick={()=>{this.setState({hasPermissionToShareDistributionGroup : !this.state.hasPermissionToShareDistributionGroup})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck10" >Share Distribution groups</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditOtherUserDistributionGroup} id="customCheck11" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditOtherUserDistributionGroup} id="customCheck11" onClick={()=>{this.setState({hasPermissionToEditOtherUserDistributionGroup : !this.state.hasPermissionToEditOtherUserDistributionGroup})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck11" >Edit other user's distribution group</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageSuperUserGroup} id="customCheck12" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageSuperUserGroup} id="customCheck12" onClick={()=>{this.setState({hasPermissionToManageSuperUserGroup : !this.state.hasPermissionToManageSuperUserGroup})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck12" >Manage Super user group</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditAccountPreference} id="customCheck13" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToEditAccountPreference} id="customCheck13" onClick={()=>{this.setState({hasPermissionToEditAccountPreference : !this.state.hasPermissionToEditAccountPreference})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck13" >Edit Account preference</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessReporting} id="customCheck14" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessReporting} id="customCheck14" onClick={()=>{this.setState({hasPermissionToAccessReporting : !this.state.hasPermissionToAccessReporting})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck14" >Access reporting</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewNotificationHistory} id="customCheck15" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewNotificationHistory} id="customCheck15" onClick={()=>{this.setState({hasPermissionToViewNotificationHistory : !this.state.hasPermissionToViewNotificationHistory})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck15" >View notification history</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToConfigureSingleSignOnSettings} id="customCheck16" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToConfigureSingleSignOnSettings} id="customCheck16" onClick={()=>{this.setState({hasPermissionToConfigureSingleSignOnSettings : !this.state.hasPermissionToConfigureSingleSignOnSettings})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck16" >Configure single sign-on settings</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewEditBillingInformation} id="customCheck17" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewEditBillingInformation} id="customCheck17" onClick={()=>{this.setState({hasPermissionToViewEditBillingInformation : !this.state.hasPermissionToViewEditBillingInformation})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck17" >View/Edit billing information</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToRequestPlanChanges} id="customCheck18" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToRequestPlanChanges} id="customCheck18" onClick={()=>{this.setState({hasPermissionToRequestPlanChanges : !this.state.hasPermissionToRequestPlanChanges})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck18" >Request plan changes</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewReceiptsBillingNotification} id="customCheck19" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToViewReceiptsBillingNotification} id="customCheck19" onClick={()=>{this.setState({hasPermissionToViewReceiptsBillingNotification : !this.state.hasPermissionToViewReceiptsBillingNotification})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck19" >View receipts and billing notification</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateManageConnectors} id="customCheck20" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateManageConnectors} id="customCheck20" onClick={()=>{this.setState({hasPermissionToCreateManageConnectors : !this.state.hasPermissionToCreateManageConnectors})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck20" >Create and manage Connectors</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateSharepointConnectors} id="customCheck21" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateSharepointConnectors} id="customCheck21" onClick={()=>{this.setState({hasPermissionToCreateSharepointConnectors : !this.state.hasPermissionToCreateSharepointConnectors})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck21" >Create Sharepoint connectors</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateNetworkShareConnectors} id="customCheck22" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToCreateNetworkShareConnectors} id="customCheck22" onClick={()=>{this.setState({hasPermissionToAccessPersonalSettings : !this.state.hasPermissionToCreateNetworkShareConnectors})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck22" >Create Network share connectors</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFolderTemplate} id="customCheck23" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFolderTemplate} id="customCheck23" onClick={()=>{this.setState({hasPermissionToManageFolderTemplate : !this.state.hasPermissionToManageFolderTemplate})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck23" >Manage folder template</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageRemoteUploadForms} id="customCheck24" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageRemoteUploadForms} id="customCheck24" onClick={()=>{this.setState({hasPermissionToManageRemoteUploadForms : !this.state.hasPermissionToManageRemoteUploadForms})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck24" >Manage remote upload forms</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFileDrops} id="customCheck25" />
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToManageFileDrops} id="customCheck25" onClick={()=>{this.setState({hasPermissionToManageFileDrops : !this.state.hasPermissionToManageFileDrops})}} />
                                                                 <label className="custom-control-label" htmlFor="customCheck25" >Manage file drops</label>
                                                             </div>
                                                         </form>

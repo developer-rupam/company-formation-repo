@@ -14,3 +14,11 @@ export const login = (obj) => {
     return axios.post(WEBSERVICE + '/user/login_user', payload,headers);
 
 }
+
+/*** FUNCTION DEFINATION FOR GET ALL CLIENT LIST SERVICE ***/
+export const GetAllClientList = (obj) => {
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/user/get_all_user', payload,headers);
+
+}

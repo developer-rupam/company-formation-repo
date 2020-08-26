@@ -42,7 +42,6 @@ export default class CreateClient extends React.Component {
 
     /**** function defination for submit clients ****/
     handleSubmitClient = () =>{
-
         let isAbleForSubmission = false;
 
         let clientList = this.state.addClientList;
@@ -128,6 +127,8 @@ export default class CreateClient extends React.Component {
        this.setState({addClientList : addClientList})
     }
 
+    
+
 
     render() {
         return (
@@ -211,11 +212,11 @@ export default class CreateClient extends React.Component {
                                                     <div className="createclient_main_body">
                                                         <form>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck1" defaultChecked={this.state.hasPermissionToChangePassword}/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck1" defaultChecked={this.state.hasPermissionToChangePassword} onClick={()=>{this.setState({hasPermissionToChangePassword : !this.state.hasPermissionToChangePassword})}}/>
                                                             <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck2" defaultChecked={this.state.hasPermissionToAccessPersonalSettings}/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck2" defaultChecked={this.state.hasPermissionToAccessPersonalSettings} onClick={()=>{this.setState({hasPermissionToAccessPersonalSettings : !this.state.hasPermissionToAccessPersonalSettings})}}/>
                                                             <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
                                                             </div>
                                                         </form>
