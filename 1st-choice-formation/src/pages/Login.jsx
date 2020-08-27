@@ -3,7 +3,7 @@ import { showToast,showHttpError } from '../utils/library'
 import { Link } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS,SITENAME } from '../utils/init';
-import {login} from '../utils/service'
+import {LoginUser} from '../utils/service'
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -36,7 +36,7 @@ export default class Login extends React.Component {
                 user_password : this.passwordRef.current.value
             }
             /*this.setState({showLoader : true})
-             login(payload).then(function(res){
+             LoginUser(payload).then(function(res){
                 this.setState({showLoader : false})
                 var response = res.data;
                 if(response.error.errorStatusCode != 1000){

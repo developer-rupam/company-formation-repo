@@ -5,19 +5,73 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Link } from 'react-router-dom';
+import {setEmployeeList,setClientList } from "../utils/redux/action"
+import { connect } from 'react-redux';
+import { GetAllUser } from '../utils/service'
+import { showToast,showHttpError } from '../utils/library'
 
 
-export default class Dashboard extends React.Component {
+ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showLoader : false,
+            pageNo : 1,
+            noOfItemsPerPage : 20
         };
 
-        
-
+        /**** BIND FUNCTIONS ****/
+        this.getAllEmployeesList = this.getAllEmployeesList.bind(this)
+        this.getAllClientsList = this.getAllClientsList.bind(this)
       
     }
+
+
+    /*** FUNCTION DEFINATION TO GET EMPLOYEE LIST ****/
+    getAllEmployeesList = () =>{
+        let payload ={
+            page_no : this.state.pageNo,
+            page_size : this.state.noOfItemsPerPage,
+        }
+        this.setState({showLoader : true})
+        GetAllUser(payload).then(function(res){
+            this.setState({showLoader : false})
+            var response = res.data;
+            if(response.error.errorStatusCode != 1000){
+                showToast('error',response.error.errorStatusType);
+            }else{
+                let employeesList = response.response;
+                this.props.setEmployeeList(employeesList);
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+
+    }
+
+    /**** FUNCTION DEFINATION TO GET CLIENT LIST****/
+    getAllClientsList = () =>{
+        let payload ={
+            page_no : this.state.pageNo,
+            page_size : this.state.noOfItemsPerPage,
+        }
+        this.setState({showLoader : true})
+        GetAllUser(payload).then(function(res){
+            this.setState({showLoader : false})
+            var response = res.data;
+            if(response.error.errorStatusCode != 1000){
+                showToast('error',response.error.errorStatusType);
+            }else{
+                let clientsList = response.response;
+                this.props.setClientList(clientsList);
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
+
     render() {
         return (
                <Fragment>
@@ -270,7 +324,22 @@ export default class Dashboard extends React.Component {
         )
     }
 
-   
+    
     
 }
+
+const mapStateToProps = state => {
+    return {
+        globalState : state
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setEmployeeList : (array) => dispatch(setEmployeeList(array)),
+        setClientList : (array) => dispatch(setClientList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard)
 
