@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
             pageNo : 1,
             noOfItemsPerPage : 10,
             totalCount : 100,
+            clientsList : [],
         };
          /***  BINDING FUNCTIONS  ***/
          this.selectClientNameAlphabet = this.selectClientNameAlphabet.bind(this)
@@ -118,17 +119,24 @@ import { connect } from 'react-redux';
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
+                                                {this.state.clientsList.map((list) =>
+                                                <tr key={list.user_id}>
                                                     <td>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id="customCheck1"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck1"></label>
+                                                            <input type="checkbox" className="custom-control-input checkbox" id={list.user_id}/>
+                                                            <label className="custom-control-label" htmlFor={list.user_id}></label>
                                                         </div>
                                                     </td>
                                                     <td>Client Name</td>
-                                                    <td>email@gmail.com</td>
-                                                    <td>Company</td>
-                                                    <td>12/08/2020</td>
+                                                    <td>{list.user_email}</td>
+                                                    <td>{list.user_company}</td>
+                                                    <td> 
+                                                        {new Intl.DateTimeFormat("en-GB", {
+                                                        year: "numeric",
+                                                        month: "long",
+                                                        day: "2-digit"
+                                                        }).format(list.user_created)}
+                                                    </td>
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
                                                             <a href="#" className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></a>
@@ -136,78 +144,8 @@ import { connect } from 'react-redux';
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id="customCheck2"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck2"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Client Name</td>
-                                                    <td>email@gmail.com</td>
-                                                    <td>Company</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>
-                                                        <div className="ac_bot d-flex justify-content-center">
-                                                            <a href="#" className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></a>
-                                                            <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id="customCheck3"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck3"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Client Name</td>
-                                                    <td>email@gmail.com</td>
-                                                    <td>Company</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>
-                                                        <div className="ac_bot d-flex justify-content-center">
-                                                            <a href="#" className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></a>
-                                                            <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id="customCheck4"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck4"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Client Name</td>
-                                                    <td>email@gmail.com</td>
-                                                    <td>Company</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>
-                                                        <div className="ac_bot d-flex justify-content-center">
-                                                            <a href="#" className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></a>
-                                                            <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id="customCheck5"/>
-                                                            <label className="custom-control-label" htmlFor="customCheck5"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Client Name</td>
-                                                    <td>email@gmail.com</td>
-                                                    <td>Company</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>
-                                                        <div className="ac_bot d-flex justify-content-center">
-                                                            <a href="#" className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></a>
-                                                            <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                )}
+                                              
                                                 </tbody>
                                             </table>
                                             <div className="row">
@@ -242,14 +180,13 @@ import { connect } from 'react-redux';
     }
 
     componentDidMount(){
-        
+            /*** SET CLIENT FROM GLOBAL STATE TO COMPONENT'S STATE***/
+            if(this.props.globalState.clientListReducer.clients != undefined){
+                this.setState({clientsList : this.props.globalState.clientListReducer.clients})
+            }
     }
 
-    componentWillReceiveProps(){
-        setTimeout(() => {
-            console.log(this.props)
-        }, 1000);
-    }
+   
     
 }
 
