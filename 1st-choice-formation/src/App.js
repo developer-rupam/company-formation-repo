@@ -5,8 +5,10 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import BrowseClients from './pages/BrowseClients'
 import CreateClient from './pages/CreateClient'
+import UpdateClient from './pages/UpdateClient'
 import BrowseEmployees from './pages/BrowseEmployees'
 import CreateEmployee from './pages/CreateEmployee'
+import UpdateEmployee from './pages/UpdateEmployee'
 import ManageUserHome from './pages/ManageUserHome'
 import {BrowserRouter as Router, Switch,Route,withRouter,NavLink} from 'react-router-dom';
 import { SITENAMEALIAS } from './utils/init';
@@ -21,8 +23,10 @@ function App() {
           <ProtectedRoute path="/dashboard" component={Dashboard} />
           <ProtectedRoute path="/browse-clients" component={BrowseClients} />
           <ProtectedRoute path="/create-client" component={CreateClient} />
+          <ProtectedRoute path="/update-client/:id" component={UpdateClient} />
           <ProtectedRoute path="/browse-employees" component={BrowseEmployees} />
           <ProtectedRoute path="/create-employee" component={CreateEmployee} />
+          <ProtectedRoute path="/update-employee/:id" component={UpdateEmployee} />
           <ProtectedRoute path="/manage-user-home" component={ManageUserHome} />
           <ProtectedRoute path="*" component={NotFound} />
         </Switch>
