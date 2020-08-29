@@ -7,6 +7,11 @@ import { SITENAMEALIAS } from '../utils/init';
 import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import { GetAllUser } from '../utils/service'
+import { showToast,showHttpError } from '../utils/library'
+import {setEmployeeList,setClientList } from "../utils/redux/action"
+
 
  class BrowseClients extends React.Component {
     constructor(props) {
@@ -23,6 +28,7 @@ import { connect } from 'react-redux';
          /***  BINDING FUNCTIONS  ***/
          this.selectClientNameAlphabet = this.selectClientNameAlphabet.bind(this)
          this.handlePageChange = this.handlePageChange.bind(this)
+         this.getAllClientsList = this.getAllClientsList.bind(this)
 
       
     }
@@ -43,6 +49,29 @@ import { connect } from 'react-redux';
         })
     }
 
+    /**** FUNCTION DEFINATION TO GET CLIENT LIST****/
+    getAllClientsList = () =>{
+        let payload ={
+            page_no : this.state.pageNo,
+            page_size : this.state.noOfItemsPerPage,
+        }
+        this.setState({showLoader : true})
+        GetAllUser(payload).then(function(res){
+            this.setState({showLoader : false})
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                let clientsList = response.response;
+                this.props.setClientList(clientsList);
+                this.setState({clientsList : this.props.globalState.clientListReducer.clientsList})
+               
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
 
     render() { 
         return (
@@ -114,7 +143,7 @@ import { connect } from 'react-redux';
                                                     <th>Name</th>
                                                     <th>Email</th>
                                                     <th>Company</th>
-                                                    <th>Last Login</th>
+                                                    <th>Created</th>
                                                     <th>Manage</th>
                                                 </tr>
                                                 </thead>
@@ -131,11 +160,9 @@ import { connect } from 'react-redux';
                                                     <td>{list.user_email}</td>
                                                     <td>{list.user_company}</td>
                                                     <td> 
-                                                        {new Intl.DateTimeFormat("en-GB", {
-                                                        year: "numeric",
-                                                        month: "long",
-                                                        day: "2-digit"
-                                                        }).format(list.user_created)}
+                                                        
+                                                        <Moment format="YYYY/MM/DD" date={list.user_created}/>
+                                                        
                                                     </td>
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
@@ -180,10 +207,8 @@ import { connect } from 'react-redux';
     }
 
     componentDidMount(){
-            /*** SET CLIENT FROM GLOBAL STATE TO COMPONENT'S STATE***/
-            if(this.props.globalState.clientListReducer.clients != undefined){
-                this.setState({clientsList : this.props.globalState.clientListReducer.clients})
-            }
+            /*** FUNCTION CALL FOR RETRIEVING ALL CLIENTS LIST ***/
+            this.getAllClientsList()
     }
 
    
@@ -196,4 +221,11 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps,null)(BrowseClients)
+const mapDispatchToProps = dispatch => {
+    return {
+        setEmployeeList : (array) => dispatch(setEmployeeList(array)),
+        setClientList : (array) => dispatch(setClientList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(BrowseClients)

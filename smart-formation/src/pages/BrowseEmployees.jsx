@@ -7,6 +7,11 @@ import { SITENAMEALIAS } from '../utils/init';
 import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import { GetAllUser } from '../utils/service'
+import { showToast,showHttpError } from '../utils/library'
+import {setEmployeeList,setClientList } from "../utils/redux/action"
+
 
  class BrowseEmployees extends React.Component {
     constructor(props) {
@@ -23,6 +28,7 @@ import { connect } from 'react-redux';
          /***  BINDING FUNCTIONS  ***/
          this.selectClientNameAlphabet = this.selectClientNameAlphabet.bind(this)
          this.handlePageChange = this.handlePageChange.bind(this)
+         this.getAllEmployeesList = this.getAllEmployeesList.bind(this)
 
       
     }
@@ -41,6 +47,35 @@ import { connect } from 'react-redux';
         this.setState({
             activePage : page
         })
+    }
+
+    /*** FUNCTION DEFINATION TO GET EMPLOYEE LIST ****/
+    getAllEmployeesList = () =>{
+        let payload ={
+            page_no : this.state.pageNo,
+            page_size : this.state.noOfItemsPerPage,
+        }
+        this.setState({showLoader : true})
+        GetAllUser(payload).then(function(res){
+            //this.setState({showLoader : false})
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                let employeesList = response.response;
+                this.props.setEmployeeList(employeesList);
+                setTimeout(() => {
+                    console.log(this.props)
+                    this.setState({showLoader : false})
+                    this.setState({employeesList : this.props.globalState.employeeListReducer.employeesList})
+                    
+                }, 1000);
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+
     }
 
 
@@ -131,11 +166,7 @@ import { connect } from 'react-redux';
                                                     <td>{list.user_email}</td>
                                                     <td>{list.user_company}</td>
                                                     <td> 
-                                                        {new Intl.DateTimeFormat("en-GB", {
-                                                        year: "numeric",
-                                                        month: "long",
-                                                        day: "2-digit"
-                                                        }).format(list.user_created)}
+                                                        <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
@@ -179,10 +210,9 @@ import { connect } from 'react-redux';
     }
 
     componentDidMount(){
-         /*** SET EMPLOYEES FROM GLOBAL STATE TO COMPONENT'S STATE***/
-         if(this.props.globalState.employeeListReducer.clients != undefined){
-            this.setState({employeesList : this.props.globalState.employeeListReducer.clients})
-        }
+         /*** FUNCTION CALL FOR RETRIEVING ALL EMPLOYEES LIST ***/
+         this.getAllEmployeesList()
+         
     }
 
     
@@ -194,4 +224,11 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps,null)(BrowseEmployees)
+const mapDispatchToProps = dispatch => {
+    return {
+        setEmployeeList : (array) => dispatch(setEmployeeList(array)),
+        setClientList : (array) => dispatch(setClientList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(BrowseEmployees)
