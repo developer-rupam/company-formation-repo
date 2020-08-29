@@ -16,7 +16,7 @@ export const employeeListReducer = (state = {}, action) => {
 
     switch (action.type) {
         case EMPLOYEES:
-            return { employeeList: { ...state, employees : action.employees } };
+            return  { ...state, employeesList : action.employees } ;
         default:
             return state;
     }
@@ -27,7 +27,7 @@ export const clientListReducer = (state = {}, action) => {
 
     switch (action.type) {
         case CLIENTS:
-            return { clientList: { ...state, clients : action.clients } };
+            return { ...state, clientsList : action.clients } ;
         default:
             return state;
     }

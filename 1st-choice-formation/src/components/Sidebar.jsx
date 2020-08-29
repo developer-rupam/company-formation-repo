@@ -71,7 +71,7 @@ import { withRouter } from 'react-router-dom';
 				  </li> */}
 				  <li className="nav-item dropdown">
 					<Link className={
-						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients') ||  (this.props.location.pathname == '/manage-user-home') || (this.props.location.pathname == '/create-employee') || (this.props.location.pathname == '/browse-employees') ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
+						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients') ||  (this.props.location.pathname == '/manage-user-home') || (this.props.location.pathname == '/create-employee') || (this.props.location.pathname == '/browse-employees') ||  (this.props.location.pathname == '/update-client') || (this.props.location.pathname == '/update-employee') ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
 						}  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className=" fas fa-user-friends mr-1"></i>People
 					</Link>

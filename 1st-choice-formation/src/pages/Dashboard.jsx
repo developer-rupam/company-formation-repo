@@ -17,7 +17,9 @@ import { showToast,showHttpError } from '../utils/library'
         this.state = {
             showLoader : false,
             pageNo : 1,
-            noOfItemsPerPage : 20
+            noOfItemsPerPage : 20,
+            loggedInUserName : 'Guest',
+            recentFileList : []
         };
 
         /**** BIND FUNCTIONS ****/
@@ -37,8 +39,8 @@ import { showToast,showHttpError } from '../utils/library'
         GetAllUser(payload).then(function(res){
             this.setState({showLoader : false})
             var response = res.data;
-            if(response.error.errorStatusCode != 1000){
-                showToast('error',response.error.errorStatusType);
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
             }else{
                 let employeesList = response.response;
                 this.props.setEmployeeList(employeesList);
@@ -60,11 +62,12 @@ import { showToast,showHttpError } from '../utils/library'
         GetAllUser(payload).then(function(res){
             this.setState({showLoader : false})
             var response = res.data;
-            if(response.error.errorStatusCode != 1000){
-                showToast('error',response.error.errorStatusType);
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
             }else{
                 let clientsList = response.response;
                 this.props.setClientList(clientsList);
+               
             }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
@@ -90,7 +93,7 @@ import { showToast,showHttpError } from '../utils/library'
                                             <span>AT</span>
                                         </div>
                                         <div className="user_welcome">
-                                            <span>Hello Admin</span>
+                                            <span>Hello {this.state.loggedInUserName}</span>
                                         </div>
                                         <div className="user_addimage">
                                             <a href="#!">add profile pictuer</a>
@@ -111,13 +114,14 @@ import { showToast,showHttpError } from '../utils/library'
                                     <span>These are the items you recently accessed. This private list is only visable to you</span>
                                         <div className="recent_file_area">
                                             <ul className="recent_file_item_list">
-                                                <li>
+                                                { this.state.recentFileList.map((list) =>
+                                                <li key={list.entity_id}>
                                                     <div className="recent_file_item">
                                                         <div className="recent_file_item_icon">
                                                             <i className="fas fa-file-pdf"></i>
                                                         </div>
                                                         <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
+                                                            <p>{list.entity_name}</p>
                                                             <ul className="recent_file_item_path">
                                                                 <li><a href="#!">Shared Folders</a></li>
                                                                 <li><a href="#!">Abc</a></li>
@@ -125,90 +129,7 @@ import { showToast,showHttpError } from '../utils/library'
                                                         </div>
                                                     </div>
                                                 </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="recent_file_item">
-                                                        <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
-                                                        </div>
-                                                        <div className="recent_file_item_filename">
-                                                            <p>File Name</p>
-                                                            <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </li>
+                                                )}
                                             </ul>
                                         
                                         </div>
@@ -324,7 +245,20 @@ import { showToast,showHttpError } from '../utils/library'
         )
     }
 
-    
+    componentDidMount(){
+        
+        /*** Setting up dashboard pages with txt and functionalities manipulation ***/
+        let loggedInUser = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
+        if(loggedInUser.user_frist_name != undefined && loggedInUser.user_last_name != undefined){
+            this.setState({loggedInUserName : loggedInUser.user_frist_name +' ' +loggedInUser.user_last_name})
+        }
+
+        /*** CALLING FUNCTION FOR GET ALL EMPLOYEES LIST***/
+        this.getAllEmployeesList()
+
+        /*** CALLING FUNCTION FOR GET ALL CLIENTS LIST***/
+        this.getAllClientsList()
+    }
     
 }
 
