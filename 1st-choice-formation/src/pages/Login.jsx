@@ -35,13 +35,13 @@ export default class Login extends React.Component {
                 user_email : this.usernameRef.current.value,
                 user_password : this.passwordRef.current.value
             }
-            /*this.setState({showLoader : true})
+            this.setState({showLoader : true})
              LoginUser(payload).then(function(res){
                 this.setState({showLoader : false})
                 var response = res.data;
-                if(response.error.errorStatusCode != 1000){
-                    showToast('error',response.error.errorStatusType);
-                }else{ */
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
                     if(this.state.isRememberMe){
                         localStorage.setItem(SITENAMEALIAS + '_remember_me','true')
                         localStorage.setItem(SITENAMEALIAS + '_credentials',btoa(JSON.stringify({username : this.usernameRef.current.value,password : this.passwordRef.current.value})));
@@ -50,15 +50,14 @@ export default class Login extends React.Component {
                         localStorage.removeItem(SITENAMEALIAS + '_credentials')
                     }
         
-                   // localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify(response.response)));
-                   localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify({user_id : 'US-1598184419015',user_email: 'Admin@gmail.com'})))
+                    localStorage.setItem(SITENAMEALIAS + '_session',btoa(JSON.stringify(response.response)));
         
                     this.props.history.push('/dashboard')
-               /* }
+               }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
                 showHttpError(err)
-            }.bind(this)) */
+            }.bind(this))
             
             
         }else{
@@ -86,7 +85,7 @@ export default class Login extends React.Component {
                                     <div className="col-md-6">
                                     <div className="loginFormLeft">
                                         <h1>Login</h1>
-                                        <form onSubmit={this.handleLogin}>
+                                        <form onSubmit={(event) => {this.handleLogin(event)}}>
                                             <div className="form-group">
                                                 <div className="input-group">
                                                 <input type="text" className="form-control" placeholder="Username" ref={this.usernameRef}  defaultValue={this.state.username}/>
