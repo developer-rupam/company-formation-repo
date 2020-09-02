@@ -57,6 +57,35 @@ import { SITENAMEALIAS } from '../utils/init';
       
     }
 
+
+    /*** FUNCTION DEFINATION TO GET SELECTED CLIENT DETAILS ***/
+    getSelectedClientDetails = (param) => {
+        //console.log(this.props.globalState.clientListReducer.clientsList)
+        var clientsList = this.props.globalState.clientListReducer.clientsList
+        console.log(clientsList)
+        if(clientsList != undefined && clientsList.length != 0){
+            console.log(clientsList.length)
+            for(let i=0;i<clientsList.length;i++){
+                console.log(clientsList[i].user_id+'  ____ '+param)
+                if(clientsList[i].user_id === param){
+                    console.log(clientsList[i])
+                    this.setState({
+                       // clientName : clientsList[i].user_company,
+                        clientEmail : clientsList[i].user_email,
+                        //clientPassword : clientsList[i].user_email,
+                        clientCompany : clientsList[i].user_company,
+                        hasPermissionToChangePassword:clientsList[i].change_password,
+                        hasPermissionToAccessPersonalSettings:clientsList[i].access_user_settings,
+                    })
+                    break;
+                }
+            }
+        }else{
+            
+            showToast('error','Rendering error please go back to browse clients')
+        }
+    }
+
     
 
     render() {
@@ -77,7 +106,7 @@ import { SITENAMEALIAS } from '../utils/init';
                                                 <span><i className="fas fa-user-plus"></i></span>Edit Client
                                             </div>
                                             <div className="rght-hdr ">
-                                                <Link to="/browse-clients" class="addclient" type="button"> <i class="fas fa-arrow-left"></i> Back</Link>
+                                                <Link to="/browse-clients" className="addclient" type="button"> <i className="fas fa-arrow-left"></i> Back</Link>
                                             </div>
                                         </div>
                                     </div>
@@ -105,7 +134,7 @@ import { SITENAMEALIAS } from '../utils/init';
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultValue={this.state.clientEmail} onBlur={(event) => {this.setState({clientEmail : event.target.value})}}/>
+                                                                        defaultValue={this.state.clientEmail} onBlur={(event) => {this.setState({clientEmail : event.target.value})}} readOnly/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>
@@ -233,6 +262,9 @@ import { SITENAMEALIAS } from '../utils/init';
         let currentPageArr = currentPage.split('/')
         if(currentPageArr[2] != undefined && currentPageArr[2] != null && currentPageArr[2] != ''){
             this.setState({clientId : currentPageArr[2]});
+            setTimeout(() => {
+                this.getSelectedClientDetails(this.state.clientId)
+            }, 1000);
         }else{
             showToast('error',"Client's id missing");
             this.props.history.push('/browse-clients')
