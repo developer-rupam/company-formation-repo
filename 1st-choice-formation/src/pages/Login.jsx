@@ -96,7 +96,7 @@ export default class Login extends React.Component {
                                             </div>
                                             <div className="form-group ">
                                                 <div className="input-group">
-                                                <input type="password" className="form-control" placeholder="Password" ref={this.passwordRef}  defaultValue={this.state.username}/>
+                                                <input type="password" className="form-control" placeholder="Password" ref={this.passwordRef}  defaultValue={this.state.password}/>
                                                 <div className="input-group-prepend">
                                                     <span className="input-group-text"><i className="fas fa-key"></i></span>
                                                 </div>
