@@ -65,7 +65,13 @@ import { showToast,showHttpError } from '../utils/library'
             if(response.errorResponse.errorStatusCode != 1000){
                 showToast('error',response.errorResponse.errorStatusType);
             }else{
-                let clientsList = response.response;
+                let allClientsList = response.response;
+                let clientsList = [];
+                for(let i=0;i<allClientsList.length;i++){
+                    if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                        clientsList.push(allClientsList[i])
+                    }
+                }
                 this.props.setClientList(clientsList);
                
             }

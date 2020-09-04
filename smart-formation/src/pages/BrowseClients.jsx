@@ -38,15 +38,19 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
         this.setState({selectedAlphabetOfClient : e.target.value})
         setTimeout(function(){
             console.log(this.state.selectedAlphabetOfClient)
-            //TODO:Call Api to render list on basis of alphabet selected
+            this.getAllClientsList()
         }.bind(this),1000)
     }
 
     /*** FUNCTION DEFINATION FOR SELECTING PAGE FROM PAGINATION ***/
     handlePageChange = (page) =>{
         this.setState({
-            activePage : page
+            activePage : page,
+            pageNo : page
         })
+        setTimeout(() => {
+            this.getAllClientsList()
+        }, 1000);
     }
 
     /**** FUNCTION DEFINATION TO GET CLIENT LIST****/
@@ -57,12 +61,30 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
         }
         this.setState({showLoader : true})
         GetAllUser(payload).then(function(res){
-            this.setState({showLoader : false})
+            this.setState({showLoader : false,clientsList : []})
             var response = res.data;
             if(response.errorResponse.errorStatusCode != 1000){
                 showToast('error',response.errorResponse.errorStatusType);
             }else{
-                let clientsList = response.response;
+                let allClientsList = response.response;
+                let clientsList = [];
+                for(let i=0;i<allClientsList.length;i++){
+                    if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                        console.log(this.state.selectedAlphabetOfClient)
+                        if(this.state.selectedAlphabetOfClient != ''){
+                            console.log('if')
+                            let firstCharcterOfName =  allClientsList[i].user_name.charAt(0);
+                            let firstCharcterOfEmail =  allClientsList[i].user_email.charAt(0);
+                            
+                            if(firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfClient || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfClient){
+                                clientsList.push(allClientsList[i])
+                            }
+                        }else{
+                            console.log('else')
+                            clientsList.push(allClientsList[i])
+                        }
+                    }
+                }
                 this.props.setClientList(clientsList);
                 this.setState({clientsList : this.props.globalState.clientListReducer.clientsList})
                
@@ -156,7 +178,7 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                                                             <label className="custom-control-label" htmlFor={list.user_id}></label>
                                                         </div>
                                                     </td>
-                                                    <td>Client Name</td>
+                                                    <td>{list.user_name}</td>
                                                     <td>{list.user_email}</td>
                                                     <td>{list.user_company}</td>
                                                     <td> 
