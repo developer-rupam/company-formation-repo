@@ -249,8 +249,8 @@ import { showToast,showHttpError } from '../utils/library'
         
         /*** Setting up dashboard pages with txt and functionalities manipulation ***/
         let loggedInUser = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
-        if(loggedInUser.user_frist_name != undefined && loggedInUser.user_last_name != undefined){
-            this.setState({loggedInUserName : loggedInUser.user_frist_name +' ' +loggedInUser.user_last_name})
+        if(loggedInUser.user_name != undefined ){
+            this.setState({loggedInUserName : loggedInUser.user_name})
         }
 
         /*** CALLING FUNCTION FOR GET ALL EMPLOYEES LIST***/
