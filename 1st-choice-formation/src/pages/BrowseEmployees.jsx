@@ -8,7 +8,7 @@ import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
-import { GetAllUser } from '../utils/service'
+import { GetAllEmployee } from '../utils/service'
 import { showToast,showHttpError } from '../utils/library'
 import {setEmployeeList,setClientList } from "../utils/redux/action"
 
@@ -26,7 +26,7 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
             employeesList : []
         };
          /***  BINDING FUNCTIONS  ***/
-         this.selectClientNameAlphabet = this.selectClientNameAlphabet.bind(this)
+         this.selectEmployeeNameAlphabet = this.selectEmployeeNameAlphabet.bind(this)
          this.handlePageChange = this.handlePageChange.bind(this)
          this.getAllEmployeesList = this.getAllEmployeesList.bind(this)
 
@@ -34,19 +34,23 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
     }
 
     /*** FUNCTION DEFINATION FOR SELECTING ALPHABET OF CLIENTS NAME ***/
-    selectClientNameAlphabet = (e) => {
-        this.setState({selectedAlphabetOfClient : e.target.value})
+    selectEmployeeNameAlphabet = (e) => {
+        this.setState({selectedAlphabetOfEmployee : e.target.value})
         setTimeout(function(){
-            console.log(this.state.selectedAlphabetOfClient)
-            //TODO:Call Api to render list on basis of alphabet selected
+            console.log(this.state.selectedAlphabetOfEmployee)
+            this.getAllEmployeesList()
         }.bind(this),1000)
     }
 
     /*** FUNCTION DEFINATION FOR SELECTING PAGE FROM PAGINATION ***/
     handlePageChange = (page) =>{
         this.setState({
-            activePage : page
+            activePage : page,
+            pageNo : page
         })
+        setTimeout(() => {
+            this.getAllEmployeesList()
+        }, 1000);
     }
 
     /*** FUNCTION DEFINATION TO GET EMPLOYEE LIST ****/
@@ -56,20 +60,35 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
             page_size : this.state.noOfItemsPerPage,
         }
         this.setState({showLoader : true})
-        GetAllUser(payload).then(function(res){
-            //this.setState({showLoader : false})
+        GetAllEmployee(payload).then(function(res){
+            this.setState({showLoader : false})
             var response = res.data;
             if(response.errorResponse.errorStatusCode != 1000){
                 showToast('error',response.errorResponse.errorStatusType);
             }else{
-                let employeesList = response.response;
+
+                let allEmployeesList = response.response;
+                let employeesList = [];
+                for(let i=0;i<allEmployeesList.length;i++){
+                    if(allEmployeesList[i].user_role == 'EMPLOYEE' && allEmployeesList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                        console.log(this.state.selectedAlphabetOfEmployee)
+                        if(this.state.selectedAlphabetOfEmployee != ''){
+                            console.log('if')
+                            let firstCharcterOfName =  allEmployeesList[i].employee_name.charAt(0);
+                            let firstCharcterOfEmail =  allEmployeesList[i].employee_email.charAt(0);
+                            
+                            if(firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfEmployee || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfEmployee){
+                                employeesList.push(allEmployeesList[i])
+                            }
+                        }else{
+                            console.log('else')
+                            employeesList.push(allEmployeesList[i])
+                        }
+                    }
+                }
                 this.props.setEmployeeList(employeesList);
-                setTimeout(() => {
-                    console.log(this.props)
-                    this.setState({showLoader : false})
-                    this.setState({employeesList : this.props.globalState.employeeListReducer.employeesList})
-                    
-                }, 1000);
+                console.log( employeesList)
+                this.setState({employeesList : this.props.globalState.employeeListReducer.employeesList})
             }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
@@ -99,7 +118,7 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                                                 <form>
                                                     <label>Search By Letter</label>
                                                    
-                                                       <select className=" form-control" onChange={this.selectClientNameAlphabet}>
+                                                       <select className=" form-control" onChange={this.selectEmployeeNameAlphabet}>
                                                         <option value="">ALL</option>
                                                         <option value="a">A</option>
                                                         <option value="b">B</option>
@@ -155,16 +174,16 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                                                 </thead>
                                                 <tbody>
                                                 {this.state.employeesList.map((list) =>
-                                                <tr key={list.user_id}>
+                                                <tr key={list.employee_id}>
                                                     <td>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id={list.user_id}/>
-                                                            <label className="custom-control-label" htmlFor={list.user_id}></label>
+                                                            <input type="checkbox" className="custom-control-input checkbox" id={list.employee_id}/>
+                                                            <label className="custom-control-label" htmlFor={list.employee_id}></label>
                                                         </div>
                                                     </td>
-                                                    <td>Employee Name</td>
-                                                    <td>{list.user_email}</td>
-                                                    <td>{list.user_company}</td>
+                                                    <td>{list.employee_name}</td>
+                                                    <td>{list.employee_email}</td>
+                                                    <td>{list.employee_company}</td>
                                                     <td> 
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>

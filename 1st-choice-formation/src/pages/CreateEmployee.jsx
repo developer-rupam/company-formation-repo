@@ -5,8 +5,10 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast } from '../utils/library'
+import { showToast,showConfirm,showHttpError } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
+import {CreateEmployeeService} from '../utils/service'
+
 
 export default class CreateEmployee extends React.Component {
     constructor(props) {
@@ -42,6 +44,10 @@ export default class CreateEmployee extends React.Component {
             hasPermissionToManageRemoteUploadForms : false,
             hasPermissionToManageFileDrops : false,
             assignedFolder : [],
+            userType : 'EMPLOYEE',
+            userRole : 'EMPLOYEE',
+            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            isUserGrouped : false
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -52,6 +58,8 @@ export default class CreateEmployee extends React.Component {
         this.openImportModal = this.openImportModal.bind(this)
         this.closeImportModal = this.closeImportModal.bind(this)
         this.handlePermissionChange = this.handlePermissionChange.bind(this)
+        this.addEmployee = this.addEmployee.bind(this)
+        this.handleValueChangeInField = this.handleValueChangeInField.bind(this)
       
     }
 
@@ -66,7 +74,122 @@ export default class CreateEmployee extends React.Component {
 
     /**** function defination for submit employees ****/
     handleSubmitEmployee = () =>{
-      
+        let isAbleForSubmission = false;
+
+        let employeeList = this.state.addEmployeeList;
+        for(let i=0;i<employeeList.length;i++){
+            console.log(employeeList[i].name + ' #### ' +employeeList[i].email+ ' #### '+employeeList[i].password)
+            if(employeeList[i].name !='' && employeeList[i].email != '' && employeeList[i].password != ''){
+                isAbleForSubmission = true
+            }else{
+                isAbleForSubmission = false
+            }
+        }
+
+        if(isAbleForSubmission == true){
+            if(this.state.assignedFolder.length == 0){
+                showConfirm('Are You Sure?','No file assigned','warning',() => {
+                    this.addEmployee()
+                })
+            }else{
+                this.addEmployee()
+            }
+        }else{
+            showToast('error','Please provide valid information before adding client')
+        }
+    }
+
+    /*** FUNCTION DEFINATION FOR STORING EMPLOYEE IN BACKEND ***/
+    addEmployee = () => {
+        let employeeList = this.state.addEmployeeList
+        let payload = [];
+        for(let i=0 ;i<employeeList.length;i++){
+            let obj = {
+                
+                "employee_name": employeeList[i].name,
+                "employee_email": employeeList[i].email,
+                "employee_password": employeeList[i].password,
+                "employee_company": employeeList[i].company,
+                "user_type": this.state.userType,
+                "user_role": this.state.userRole,
+                "created_by": this.state.userCreatedBy,
+                "access_employee_settings": this.state.hasPermissionToAccessPersonalSettings,
+                "change_password": this.state.hasPermissionToChangePassword,
+                "access_company_account_setting": this.state.hasPermissionToAccessCompanyAccount,
+                "create_root_level_folder": this.state.hasPermissionToCreateRootLevelFolderInSharedFolder,
+                "use_personal_file_box": this.state.hasPermissionToUsePersonalFileBox,
+                "access_others_file_box": this.state.hasPermissionToAccessOtherUserFileBox,
+                "manage_client": this.state.hasPermissionToManageClients,
+                "manage_employee": this.state.hasPermissionToManageEmployee,
+                "access_company_account": this.state.hasPermissionToAccessCompanyAccountPermission,
+                "edit_shared_address_book": this.state.hasPermissionToEditSharedAddressBook,
+                "share_distribution_groups": this.state.hasPermissionToShareDistributionGroup,
+                "edit_other_distribution_groups": this.state.hasPermissionToEditOtherUserDistributionGroup,
+                "manage_super_user_group": this.state.hasPermissionToManageSuperUserGroup,
+                "edit_account_preference": this.state.hasPermissionToEditAccountPreference,
+                "access_reporting": this.state.hasPermissionToAccessReporting,
+                "view_notification_history": this.state.hasPermissionToViewNotificationHistory,
+                "configure_single_sign_on": this.state.hasPermissionToConfigureSingleSignOnSettings,
+                "view_edit_billing_information": this.state.hasPermissionToViewEditBillingInformation,
+                "request_plan_changes": this.state.hasPermissionToRequestPlanChanges,
+                "view_receipt_billing_notification": this.state.hasPermissionToViewReceiptsBillingNotification,
+                "create_manage_connectors": this.state.hasPermissionToCreateManageConnectors,
+                "create_sharepoint_connectors": this.state.hasPermissionToCreateSharepointConnectors,
+                "create_network_share_connectors": this.state.hasPermissionToCreateNetworkShareConnectors,
+                "manage_folder_template": this.state.hasPermissionToManageFolderTemplate,
+                "manage_remote_upload_form": this.state.hasPermissionToManageRemoteUploadForms,
+                "manage_file_drop": this.state.hasPermissionToManageFileDrops
+            }
+            payload.push(obj)
+        }
+        this.setState({showLoader : true})
+        CreateEmployeeService(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                
+                setTimeout(() => {
+                    this.setState({
+                        addEmployeeList : [],
+                        hasPermissionToChangePassword : false,
+                        hasPermissionToAccessPersonalSettings : false,
+                        hasPermissionToAccessCompanyAccount : false,
+                        hasPermissionToCreateRootLevelFolderInSharedFolder : false,
+                        hasPermissionToUsePersonalFileBox : false,
+                        hasPermissionToAccessOtherUserFileBox : false,
+                        hasPermissionToManageClients : false,
+                        hasPermissionToManageEmployee : false,
+                        hasPermissionToAccessCompanyAccountPermission : false,
+                        hasPermissionToEditSharedAddressBook : false,
+                        hasPermissionToShareDistributionGroup : false,
+                        hasPermissionToEditOtherUserDistributionGroup : false,
+                        hasPermissionToManageSuperUserGroup : false,
+                        hasPermissionToEditAccountPreference : false,
+                        hasPermissionToAccessReporting : false,
+                        hasPermissionToViewNotificationHistory : false,
+                        hasPermissionToConfigureSingleSignOnSettings : false,
+                        hasPermissionToViewEditBillingInformation : false,
+                        hasPermissionToRequestPlanChanges : false,
+                        hasPermissionToViewReceiptsBillingNotification : false,
+                        hasPermissionToCreateManageConnectors : false,
+                        hasPermissionToCreateSharepointConnectors : false,
+                        hasPermissionToCreateNetworkShareConnectors : false,
+                        hasPermissionToManageFolderTemplate : false,
+                        hasPermissionToManageRemoteUploadForms : false,
+                        hasPermissionToManageFileDrops : false,
+                        assignedFolder : [],
+                        showLoader : false,
+                    })
+                    showToast('success','Client added successfully');
+                }, 3000);
+               
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
     }
 
     /*** FUNCTION DEFINATION FOR DELETING EMPLOYEE ROW ***/
@@ -106,6 +229,18 @@ export default class CreateEmployee extends React.Component {
         }
      }
  
+     /*** function defination for changing value and store in state ***/
+    handleValueChangeInField = (value,index,key) =>{
+        // console.log(e.target.value);
+        // console.log(e.target.value);
+        let addEmployeeList = this.state.addEmployeeList;
+        for(let i=0;i<addEmployeeList.length;i++){
+            if(addEmployeeList[i].index == index){
+                addEmployeeList[i][key] = value;
+            }
+        }
+        this.setState({addEmployeeList : addEmployeeList})
+     }
  
      /*** FUNCTION DEFINATION FOR OPENING UPLOAD MODAL ***/
      openImportModal = () => {
@@ -162,22 +297,22 @@ export default class CreateEmployee extends React.Component {
                                                                     <div className="form-group col-md-4">
                                                                         <label>Name</label>
                                                                         <input type="text" className="form-control" placeholder="Name"
-                                                                        defaultValue={list.name}/>
+                                                                        defaultValue={list.name} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'name')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultValue={list.email}/>
+                                                                        defaultValue={list.email} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'email')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>
                                                                         <input type="text" className="form-control" placeholder="Company"
-                                                                        defaultValue={list.company}/>
+                                                                        defaultValue={list.company} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'company')}}/>
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Password</label>
                                                                         <input type="text" className="form-control" placeholder="Password" 
-                                                                        defaultValue={list.password}/>
+                                                                        defaultValue={list.password} onBlur={(event) => {this.handleValueChangeInField(event.target.value,list.index,'password')}}/>
                                                                     </div>
                                                                 </div>
                                                             
@@ -220,8 +355,8 @@ export default class CreateEmployee extends React.Component {
                                                                 <label className="custom-control-label" htmlFor="customCheck4" >Create root level folders in "Shared Folder"</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToUsePersonalFileBox} id="customCheck4" onClick={()=>{this.setState({hasPermissionToUsePersonalFileBox : !this.state.hasPermissionToUsePersonalFileBox})}} />
-                                                                <label className="custom-control-label" htmlFor="customCheck4" >Use Personal File Box</label>
+                                                                <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToUsePersonalFileBox} id="customCheck24" onClick={()=>{this.setState({hasPermissionToUsePersonalFileBox : !this.state.hasPermissionToUsePersonalFileBox})}} />
+                                                                <label className="custom-control-label" htmlFor="customCheck24" >Use Personal File Box</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
                                                                 <input type="checkbox" className="custom-control-input" defaultChecked={this.hasPermissionToAccessOtherUserFileBox} id="customCheck5" onClick={()=>{this.setState({hasPermissionToAccessOtherUserFileBox : !this.state.hasPermissionToAccessOtherUserFileBox})}} />
@@ -368,7 +503,7 @@ export default class CreateEmployee extends React.Component {
                                             </div>
                                         </div>
                                         <div className="modal_button_area">
-                                            <button type="button" className="submit" onClick={this.addEmployees}>Submit</button>
+                                            <button type="button" className="submit" onClick={this.handleSubmitEmployee}>Submit</button>
                                             <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
                                         </div>
                                     </div>
