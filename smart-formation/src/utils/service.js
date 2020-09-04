@@ -22,3 +22,10 @@ export const GetAllUser = (obj) => {
     return axios.post(WEBSERVICE + '/user/get_all_user', payload,headers);
 
 }
+
+/*** FUNCTION DEFINATION FOR CREATE USER ****/
+export const CreateUser = (arr) => {
+    var payload = JSON.stringify(arr);
+
+    return axios.post(WEBSERVICE + '/user/create_user', payload,headers);
+}

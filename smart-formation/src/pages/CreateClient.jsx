@@ -5,8 +5,9 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast,showConfirm } from '../utils/library'
+import { showToast,showConfirm,showHttpError } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
+import {CreateUser} from '../utils/service'
 
 export default class CreateClient extends React.Component {
     constructor(props) {
@@ -18,6 +19,10 @@ export default class CreateClient extends React.Component {
             hasPermissionToAccessPersonalSettings : false,
             showImportModal : false,
             assignedFolder : [],
+            userType : 'CLIENT',
+            userRole : 'CLIENT',
+            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            isUserGrouped : false
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -28,6 +33,7 @@ export default class CreateClient extends React.Component {
         this.openImportModal = this.openImportModal.bind(this)
         this.closeImportModal = this.closeImportModal.bind(this)
         this.handleValueChangeInField = this.handleValueChangeInField.bind(this)
+        this.addClient = this.addClient.bind(this)
       
     }
 
@@ -56,16 +62,61 @@ export default class CreateClient extends React.Component {
         if(isAbleForSubmission == true){
             if(this.state.assignedFolder.length == 0){
                 showConfirm('Are You Sure?','No file assigned','warning',() => {
-                    //TODO: add client API call
+                    this.addClient()
                 })
             }else{
-                 //TODO: add client API call
+                this.addClient()
             }
         }else{
             showToast('error','Please provide valid information before adding client')
         }
 
       
+    }
+
+    /*** FUNXTION DEFINATION FOR STORING CLIENT IN BACKEND ***/
+    addClient = () => {
+        let clientList = this.state.addClientList
+        let payload = [];
+        for(let i=0 ;i<clientList.length;i++){
+            let obj = {
+                "user_name": clientList[i].name,
+                "user_email": clientList[i].email,
+                "user_company": clientList[i].company,
+                "user_password":clientList[i].password,
+                "user_type": this.state.userType,
+                "user_role":this.state.userRole,
+                "created_by":this.state.userCreatedBy,
+                "access_user_settings":this.state.hasPermissionToAccessPersonalSettings,
+                "change_password":this.state.hasPermissionToChangePassword,
+                "is_user_group":this.state.isUserGrouped
+            }
+            payload.push(obj)
+        }
+        this.setState({showLoader : true})
+        CreateUser(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                
+                setTimeout(() => {
+                    this.setState({
+                        addClientList : [],
+                        hasPermissionToChangePassword : false,
+                        hasPermissionToAccessPersonalSettings : false,
+                        assignedFolder : [],
+                        showLoader : false,
+                    })
+                    showToast('success','Client added successfully');
+                }, 3000);
+               
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
     }
 
     /*** FUNCTION DEFINATION FOR DELETING CLIENT ROW ***/
