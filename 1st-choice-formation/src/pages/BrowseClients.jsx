@@ -131,11 +131,11 @@ import { Modal } from 'react-bootstrap';
        
         let session =  JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')));
         
-        if(session.user_role == 'ADMIN'){
-            var email = session.user_email
-        }else{
+        //if(session.user_role == 'ADMIN'){
+            let email = session.user_email
+       /*  }else{
             var email = session.employee_email
-        }
+        } */
         let payload = {
             user_email : email,
             user_password : this.passwordRef.current.value
