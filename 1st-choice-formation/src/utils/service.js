@@ -57,3 +57,16 @@ export const UpdateEmployeeService = (obj) =>{
 
     return axios.post(WEBSERVICE + '/employee/update_employee', payload,headers);
 }
+
+/**** FUNCTION DEFINATION FOR DELETE CLIENT ****/
+export const RemoveUser = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/user/remove_user', payload,headers);
+}
+/**** FUNCTION DEFINATION FOR DELETE EMPLOYEE ****/
+export const RemoveEmployee = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/employee/remove_employee', payload,headers);
+}

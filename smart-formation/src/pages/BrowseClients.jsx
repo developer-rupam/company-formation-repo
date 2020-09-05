@@ -8,9 +8,10 @@ import Pagination from "react-js-pagination";
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
-import { GetAllUser } from '../utils/service'
+import { GetAllUser,RemoveUser,LoginUser } from '../utils/service'
 import { showToast,showHttpError } from '../utils/library'
 import {setEmployeeList,setClientList } from "../utils/redux/action"
+import { Modal } from 'react-bootstrap';
 
 
  class BrowseClients extends React.Component {
@@ -24,12 +25,22 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
             noOfItemsPerPage : 10,
             totalCount : 100,
             clientsList : [],
+            isPasswordMatched : false,
+            showConfirmPasswordModal : false,
+            selectedPasswordForDeletion : '',
+
         };
          /***  BINDING FUNCTIONS  ***/
          this.selectClientNameAlphabet = this.selectClientNameAlphabet.bind(this)
          this.handlePageChange = this.handlePageChange.bind(this)
          this.getAllClientsList = this.getAllClientsList.bind(this)
+         this.deleteClient = this.deleteClient.bind(this)
+         this.handleConfirmPassword = this.handleConfirmPassword.bind(this)
+         this.propagateConfirmPasswordModal = this.propagateConfirmPasswordModal.bind(this)
 
+
+          /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
+        this.passwordRef = React.createRef();
       
     }
 
@@ -93,6 +104,65 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
             this.setState({showLoader : false})
             showHttpError(err)
         }.bind(this))
+    }
+
+    /**** FUNCTION DEFINATION FOR DELETING CLIENT ****/
+    deleteClient = () => {
+        let payload = { user_id : this.state.selectedPasswordForDeletion}
+        RemoveUser(payload).then(function(res){
+            this.setState({showLoader : false,clientsList : []})
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                showToast('success','Client Deleted successfully');
+                this.getAllClientsList();
+               
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
+
+    /*** FUNCTION DEFINATION FOR HANDLING SUBMIT FOR CONFIRM WITH PASSWORD BEFORE DELETE ****/
+    handleConfirmPassword = (e) => {
+        e.preventDefault();
+       
+        let session =  JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')));
+        
+        if(session.user_role == 'ADMIN'){
+            var email = session.user_email
+        }else{
+            var email = session.employee_email
+        }
+        let payload = {
+            user_email : email,
+            user_password : this.passwordRef.current.value
+        }
+        this.setState({showLoader : true})
+        LoginUser(payload).then(function(res){
+            this.setState({showLoader : false})
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                this.setState({
+                    showConfirmPasswordModal : false,
+                })
+                this.deleteClient()
+            }
+        }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+        }.bind(this))
+
+       
+    }
+
+    /*** Function defination to propagate confirm password modal ***/
+    propagateConfirmPasswordModal = (param) => {
+        this.setState({showConfirmPasswordModal : true,selectedPasswordForDeletion : param})
     }
 
     render() { 
@@ -189,7 +259,7 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
                                                             <Link to={'/update-client/'+list.user_id} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
-                                                            <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
+                                                            <a href="javascript:void(0)" className="btn btn-light view_dlt" onClick={()=>{this.propagateConfirmPasswordModal(list.user_id)}}><i className="fas fa-user-minus"></i></a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -222,6 +292,33 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                     </main>
                 </div>
                 <Footer/>
+                <Modal
+                        show={this.state.showConfirmPasswordModal}
+                        onHide={() => {this.setState({showConfirmPasswordModal:false})}}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Confirm Password</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                                    <div className="importmodal_contentfirst">
+                                       
+                                        <p>Please provide your password before procedding </p>
+                                        <form className="form-inline" onSubmit={this.handleConfirmPassword}>
+                                            <div className="form-group mx-sm-3 mb-2">
+                                                <label for="inputPassword2" className="sr-only">Password</label>
+                                                <input type="password" className="form-control" id="confirmPassword" placeholder="Password"  ref={this.passwordRef} />
+                                            </div>
+                                            <button type="submit" className="btn btn-primary mb-2">Confirm identity</button>
+                                        </form>          
+                                    </div>
+                                   
+                                </div>
+                        </Modal.Body>
+                        
+                    </Modal>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
                
