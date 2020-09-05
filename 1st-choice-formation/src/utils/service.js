@@ -50,3 +50,10 @@ export const UpdateUser = (obj) => {
 
     return axios.post(WEBSERVICE + '/user/update_user', payload,headers);
 }
+
+/**** FUNCTION defination for updating employee ****/
+export const UpdateEmployeeService = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/employee/update_employee', payload,headers);
+}

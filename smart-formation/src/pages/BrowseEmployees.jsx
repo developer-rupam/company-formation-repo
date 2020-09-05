@@ -189,7 +189,7 @@ import {setEmployeeList,setClientList } from "../utils/redux/action"
                                                     </td>
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
-                                                            <Link to={'/update-employee/'+list.user_id} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
+                                                            <Link to={'/update-employee/'+list.employee_id} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
                                                             <a href="#" className="btn btn-light view_dlt"><i className="fas fa-user-minus"></i></a>
                                                         </div>
                                                     </td>
