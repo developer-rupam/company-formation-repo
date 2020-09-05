@@ -3,10 +3,11 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
-import { showToast,showConfirm } from '../utils/library'
+import { showToast,showConfirm,showHttpError } from '../utils/library'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SITENAMEALIAS } from '../utils/init';
+import {UpdateUser} from '../utils/service'
 
 
  class UpdateClient extends React.Component {
@@ -23,10 +24,16 @@ import { SITENAMEALIAS } from '../utils/init';
             hasPermissionToAccessPersonalSettings : false,
             showImportModal : false,
             assignedFolder : [],
+            userType : 'CLIENT',
+            userRole : 'CLIENT',
+            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            isUserGrouped : false
             
         };
          /***  BINDING FUNCTIONS  ***/
         this.handleUpdateClient = this.handleUpdateClient.bind(this)
+        this.getSelectedClientDetails = this.getSelectedClientDetails.bind(this)
+        this.updateClient = this.updateClient.bind(this)
       
     }
 
@@ -45,10 +52,10 @@ import { SITENAMEALIAS } from '../utils/init';
         if(isAbleForSubmission == true){
             if(this.state.assignedFolder.length == 0){
                 showConfirm('Are You Sure?','No file assigned','warning',() => {
-                    //TODO: add client API call
+                    this.updateClient()
                 })
             }else{
-                 //TODO: add client API call
+                 this.updateClient();
             }
         }else{
             showToast('error','Please provide valid information before adding client')
@@ -69,14 +76,21 @@ import { SITENAMEALIAS } from '../utils/init';
                 console.log(clientsList[i].user_id+'  ____ '+param)
                 if(clientsList[i].user_id === param){
                     console.log(clientsList[i])
-                    this.setState({
-                       // clientName : clientsList[i].user_company,
-                        clientEmail : clientsList[i].user_email,
-                        //clientPassword : clientsList[i].user_email,
-                        clientCompany : clientsList[i].user_company,
-                        hasPermissionToChangePassword:clientsList[i].change_password,
-                        hasPermissionToAccessPersonalSettings:clientsList[i].access_user_settings,
-                    })
+                    this.setState({showLoader : true})
+                    setTimeout(() => {
+                        
+                        this.setState({
+                            clientName : clientsList[i].user_name,
+                            clientEmail : clientsList[i].user_email,
+                            clientPassword : clientsList[i].user_password,
+                            clientCompany : clientsList[i].user_company,
+                            hasPermissionToChangePassword:clientsList[i].change_password,
+                            hasPermissionToAccessPersonalSettings:clientsList[i].access_user_settings,
+                            showLoader : false,
+                            userCreatedBy : clientsList[i].created_by
+                        })
+                        
+                    }, 5000);
                     break;
                 }
             }
@@ -86,6 +100,37 @@ import { SITENAMEALIAS } from '../utils/init';
         }
     }
 
+    /*** FUNCTION DEFINATION TO UPDATE CLIENT ***/
+    updateClient = () => {
+        var payload = {
+            
+        "user_id": this.state.clientId,
+        "user_name": this.state.clientName,
+        "user_email": this.state.clientEmail,
+        "user_password": this.state.clientPassword,
+        "user_company":this.state.clientCompany,
+        "user_type": this.state.userType,
+        "user_role":this.state.userRole,
+        "created_by":this.state.userCreatedBy,
+        "user_status": 2,
+        "access_user_settings":this.state.hasPermissionToAccessPersonalSettings,
+        "change_password":this.state.hasPermissionToChangePassword
+        } 
+        this.setState({showLoader : true})
+        UpdateUser(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                showToast('success','Client updated successfully');
+                document.getElementById('backBtn').click();
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
     
 
     render() {
@@ -106,7 +151,7 @@ import { SITENAMEALIAS } from '../utils/init';
                                                 <span><i className="fas fa-user-plus"></i></span>Edit Client
                                             </div>
                                             <div className="rght-hdr ">
-                                                <Link to="/browse-clients" className="addclient" type="button"> <i className="fas fa-arrow-left"></i> Back</Link>
+                                                <Link to="/browse-clients" className="addclient" type="button"> <i className="fas fa-arrow-left" id="backBtn"></i> Back</Link>
                                             </div>
                                         </div>
                                     </div>
@@ -168,11 +213,11 @@ import { SITENAMEALIAS } from '../utils/init';
                                                     <div className="createclient_main_body">
                                                         <form>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck1" defaultChecked={this.state.hasPermissionToChangePassword} onClick={()=>{this.setState({hasPermissionToChangePassword : !this.state.hasPermissionToChangePassword})}}/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck1" checked={this.state.hasPermissionToChangePassword} onClick={()=>{this.setState({hasPermissionToChangePassword : !this.state.hasPermissionToChangePassword})}}/>
                                                             <label className="custom-control-label" htmlFor="customCheck1">Change Their Password</label>
                                                             </div>
                                                             <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="customCheck2" defaultChecked={this.state.hasPermissionToAccessPersonalSettings} onClick={()=>{this.setState({hasPermissionToAccessPersonalSettings : !this.state.hasPermissionToAccessPersonalSettings})}}/>
+                                                            <input type="checkbox" className="custom-control-input" id="customCheck2" checked={this.state.hasPermissionToAccessPersonalSettings} onClick={()=>{this.setState({hasPermissionToAccessPersonalSettings : !this.state.hasPermissionToAccessPersonalSettings})}}/>
                                                             <label className="custom-control-label" htmlFor="customCheck2">Access Personal Settings</label>
                                                             </div>
                                                         </form>

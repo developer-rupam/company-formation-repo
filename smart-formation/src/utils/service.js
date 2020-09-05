@@ -43,3 +43,10 @@ export const CreateEmployeeService = (arr) => {
 
     return axios.post(WEBSERVICE + '/employee/create_employee', payload,headers);
 }
+
+/*** FUNCTION DEFINATION FOR CREATE USER ****/
+export const UpdateUser = (obj) => {
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/user/update_user', payload,headers);
+}
