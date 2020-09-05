@@ -14,11 +14,34 @@ import { connect } from 'react-redux';
         super(props);
         this.state = {
             showLoader : false,
+            hasAccessToManageEmployees : false,
+			hasAccessToManageClients : false
         };
          /***  BINDING FUNCTIONS  ***/
+         this.getLoggedInUserDetailsForPermission = this.getLoggedInUserDetailsForPermission.bind(this);
          
-
+        
       
+    }
+
+     /*** FUNCTION DEFINATION TO GET LOGGED IN USER DETAILS FOR PERMISSION ***/
+     getLoggedInUserDetailsForPermission = () => {
+        let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
+        console.log(session)
+        if(session.user_role == 'ADMIN'){
+            var manageClients = true;
+            var manageEmployees = true;
+        }else if(session.user_role == 'CLIENT'){
+            var manageClients = false;
+            var manageEmployees = false;
+        }else{
+            var manageClients = session.manage_client;
+            var manageEmployees = session.manage_employee;
+        }
+        this.setState({
+            hasAccessToManageClients : manageClients,
+            hasAccessToManageEmployees : manageEmployees,
+        })
     }
 
   
@@ -70,7 +93,7 @@ import { connect } from 'react-redux';
                                         <div className="row">
                                             
                                             
-                                            <div className="col-md-4">
+                                            {this.state.hasAccessToManageClients ? <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <Link to="/create-employee">
                                                                     <div className="createclient_main_body_item_icon">
@@ -81,8 +104,8 @@ import { connect } from 'react-redux';
                                                                     </div>
                                                                 </Link>
                                                             </div>
-                                                            </div>
-                                            <div className="col-md-4">
+                                                            </div> : ''}
+                                            {this.state.hasAccessToManageEmployees ? <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <Link to="/create-client">
                                                                     <div className="createclient_main_body_item_icon">
@@ -93,7 +116,7 @@ import { connect } from 'react-redux';
                                                                     </div>
                                                                 </Link>
                                                             </div>
-                                                            </div>
+                                                            </div> : ''}
                                             
                                             </div>
                                         </div>
@@ -114,7 +137,8 @@ import { connect } from 'react-redux';
     }
 
     componentDidMount(){
-        
+        /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
+		this.getLoggedInUserDetailsForPermission();
     }
 
     componentWillReceiveProps(){

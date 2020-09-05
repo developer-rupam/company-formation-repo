@@ -8,10 +8,14 @@ import { withRouter } from 'react-router-dom';
  class Sidebar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+			hasAccessToManageEmployees : false,
+			hasAccessToManageClients : false
+		}
 
         /**** BINDING FUNCTION ****/
         this.toggleNavigationDropdown = this.toggleNavigationDropdown.bind(this);
+        this.getLoggedInUserDetailsForPermission = this.getLoggedInUserDetailsForPermission.bind(this);
     }
 
 
@@ -27,10 +31,31 @@ import { withRouter } from 'react-router-dom';
             node.parentElement.classList.add('show')
             node.nextSibling.classList.add('show')
         }
-    }
+	}
+	
+	/*** FUNCTION DEFINATION TO GET LOGGED IN USER DETAILS FOR PERMISSION ***/
+	getLoggedInUserDetailsForPermission = () => {
+		let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
+		console.log(session)
+		if(session.user_role == 'ADMIN'){
+			var manageClients = true;
+			var manageEmployees = true;
+		}else if(session.user_role == 'CLIENT'){
+			var manageClients = false;
+			var manageEmployees = false;
+		}else{
+			var manageClients = session.manage_client;
+			var manageEmployees = session.manage_employee;
+		}
+		this.setState({
+			hasAccessToManageClients : manageClients,
+			hasAccessToManageEmployees : manageEmployees,
+		})
+	}
 
 
     render() {
+		
         return (
             <Fragment>
                 <div className="sidebar">
@@ -69,22 +94,22 @@ import { withRouter } from 'react-router-dom';
 					  <Link className="dropdown-item" href="#">Menu Item</Link>
 					</div>
 				  </li> */}
-				  <li className="nav-item dropdown">
-					<Link className={
+				  {(this.state.hasAccessToManageClients || this.state.hasAccessToManageEmployees) ? <li className="nav-item dropdown">
+					 <Link className={
 						 (this.props.location.pathname == '/create-client') || (this.props.location.pathname == '/browse-clients') ||  (this.props.location.pathname == '/manage-user-home') || (this.props.location.pathname == '/create-employee') || (this.props.location.pathname == '/browse-employees') ||  (this.props.location.pathname == '/update-client') || (this.props.location.pathname == '/update-employee') ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
 						}  id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className=" fas fa-user-friends mr-1"></i>People
-					</Link>
+					</Link> 
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					  <NavLink className="dropdown-item" to="/manage-user-home" activeClassName="active"> <i className="fas fa-users"></i>Manage Users Home</NavLink>
-					  <NavLink className="dropdown-item" activeClassName="active" to="/browse-employees"> <i className="fas fa-user"></i>Browse Employees</NavLink>
-					  <NavLink className="dropdown-item" to="/browse-clients" activeClassName="active"> <i className="fas fa-user"></i>Browse Clients</NavLink>
+					 <NavLink className="dropdown-item" to="/manage-user-home" activeClassName="active"> <i className="fas fa-users"></i>Manage Users Home</NavLink>
+					  {this.state.hasAccessToManageEmployees ? <NavLink className="dropdown-item" activeClassName="active" to="/browse-employees"> <i className="fas fa-user"></i>Browse Employees</NavLink> : ''}
+					  {this.state.hasAccessToManageClients ?<NavLink className="dropdown-item" to="/browse-clients" activeClassName="active"> <i className="fas fa-user"></i>Browse Clients</NavLink> : ''}
 					   {/* <Link className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-location-arrow"></i>Shared Address Book</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-location-arrow"></i>Personal Address Book</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-users"></i>Distribution Groups</Link>
 					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-envelope"></i>Resend Welcome Emails</Link> */}
 					</div>
-				  </li>
+				  </li> : ''}
 				 <li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle "  id="navbarDropdownSettings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
 					  <i className="fas fa-cog mr-2"></i>Settings
@@ -101,7 +126,10 @@ import { withRouter } from 'react-router-dom';
     }
     componentDidMount(){
         /*** calling function for storing current route ***/
-        storeCurrentRoute(this.props.location.pathname)
+		storeCurrentRoute(this.props.location.pathname)
+		
+		/** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
+		this.getLoggedInUserDetailsForPermission();
 
     }
 }

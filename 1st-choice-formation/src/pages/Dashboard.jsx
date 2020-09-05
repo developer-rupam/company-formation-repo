@@ -19,12 +19,15 @@ import { showToast,showHttpError } from '../utils/library'
             pageNo : 1,
             noOfItemsPerPage : 20,
             loggedInUserName : 'Guest',
-            recentFileList : []
+            recentFileList : [],
+            hasAccessToManageEmployees : false,
+			hasAccessToManageClients : false
         };
 
         /**** BIND FUNCTIONS ****/
         this.getAllEmployeesList = this.getAllEmployeesList.bind(this)
         this.getAllClientsList = this.getAllClientsList.bind(this)
+        this.getLoggedInUserDetailsForPermission = this.getLoggedInUserDetailsForPermission.bind(this);
       
     }
 
@@ -79,6 +82,26 @@ import { showToast,showHttpError } from '../utils/library'
             this.setState({showLoader : false})
             showHttpError(err)
         }.bind(this))
+    }
+
+    /*** FUNCTION DEFINATION TO GET LOGGED IN USER DETAILS FOR PERMISSION ***/
+    getLoggedInUserDetailsForPermission = () => {
+        let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
+        console.log(session)
+        if(session.user_role == 'ADMIN'){
+            var manageClients = true;
+            var manageEmployees = true;
+        }else if(session.user_role == 'CLIENT'){
+            var manageClients = false;
+            var manageEmployees = false;
+        }else{
+            var manageClients = session.manage_client;
+            var manageEmployees = session.manage_employee;
+        }
+        this.setState({
+            hasAccessToManageClients : manageClients,
+            hasAccessToManageEmployees : manageEmployees,
+        })
     }
 
     render() {
@@ -154,7 +177,7 @@ import { showToast,showHttpError } from '../utils/library'
                                             <ul>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li>
-                                                <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li>
+                                                { (this.state.hasAccessToManageClients || this.state.hasAccessToManageEmployees) ? <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li> :''}
                                                 <li><Link to="/dashboard"><span><i className="fas fa-user"></i></span>Personal Folders</Link></li>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-user-friends"></i></span>Shared Folders</Link></li>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
@@ -257,6 +280,8 @@ import { showToast,showHttpError } from '../utils/library'
         let loggedInUser = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
         if(loggedInUser.user_name != undefined ){
             this.setState({loggedInUserName : loggedInUser.user_name})
+            /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
+		    this.getLoggedInUserDetailsForPermission();
         }
 
         /*** CALLING FUNCTION FOR GET ALL EMPLOYEES LIST***/
