@@ -27,7 +27,7 @@ import { Modal } from 'react-bootstrap';
             employeesList : [],
             isPasswordMatched : false,
             showConfirmPasswordModal : false,
-            selectedPasswordForDeletion : '',
+            selectedPasswordForDeletion : [],
         };
          /***  BINDING FUNCTIONS  ***/
          this.selectEmployeeNameAlphabet = this.selectEmployeeNameAlphabet.bind(this)
@@ -36,6 +36,8 @@ import { Modal } from 'react-bootstrap';
          this.deleteEmployee = this.deleteEmployee.bind(this)
          this.handleConfirmPassword = this.handleConfirmPassword.bind(this)
          this.propagateConfirmPasswordModal = this.propagateConfirmPasswordModal.bind(this)
+         this.handleSelectMultiUser = this.handleSelectMultiUser.bind(this)
+         this.handleInitiateMultipleDelete = this.handleInitiateMultipleDelete.bind(this)
 
        /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
        this.passwordRef = React.createRef();
@@ -107,21 +109,24 @@ import { Modal } from 'react-bootstrap';
 
     /**** FUNCTION DEFINATION FOR DELETING CLIENT ****/
     deleteEmployee = () => {
-        let payload = { employee_id : this.state.selectedPasswordForDeletion}
-        RemoveEmployee(payload).then(function(res){
-            this.setState({showLoader : false})
-            var response = res.data;
-            if(response.errorResponse.errorStatusCode != 1000){
-                showToast('error',response.errorResponse.errorStatusType);
-            }else{
-                showToast('success','Employee deleted successfully');
-                this.getAllEmployeesList();
-               
-            }
-        }.bind(this)).catch(function(err){
-            this.setState({showLoader : false})
-            showHttpError(err)
-        }.bind(this))
+        let selectedPasswordForDeletion = this.state.selectedPasswordForDeletion
+        for(let i=0;i<selectedPasswordForDeletion.length;i++){
+            let payload = { employee_id : selectedPasswordForDeletion[i]}
+            RemoveEmployee(payload).then(function(res){
+                this.setState({showLoader : false})
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    showToast('success','Employee deleted successfully');
+                    this.getAllEmployeesList();
+                
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+        }
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING SUBMIT FOR CONFIRM WITH PASSWORD BEFORE DELETE ****/
@@ -161,7 +166,33 @@ import { Modal } from 'react-bootstrap';
 
     /*** Function defination to propagate confirm password modal ***/
     propagateConfirmPasswordModal = (param) => {
-        this.setState({showConfirmPasswordModal : true,selectedPasswordForDeletion : param})
+        let arr = []
+        arr.push(param)
+        this.setState({showConfirmPasswordModal : true,selectedPasswordForDeletion : arr})
+    }
+    /*** Function defination to select multiple user for deletion using check box ***/
+    handleSelectMultiUser = (e) => {
+        
+        let arr = this.state.selectedPasswordForDeletion;
+        let id = e.target.getAttribute("data-id");
+        console.log(id)
+        if(e.target.checked){
+            arr.push(id)
+        }else{
+            var index = arr.indexOf(id);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+        }
+        this.setState({selectedPasswordForDeletion : arr}) 
+    }
+
+    /*** Function defination to initate multiple delte ***/
+    handleInitiateMultipleDelete = () => {
+       if(this.state.selectedPasswordForDeletion.length != 0){
+        this.setState({showConfirmPasswordModal : true}) 
+       }
+        
     }
 
     render() { 
@@ -215,7 +246,7 @@ import { Modal } from 'react-bootstrap';
                                                        </select>
                                                 </form>
                                                 </div>
-                                                <button type="submit" className="deleteclient"><i className="fas fa-user-minus"></i>Delete Selected Employee</button>
+                                                <button type="submit" className="deleteclient" onClick={this.handleInitiateMultipleDelete}><i className="fas fa-user-minus"></i>Delete Selected Employee</button>
                                                 <Link to="/create-employee" className="addclient"><i className="fas fa-user-plus"></i>Create Employee</Link>
                                             </div>
                                         </div>
@@ -243,7 +274,7 @@ import { Modal } from 'react-bootstrap';
                                                 <tr key={list.employee_id}>
                                                     <td>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id={list.employee_id}/>
+                                                            <input type="checkbox" className="custom-control-input checkbox" onClick={(event)=>{this.handleSelectMultiUser(event)}} data-id={list.employee_id} id={list.employee_id}/>
                                                             <label className="custom-control-label" htmlFor={list.employee_id}></label>
                                                         </div>
                                                     </td>

@@ -27,7 +27,7 @@ import { Modal } from 'react-bootstrap';
             clientsList : [],
             isPasswordMatched : false,
             showConfirmPasswordModal : false,
-            selectedPasswordForDeletion : '',
+            selectedPasswordForDeletion : [],
 
         };
          /***  BINDING FUNCTIONS  ***/
@@ -37,6 +37,9 @@ import { Modal } from 'react-bootstrap';
          this.deleteClient = this.deleteClient.bind(this)
          this.handleConfirmPassword = this.handleConfirmPassword.bind(this)
          this.propagateConfirmPasswordModal = this.propagateConfirmPasswordModal.bind(this)
+         this.handleSelectMultiUser = this.handleSelectMultiUser.bind(this)
+         this.handleInitiateMultipleDelete = this.handleInitiateMultipleDelete.bind(this)
+         
 
 
           /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
@@ -108,21 +111,25 @@ import { Modal } from 'react-bootstrap';
 
     /**** FUNCTION DEFINATION FOR DELETING CLIENT ****/
     deleteClient = () => {
-        let payload = { user_id : this.state.selectedPasswordForDeletion}
-        RemoveUser(payload).then(function(res){
-            this.setState({showLoader : false,clientsList : []})
-            var response = res.data;
-            if(response.errorResponse.errorStatusCode != 1000){
-                showToast('error',response.errorResponse.errorStatusType);
-            }else{
-                showToast('success','Client Deleted successfully');
-                this.getAllClientsList();
-               
-            }
-        }.bind(this)).catch(function(err){
-            this.setState({showLoader : false})
-            showHttpError(err)
-        }.bind(this))
+        let selectedPasswordForDeletion = this.state.selectedPasswordForDeletion
+        for(let i=0;i<selectedPasswordForDeletion.length;i++){
+            let payload = { user_id : selectedPasswordForDeletion[i]}
+            RemoveUser(payload).then(function(res){
+                this.setState({showLoader : false,clientsList : []})
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    showToast('success','Client Deleted successfully');
+                    this.getAllClientsList();
+                
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+        }
+        
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING SUBMIT FOR CONFIRM WITH PASSWORD BEFORE DELETE ****/
@@ -162,7 +169,32 @@ import { Modal } from 'react-bootstrap';
 
     /*** Function defination to propagate confirm password modal ***/
     propagateConfirmPasswordModal = (param) => {
-        this.setState({showConfirmPasswordModal : true,selectedPasswordForDeletion : param})
+        let arr = []
+        arr.push(param)
+        this.setState({showConfirmPasswordModal : true,selectedPasswordForDeletion : arr})
+    }
+    /*** Function defination to select multiple user for deletion using check box ***/
+    handleSelectMultiUser = (e) => {
+        
+        let arr = this.state.selectedPasswordForDeletion;
+        let id = e.target.getAttribute("data-id");
+        console.log(id)
+        if(e.target.checked){
+            arr.push(id)
+        }else{
+            var index = arr.indexOf(id);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+        }
+        this.setState({selectedPasswordForDeletion : arr}) 
+    }
+    /*** Function defination to initate multiple delte ***/
+    handleInitiateMultipleDelete = () => {
+       if(this.state.selectedPasswordForDeletion.length != 0){
+        this.setState({showConfirmPasswordModal : true}) 
+       }
+        
     }
 
     render() { 
@@ -216,7 +248,7 @@ import { Modal } from 'react-bootstrap';
                                                        </select>
                                                 </form>
                                                 </div>
-                                                <button type="submit" className="deleteclient"><i className="fas fa-user-minus"></i>Delete Selected Client</button>
+                                                <button type="submit" className="deleteclient" onClick={this.handleInitiateMultipleDelete}><i className="fas fa-user-minus"></i>Delete Selected Client</button>
                                                 <Link to="/create-client" className="addclient"><i className="fas fa-user-plus"></i>Create Client</Link>
                                             </div>
                                         </div>
@@ -228,7 +260,7 @@ import { Modal } from 'react-bootstrap';
                                                 <tr>
                                                     <th>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input" id="check_all"/>
+                                                            <input type="checkbox" className="custom-control-input "  id="check_all"/>
                                                             <label className="custom-control-label" htmlFor="check_all"></label>
                                                         </div>
                                                     </th>
@@ -244,7 +276,7 @@ import { Modal } from 'react-bootstrap';
                                                 <tr key={list.user_id}>
                                                     <td>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" id={list.user_id}/>
+                                                            <input type="checkbox" className="custom-control-input checkbox" onClick={(event)=>{this.handleSelectMultiUser(event)}} data-id={list.user_id} id={list.user_id}/>
                                                             <label className="custom-control-label" htmlFor={list.user_id}></label>
                                                         </div>
                                                     </td>
