@@ -70,3 +70,16 @@ export const RemoveEmployee = (obj) =>{
 
     return axios.post(WEBSERVICE + '/employee/remove_employee', payload,headers);
 }
+
+/*** FUNCTION DEFINATION TO GET CLIENT & ADMIN DETIALS ***/
+export const GetUserDetails = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/user/get_user_details', payload,headers);
+}
+/*** FUNCTION DEFINATION TO GET EMPLOEE DETIALS ***/
+export const GetEmployeeDetails = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/employee/get_employee_details', payload,headers);
+}
