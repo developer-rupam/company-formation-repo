@@ -67,20 +67,22 @@ import { withRouter } from 'react-router-dom';
                      <NavLink className="nav-link" activeClassName="active" to="/dashboard" >
                     <i className="fas fa-home mr-2" ></i>Dashboard </NavLink>
                   </li>
-                  {/* <li className="nav-item dropdown">
-					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					  <i className="nav-icon fas fa-folder"></i>Folders
+                   <li className="nav-item dropdown">
+					<Link className={
+						 (this.props.location.pathname == '/personal-folders') || (this.props.location.pathname == '/shared-folders') ||  (this.props.location.pathname == '/favorite-folders') ? 'nav-link dropdown-toggle active' : 'nav-link dropdown-toggle'
+						}  id="navbarDropdownFolder" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleNavigationDropdown}>
+					  <i className="fas fa-folder"></i> Folders
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					  <Link className="dropdown-item" href="personalfolders.html"> <i className="nav-icon fas fa-user"></i>Personal Folders</Link>
-					  <Link className="dropdown-item" href="sharedfolders.html"> <i className="nav-icon fas fa-user-friends"></i>Shared Folders</Link>
-					  <Link className="dropdown-item" href="favorites.html"> <i className="nav-icon fas fa-star"></i>Favorites</Link>
-					   <div className="dropdown-divider"></div>
-					   <Link className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-archive"></i>File box</Link>
-					   <Link className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-recycle"></i>Recycle Bin</Link>
+					  <NavLink className="dropdown-item" to="/personal-folders"> <i className=" fas fa-user"></i> Personal Folders</NavLink>
+					  <NavLink className="dropdown-item" to="/shared-folders"> <i className=" fas fa-user-friends"></i> Shared Folders</NavLink>
+					  <NavLink className="dropdown-item" to="/favorite-folders"> <i className=" fas fa-star"></i> Favorites</NavLink>
+					   {/*<div className="dropdown-divider"></div>
+					    <NavLink className="dropdown-item" href="filebox.html"> <i className="nav-icon fas fa-archive"></i>File box</NavLink>
+					   <NavLink className="dropdown-item" href="recyclebin.html"> <i className="nav-icon fas fa-recycle"></i>Recycle Bin</NavLink> */}
 					</div>
 				  </li>
-                  <li className="nav-item dropdown">
+                  {/*<li className="nav-item dropdown">
 					<Link className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					  <i className="nav-icon fas fa-project-diagram"></i>Workflows
 					</Link>
