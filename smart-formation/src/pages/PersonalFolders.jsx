@@ -6,17 +6,23 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError } from '../utils/library'
+import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
+import { connect } from 'react-redux';
+import Moment from 'react-moment';
+import {setPersonalFoldersList} from '../utils/redux/action'
+import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-router-dom';
 
-export default class PersonalFolders extends React.Component {
+ class PersonalFolders extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showLoader : false,
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
-            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createdBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
+            foldersList : [],
 
             
         };
@@ -25,6 +31,8 @@ export default class PersonalFolders extends React.Component {
         this.closeCreateFolderModal = this.closeCreateFolderModal.bind(this)
         this.handleAddPeople = this.handleAddPeople.bind(this)
         this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
+        this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
+        this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -74,12 +82,119 @@ export default class PersonalFolders extends React.Component {
         }
 
         if(isAbleToSubmit){
-            //TODO Call add folder API
+
+            let payload = {
+                
+                    "entity_name": this.folderNameRef.current.value,
+                    "entity_description": this.folderDetailsRef.current.value,
+                    "parent_directory_id": "",
+                    "directory_owner": this.state.createdBy
+            
+            }
+
+            this.setState({showLoader : true})
+            CreateDirectory(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    showToast('success','Folder created successfully');
+                    this.folderNameRef.current.value = ''
+                    this.folderDetailsRef.current.value = ''
+                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false})
+                    this.fetchAllParentDirectory()
+                    
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
         }else{
             showToast('error','Please provide valid information')
         }
    }
     
+
+   /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
+   fetchAllParentDirectory = () => {
+    let payload = {entity_id : ''}
+    this.setState({showLoader : true})
+    GetAllSubDirectory(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                    let arr = [];
+                    let folders = response.response
+                    for(let i=0;i<folders.length;i++){
+                        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+                            arr.push(folders[i]);
+                        }else{
+                            if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                                arr.push(folders[i]);
+                            }
+                        }
+                    }
+                    this.setState({foldersList : arr})
+                    this.props.setPersonalFoldersList(this.state.foldersList);
+                    console.log(this.state.foldersList)
+                    console.log(this.props.globalState)
+                    
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+   }
+
+
+    /*** FUNCTION DEFINATION TO GET FOLDER OR FILE OWNER DETAILS ****/
+    getEntityOwnerDetails = (param) =>{
+        let clients = this.props.globalState.clientListReducer.clientsList
+        let employees = this.props.globalState.employeeListReducer.employeesList
+
+        var ownerObj = {};
+
+        if(clients != undefined ){
+            for(let i=0;i<clients.length;i++){
+            if(param == clients[i].user_id){
+                ownerObj = {
+                ownerId : clients[i].user_id,
+                ownerName : clients[i].user_name,
+                ownerRole : clients[i].user_role,
+                ownerCompany : clients[i].user_company,
+                ownerEmail : clients[i].user_email,
+                }
+                break;
+            }
+            }
+        }else{
+            this.props.history.push('/dashboard')
+        }
+      
+        if(employees!= undefined){
+            for(let i=0;i<employees.length;i++){
+            if(param == employees[i].user_id){
+                ownerObj = {
+                ownerId : employees[i].user_id,
+                ownerName : employees[i].user_name,
+                ownerRole : employees[i].user_role,
+                ownerCompany : employees[i].user_company,
+                ownerEmail : employees[i].user_email,
+                }
+                break;
+            }
+            }
+        }else{
+            this.props.history.push('/dashboard')
+        }
+      
+        return ownerObj;
+      
+      }
 
 
     render() {
@@ -111,36 +226,22 @@ export default class PersonalFolders extends React.Component {
                                                 <thead>
                                                 <tr>
                                                     <th>Name</th>
-                                                    <th>Size</th>
+                                                    {/* <th>Size</th> */}
                                                     <th>Uploaded</th>
                                                     <th>Create</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className="fas fa-folder-open"></i></span><a href="#!">Folder Name</a></td>
-                                                    <td>5kb</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>Team</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className="fas fa-folder-open"></i></span><a href="#!">Folder Name</a></td>
-                                                    <td>5kb</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>Team</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className="fas fa-folder-open"></i></span><a href="#!">Folder Name</a></td>
-                                                    <td>5kb</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>Team</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className="fas fa-folder-open"></i></span><a href="#!">Folder Name</a></td>
-                                                    <td>5kb</td>
-                                                    <td>12/08/2020</td>
-                                                    <td>Team</td>
-                                                </tr>
+                                                {this.state.foldersList.map((list) =>
+                                                <tr className="pointer-cursor" key={list.entity_id}>
+                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                    
+                                                    <td>
+                                                        <Moment format="YYYY/MM/DD" date={list.user_created}/>
+                                                    </td>
+                                                    <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
+                                                </tr>)}
+                                                
                                                 </tbody>
                                             </table>
                                         </div>
@@ -218,8 +319,25 @@ export default class PersonalFolders extends React.Component {
                
         )
     }
-
+    componentDidMount(){
+       /*** Get all parent folder's ***/ 
+       this.fetchAllParentDirectory();
+       
+   }
    
     
 }
+const mapStateToProps = state => {
+    return {
+        globalState : state
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setPersonalFoldersList : (array) => dispatch(setPersonalFoldersList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(PersonalFolders))
 

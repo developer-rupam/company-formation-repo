@@ -5,9 +5,9 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Link } from 'react-router-dom';
-import {setEmployeeList,setClientList } from "../utils/redux/action"
+import {setEmployeeList,setClientList,setPersonalFoldersList } from "../utils/redux/action"
 import { connect } from 'react-redux';
-import { GetAllUser } from '../utils/service'
+import { GetAllUser,GetAllSubDirectory } from '../utils/service'
 import { showToast,showHttpError } from '../utils/library'
 
 
@@ -28,6 +28,9 @@ import { showToast,showHttpError } from '../utils/library'
         this.getAllEmployeesList = this.getAllEmployeesList.bind(this)
         this.getAllClientsList = this.getAllClientsList.bind(this)
         this.getLoggedInUserDetailsForPermission = this.getLoggedInUserDetailsForPermission.bind(this);
+        this.getRecentFiles = this.getRecentFiles.bind(this);
+        this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this);
+
       
     }
 
@@ -104,6 +107,99 @@ import { showToast,showHttpError } from '../utils/library'
         })
     }
 
+
+      /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
+   getRecentFiles = () => {
+    let payload = {entity_id : ''}
+    this.setState({showLoader : true})
+    GetAllSubDirectory(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                    let arr = [];
+                    let recentFilesArr = [];
+                    let folders = response.response
+                    for(let i=0;i<folders.length;i++){
+                        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+                            arr.push(folders[i]);
+                        }else{
+                            if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                                arr.push(folders[i]);
+                            }
+                        }
+                    }
+                    //this.setState({recentFileList : arr})
+                    let range = 0
+                    if(arr.length > 5){
+                        range = 5
+                    }
+                    console.log(arr.length,range)
+                    for(let i=arr.length - 1;i>=range;i--){
+                        recentFilesArr.push(arr[i])
+                    }
+                    console.log(recentFilesArr)
+                    this.setState({recentFileList : recentFilesArr})
+
+                    this.props.setPersonalFoldersList(arr);
+                    console.log(this.props.globalState)
+                    
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+   }
+
+
+   /*** FUNCTION DEFINATION TO GET FOLDER OR FILE OWNER DETAILS ****/
+   getEntityOwnerDetails = (param) =>{
+    let clients = this.props.globalState.clientListReducer.clientsList
+    let employees = this.props.globalState.employeeListReducer.employeesList
+
+    var ownerObj = {};
+
+    if(clients != undefined ){
+        for(let i=0;i<clients.length;i++){
+        if(param == clients[i].user_id){
+            ownerObj = {
+            ownerId : clients[i].user_id,
+            ownerName : clients[i].user_name,
+            ownerRole : clients[i].user_role,
+            ownerCompany : clients[i].user_company,
+            ownerEmail : clients[i].user_email,
+            }
+            break;
+        }
+        }
+    }else{
+       // this.props.history.push('/dashboard')
+    }
+  
+    if(employees!= undefined){
+        for(let i=0;i<employees.length;i++){
+        if(param == employees[i].user_id){
+            ownerObj = {
+            ownerId : employees[i].user_id,
+            ownerName : employees[i].user_name,
+            ownerRole : employees[i].user_role,
+            ownerCompany : employees[i].user_company,
+            ownerEmail : employees[i].user_email,
+            }
+            break;
+        }
+        }
+    }else{
+       // this.props.history.push('/dashboard')
+    }
+  
+    return ownerObj;
+  
+  }
+
+
     render() {
         return (
                <Fragment>
@@ -147,13 +243,13 @@ import { showToast,showHttpError } from '../utils/library'
                                                 <li key={list.entity_id}>
                                                     <div className="recent_file_item">
                                                         <div className="recent_file_item_icon">
-                                                            <i className="fas fa-file-pdf"></i>
+                                                            <i className={list.is_file ? "fas fa-file-pdf" : "fas fa-folder-open"}></i>
                                                         </div>
                                                         <div className="recent_file_item_filename">
                                                             <p>{list.entity_name}</p>
                                                             <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Shared Folders</a></li>
-                                                                <li><a href="#!">Abc</a></li>
+                                                                <li><a href="#!">Personal Folders</a></li>
+                                                <li><a href="#!">{this.getEntityOwnerDetails(list.directory_owner).ownerName}</a></li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -289,6 +385,10 @@ import { showToast,showHttpError } from '../utils/library'
 
         /*** CALLING FUNCTION FOR GET ALL CLIENTS LIST***/
         this.getAllClientsList()
+
+
+        /*** CALLING FUNCTION FOR GET ALL RECENT FILES***/
+        this.getRecentFiles()
     }
     
 }
@@ -303,6 +403,7 @@ const mapDispatchToProps = dispatch => {
     return {
         setEmployeeList : (array) => dispatch(setEmployeeList(array)),
         setClientList : (array) => dispatch(setClientList(array)),
+        setPersonalFoldersList : (array) => dispatch(setPersonalFoldersList(array)),
     }
 }
 

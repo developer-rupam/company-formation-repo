@@ -77,9 +77,30 @@ export const GetUserDetails = (obj) =>{
 
     return axios.post(WEBSERVICE + '/user/get_user_details', payload,headers);
 }
+
 /*** FUNCTION DEFINATION TO GET EMPLOEE DETIALS ***/
 export const GetEmployeeDetails = (obj) =>{
     var payload = JSON.stringify(obj);
 
     return axios.post(WEBSERVICE + '/employee/get_employee_details', payload,headers);
+}
+
+/*** FUNCTION DEFINATION TO Create Directory ***/
+export const CreateDirectory = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/directory/create_directory', payload,headers);
+}
+
+/*** FUNCTION DEFINATION TO GET ALL SUB Directory & Files By DIRECTORY ***/
+export const GetAllSubDirectory = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/directory/get_all_sub_directory', payload,headers);
+}
+
+/*** FUNCTION DEFINATION TO GET ALL SUB Directory & Files By DIRECTORY ***/
+export const CreateFile = (payload) =>{
+
+    return axios.post(WEBSERVICE + '/directory/create_file', payload, {'Content-Type': 'multipart/form-data' });
 }
