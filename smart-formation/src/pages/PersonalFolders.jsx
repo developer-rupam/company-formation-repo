@@ -33,6 +33,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
         this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
         this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this)
+        this.handleFolderDetails = this.handleFolderDetails.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -196,6 +197,11 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
       
       }
 
+    /*** function defination to handle folder details ***/
+   handleFolderDetails = (param) => {
+    this.props.history.push('/folder-details/'+param+'/personal_folder')
+    }  
+
 
     render() {
         return (
@@ -233,7 +239,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 </thead>
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
-                                                <tr className="pointer-cursor" key={list.entity_id}>
+                                                <tr className="pointer-cursor" onClick={()=>{this.handleFolderDetails(list.entity_id)}} key={list.entity_id}>
                                                     <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
                                                     
                                                     <td>
