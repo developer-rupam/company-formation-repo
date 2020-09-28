@@ -12,6 +12,8 @@ import UpdateEmployee from './pages/UpdateEmployee'
 import ManageUserHome from './pages/ManageUserHome'
 import PersonalSettings from './pages/PersonalSettings'
 import PersonalFolders from './pages/PersonalFolders'
+import SharedFolders from './pages/SharedFolders'
+import FavoriteFolders from './pages/FavoriteFolders'
 import FolderDetails from './pages/FolderDetails'
 import {BrowserRouter as Router, Switch,Route,withRouter,NavLink} from 'react-router-dom';
 import { SITENAMEALIAS } from './utils/init';
@@ -33,6 +35,8 @@ function App() {
           <ProtectedRoute path="/manage-user-home" component={ManageUserHome} />
           <ProtectedRoute path="/personal-settings" component={PersonalSettings} />
           <ProtectedRoute path="/personal-folders" component={PersonalFolders} />
+          <ProtectedRoute path="/shared-folders" component={SharedFolders} />
+          <ProtectedRoute path="/favorite-folders" component={FavoriteFolders} />
           <ProtectedRoute path="/folder-details/:param1/:param2" component={FolderDetails} />
           <ProtectedRoute path="*" component={NotFound} />
         </Switch>
