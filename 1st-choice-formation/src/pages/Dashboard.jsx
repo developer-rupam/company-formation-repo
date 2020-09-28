@@ -274,9 +274,9 @@ import { showToast,showHttpError } from '../utils/library'
                                                 <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li>
                                                 { (this.state.hasAccessToManageClients || this.state.hasAccessToManageEmployees) ? <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li> :''}
-                                                <li><Link to="/dashboard"><span><i className="fas fa-user"></i></span>Personal Folders</Link></li>
-                                                <li><Link to="/dashboard"><span><i className="fas fa-user-friends"></i></span>Shared Folders</Link></li>
-                                                <li><Link to="/dashboard"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
+                                                <li><Link to="/personal-folders"><span><i className="fas fa-user"></i></span>Personal Folders</Link></li>
+                                                <li><Link to="/shared-folders"><span><i className="fas fa-user-friends"></i></span>Shared Folders</Link></li>
+                                                <li><Link to="/favorite-folders"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
                                             </ul>
                                         </div>
                                     </div>
