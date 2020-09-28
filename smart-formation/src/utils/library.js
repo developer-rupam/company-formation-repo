@@ -62,4 +62,9 @@ export const showHttpError = (error) => {
   }
 }
 
+/*** FUNXTION DEFINATION FOR ADDING & REMOVE FAVORITE ENTITY ***/
+export const manipulateFavoriteEntity = (param) => {
+  
+}
+
 

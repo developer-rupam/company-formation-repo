@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast,showConfirm,showHttpError } from '../utils/library'
+import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
 import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
@@ -235,17 +235,19 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     {/* <th>Size</th> */}
                                                     <th>Uploaded</th>
                                                     <th>Create</th>
+                                                    <th>Details</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
-                                                <tr className="pointer-cursor" onClick={()=>{this.handleFolderDetails(list.entity_id)}} key={list.entity_id}>
-                                                    <td><span className="select"><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                <tr className="pointer-cursor" key={list.entity_id}>
+                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(list.entity_id,[])}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
                                                     
                                                     <td>
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
+                                                    <td><button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button></td>
                                                 </tr>)}
                                                 
                                                 </tbody>
