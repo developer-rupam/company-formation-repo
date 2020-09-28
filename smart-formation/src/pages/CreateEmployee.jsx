@@ -7,10 +7,12 @@ import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
-import {CreateEmployeeService} from '../utils/service'
+import {CreateEmployeeService,GetAllSubDirectory} from '../utils/service'
+import { connect } from 'react-redux';
+import {setPersonalFoldersList} from '../utils/redux/action'
 
 
-export default class CreateEmployee extends React.Component {
+ class CreateEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,10 +46,12 @@ export default class CreateEmployee extends React.Component {
             hasPermissionToManageRemoteUploadForms : false,
             hasPermissionToManageFileDrops : false,
             assignedFolder : [],
+            personalFolderList : [],
             userType : 'EMPLOYEE',
             userRole : 'EMPLOYEE',
             userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
-            isUserGrouped : false
+            isUserGrouped : false,
+            showAssignFolderModal : false,
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -57,9 +61,12 @@ export default class CreateEmployee extends React.Component {
         this.handleCsvFile = this.handleCsvFile.bind(this)
         this.openImportModal = this.openImportModal.bind(this)
         this.closeImportModal = this.closeImportModal.bind(this)
+        this.openAssignFolderModal = this.openAssignFolderModal.bind(this)
+        this.closeAssignFolderModal = this.closeAssignFolderModal.bind(this)
         this.handlePermissionChange = this.handlePermissionChange.bind(this)
         this.addEmployee = this.addEmployee.bind(this)
         this.handleValueChangeInField = this.handleValueChangeInField.bind(this)
+        this.handleSelectFolder = this.handleSelectFolder.bind(this)
       
     }
 
@@ -250,12 +257,29 @@ export default class CreateEmployee extends React.Component {
      closeImportModal = () => {
          this.setState({showImportModal : false})
      }
+     /*** FUNCTION DEFINATION FOR OPENING ASSIGN FOLDER MODAL ***/
+     openAssignFolderModal = () => {
+        this.setState({showAssignFolderModal : true})
+     }
+     /*** FUNCTION DEFINATION FOR CLOSING ASSIGN FOLDER MODAL ***/
+     closeAssignFolderModal = () => {
+         this.setState({showAssignFolderModal : false})
+     }
 
      /**** FUNCTION DEFINATION TO CHANGE PERMISSION ****/
      handlePermissionChange = (key,value) =>{
        
      
      }
+
+     /*** FUNCTION DEFINATION TO SELECT FOLDER ***/
+    handleSelectFolder = (param) =>{
+        let arr = this.state.assignedFolder
+        arr.push(param);
+        this.state.assignedFolder = arr
+        console.log(this.state.assignedFolder)
+    }
+
 
     render() {
         return (
@@ -448,7 +472,8 @@ export default class CreateEmployee extends React.Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="card card_cstm same_dv_table cust_back_card">
+
+                                        {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_type == 'ADMIN' ?<div className="card card_cstm same_dv_table cust_back_card">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                 <div className="lft-hdr"><span>3</span>Give User Access To Folders<strong> (Recommended)</strong></div>
@@ -461,7 +486,7 @@ export default class CreateEmployee extends React.Component {
                                                         <div className="row">
                                                             <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
-                                                                <a href="#!">
+                                                                <a href="javascript:void(0)" onClick={this.openAssignFolderModal}>
                                                                     <div className="createclient_main_body_item_icon">
                                                                         <span><i className="fas fa-folder-open"></i></span>
                                                                     </div>
@@ -471,7 +496,7 @@ export default class CreateEmployee extends React.Component {
                                                                 </a>
                                                             </div>
                                                             </div>
-                                                            <div className="col-md-4">
+                                                           {/* < div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <a href="#!">
                                                                     <div className="createclient_main_body_item_icon">
@@ -482,8 +507,8 @@ export default class CreateEmployee extends React.Component {
                                                                     </div>
                                                                 </a>
                                                             </div>
-                                                            </div>
-                                                            <div className="col-md-4">
+                                                            </div> */}
+                                                            {/* <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <a href="#!">
                                                                     <div className="createclient_main_body_item_icon">
@@ -495,13 +520,13 @@ export default class CreateEmployee extends React.Component {
                                                                     </div>
                                                                 </a>
                                                             </div>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> : '' }
                                         <div className="modal_button_area">
                                             <button type="button" className="submit" onClick={this.handleSubmitEmployee}>Submit</button>
                                             <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
@@ -548,6 +573,35 @@ export default class CreateEmployee extends React.Component {
                         </Modal.Body>
                         
                     </Modal>
+
+
+                    <Modal
+                        show={this.state.showAssignFolderModal}
+                        onHide={this.closeAssignFolderModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Assign Folder</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                        <ul className="list-group">
+                              {this.state.personalFolderList.map((list) =>
+                              <li className="list-group-item" key={list.entity_id}>
+                                  <div className="row">
+                                      <div className="col-md-2">
+                                          <input type="checkbox" onClick={()=>{this.handleSelectFolder(list.entity_id)}}/>
+                                      </div>
+                              <div className="col-md-8">{list.entity_name}</div>
+                                  </div>
+                              </li>)}
+                            </ul> 
+                        </div>
+                        </Modal.Body>
+                        
+                    </Modal>
+
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
@@ -555,7 +609,64 @@ export default class CreateEmployee extends React.Component {
         )
     }
 
+    componentDidMount(){
+
+        /*** render personal folder list ***/
+        if(this.props.globalState.personalFoldersReducer.length != 0 && this.props.globalState.personalFoldersReducer != undefined){
+            var folders = this.props.globalState.personalFoldersReducer.list;
+            let foldersArray =[];
+            for(let i=0;i<folders.length;i++){
+                foldersArray.push(folders[i])
+            }
+            this.setState({personalFolderList : foldersArray})
+        }else{
+            let payload = {entity_id : ''}
+            this.setState({showLoader : true})
+            GetAllSubDirectory(payload).then(function(res){
+                        var response = res.data;
+                        this.setState({showLoader : false})
+                        if(response.errorResponse.errorStatusCode != 1000){
+                            showToast('error',response.errorResponse.errorStatusType);
+                        }else{
+                            
+                            let arr = [];
+                            let iter = response.response
+                            for(let i=0;i<iter.length;i++){
+                                    arr.push(iter[i]);
+                                
+                            }
+                            this.props.setPersonalFoldersList(arr);
+                            var folders = this.props.globalState.personalFoldersReducer.list;
+                            let foldersArray =[];
+                            for(let i=0;i<folders.length;i++){
+                                foldersArray.push(folders[i])
+                            }
+                            this.setState({personalFolderList : foldersArray})
+                            
+                        }
+                    }.bind(this)).catch(function(err){
+                        this.setState({showLoader : false})
+                        showHttpError(err)
+                    }.bind(this))
+        }
+        
+       
+
+    }
    
     
 }
 
+const mapStateToProps = state => {
+    return {
+        globalState : state
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setPersonalFoldersList : (array) => dispatch(setPersonalFoldersList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(CreateEmployee)
