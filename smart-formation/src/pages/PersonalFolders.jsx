@@ -9,10 +9,10 @@ import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '..
 import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
-import {setSharedFoldersList} from '../utils/redux/action'
+import {setPersonalFoldersList} from '../utils/redux/action'
 import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-router-dom';
 
- class SharedFolders extends React.Component {
+ class PersonalFolders extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,17 +23,26 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
+            showAssignUserModal : false,
+            userListWithSearchQuery: [],
+            assignedUser :[],
 
             
         };
          /***  BINDING FUNCTIONS  ***/
         this.openCreateFolderModal = this.openCreateFolderModal.bind(this)
         this.closeCreateFolderModal = this.closeCreateFolderModal.bind(this)
+        this.openAssignUserModal = this.openAssignUserModal.bind(this)
+        this.closeAssignUserModal = this.closeAssignUserModal.bind(this)
         this.handleAddPeople = this.handleAddPeople.bind(this)
         this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
         this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
         this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this)
         this.handleFolderDetails = this.handleFolderDetails.bind(this)
+        this.isUserAlreadyAssigned = this.isUserAlreadyAssigned.bind(this)
+        this.handleSelectUser  = this.handleSelectUser.bind(this)
+
+        
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -49,14 +58,24 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     }
     /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
     closeCreateFolderModal = () => {
-        this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false})
+        this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,assignedUser :[],userListWithSearchQuery : []})
+    }
+    /*** FUNCTION DEFINATION FOR OPENING USER MODAL ***/
+    openAssignUserModal = () => {
+       this.setState({showAssignUserModal : true})
+    }
+    /*** FUNCTION DEFINATION FOR CLOSING USER MODAL ***/
+    closeAssignUserModal = () => {
+        this.setState({showAssignUserModal : false,userListWithSearchQuery : []})
     }
 
    /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
    handleAddPeople = (e) => {
     let assignPeopleBool = false
+    this.closeAssignUserModal();
     if(e.target.value == 'true'){
         assignPeopleBool = true
+        this.openAssignUserModal();
     }
     this.setState({addPeopleToFolder : assignPeopleBool})
    }
@@ -103,7 +122,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     showToast('success','Folder created successfully');
                     this.folderNameRef.current.value = ''
                     this.folderDetailsRef.current.value = ''
-                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false})
+                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false,assignedUser :[],userListWithSearchQuery : []})
                     this.fetchAllParentDirectory()
                     
                 }
@@ -140,7 +159,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         }
                     }
                     this.setState({foldersList : arr})
-                    this.props.setSharedFoldersList(this.state.foldersList);
+                    this.props.setPersonalFoldersList(this.state.foldersList);
                     console.log(this.state.foldersList)
                     console.log(this.props.globalState)
                     
@@ -202,6 +221,46 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     this.props.history.push('/folder-details/'+param+'/personal_folder')
     }  
 
+    /*** FUNCTION DEFINATION TO MATCH FOLDER NAME WITH GIVEN INPUT ***/
+    isUserMatched = (param) => {
+        let arr =[]
+        if(param!='' ){
+            for(let i=0;i<this.props.globalState.clientListReducer.clientsList.length;i++){
+                let iter = this.props.globalState.clientListReducer.clientsList[i]
+                if((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1){
+                   arr.push(iter)
+                }
+            }
+        }else{
+        }
+        this.setState({userListWithSearchQuery : arr})
+        //console.log(this.state.userListWithSearchQuery)
+    }
+
+    /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/
+    isUserAlreadyAssigned = (param) => {
+        if(this.state.assignedUser.includes(param)){
+            return true
+        }else{
+            return false
+        }
+    }
+    /*** FUNCTION DEFINATION TO ASSiGN User to folder ****/
+    handleSelectUser = (param) => {
+        let arr = this.state.assignedUser
+        console.log(arr.includes(param))
+        if(!arr.includes(param)){
+            arr.push(param);
+        }else{
+            let index = arr.indexOf(param);
+            console.log(index)
+            if (index > -1) {
+            arr.splice(index, 1);
+            }
+        }
+        this.setState({assignedUser : arr})
+        console.log(this.state.assignedUser)
+    }
 
     render() {
         return (
@@ -217,7 +276,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                     <div className="card card_cstm same_dv_table">
                                     <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
-                                            <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Shared Folders</div>
+                                            <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Personal Folders</div>
                                             <div className="addbutton">
                                                 <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={()=>{this.setState({showCreateFolderDropDown : !this.state.showCreateFolderDropDown})}}><i className="fas fa-plus"></i></span>
                                                 <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
@@ -247,7 +306,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
+                                                <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
                                                 </tr>)}
                                                 
                                                 </tbody>
@@ -321,6 +380,39 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         </Modal.Body>
                         
                     </Modal>
+
+                    <Modal
+                        show={this.state.showAssignUserModal}
+                        onHide={this.closeAssignUserModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Assign People</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                        <div className="input-group mb-3">
+                        <input type="text" className="form-control" placeholder="Search Folder" onKeyUp={(event)=>{this.isUserMatched(event.target.value)}}/>
+                       {/*  <div className="input-group-append">
+                            <button className="btn btn-outline-secondary" type="button">Search</button>
+                        </div> */}
+                        </div>
+                            <ul className="">
+                              {this.state.userListWithSearchQuery.map((list) =>
+                                <li className="list-group-item" key={list.user_id}>
+                                  <div className="row">
+                                      <div className="col-md-2">
+                                          <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={()=>{this.handleSelectUser(list.user_id)}}/>
+                                      </div>
+                              <div className="col-md-8">{list.user_name}</div>
+                                  </div>
+                              </li> )}
+                            </ul>   
+                        </div>
+                        </Modal.Body>
+                        
+                    </Modal>
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
@@ -343,9 +435,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setSharedFoldersList : (array) => dispatch(setSharedFoldersList(array)),
+        setPersonalFoldersList : (array) => dispatch(setPersonalFoldersList(array)),
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(SharedFolders))
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(PersonalFolders))
 
