@@ -27,6 +27,7 @@ class CreateClient extends React.Component {
             userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
             isUserGrouped : false,
             showAssignFolderModal : false,
+            folderListWithSearchQuery : []
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -41,6 +42,8 @@ class CreateClient extends React.Component {
         this.handleValueChangeInField = this.handleValueChangeInField.bind(this)
         this.addClient = this.addClient.bind(this)
         this.handleSelectFolder = this.handleSelectFolder.bind(this)
+        this.isFolderMatched = this.isFolderMatched.bind(this)
+        this.isEntityAlreadyAssigned = this.isEntityAlreadyAssigned.bind(this)
       
     }
 
@@ -177,7 +180,7 @@ class CreateClient extends React.Component {
      }
      /*** FUNCTION DEFINATION FOR CLOSING ASSIGN FOLDER MODAL ***/
      closeAssignFolderModal = () => {
-         this.setState({showAssignFolderModal : false})
+         this.setState({showAssignFolderModal : false,folderListWithSearchQuery : []})
      }
 
     /*** function defination for changing value and store in state ***/
@@ -197,11 +200,44 @@ class CreateClient extends React.Component {
     /*** FUNCTION DEFINATION TO SELECT FOLDER ***/
     handleSelectFolder = (param) =>{
         let arr = this.state.assignedFolder
-        arr.push(param);
-        this.state.assignedFolder = arr
+        console.log(arr.includes(param))
+        if(!arr.includes(param)){
+            arr.push(param);
+        }else{
+            let index = arr.indexOf(param);
+            console.log(index)
+            if (index > -1) {
+            arr.splice(index, 1);
+            }
+        }
+        this.setState({assignedFolder : arr})
         console.log(this.state.assignedFolder)
     }
 
+    /*** FUNCTION DEFINATION TO MATCH FOLDER NAME WITH GIVEN INPUT ***/
+    isFolderMatched = (param) => {
+        let arr =[]
+        if(param!='' ){
+            for(let i=0;i<this.state.personalFolderList.length;i++){
+                let iter = this.state.personalFolderList[i]
+                if((iter.entity_name).toLowerCase().indexOf((param).toLowerCase()) != -1){
+                   arr.push(iter)
+                }
+            }
+        }else{
+        }
+        this.setState({folderListWithSearchQuery : arr})
+        //console.log(this.state.folderListWithSearchQuery)
+    }
+
+    /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/
+    isEntityAlreadyAssigned = (param) => {
+        if(this.state.assignedFolder.includes(param)){
+            return true
+        }else{
+            return false
+        }
+    }
     
 
 
@@ -414,16 +450,22 @@ class CreateClient extends React.Component {
                         </Modal.Header>
                         <Modal.Body>
                         <div className="importmodal_content">
-                            <ul className="list-group">
-                              {this.state.personalFolderList.map((list) =>
-                              <li className="list-group-item" key={list.entity_id}>
+                        <div className="input-group mb-3">
+                        <input type="text" className="form-control" placeholder="Search Folder" onKeyUp={(event)=>{this.isFolderMatched(event.target.value)}}/>
+                       {/*  <div className="input-group-append">
+                            <button className="btn btn-outline-secondary" type="button">Search</button>
+                        </div> */}
+                        </div>
+                            <ul className="">
+                              {this.state.folderListWithSearchQuery.map((list) =>
+                                <li className="list-group-item" key={list.entity_id}>
                                   <div className="row">
                                       <div className="col-md-2">
-                                          <input type="checkbox" onClick={()=>{this.handleSelectFolder(list.entity_id)}}/>
+                                          <input type="checkbox" checked={this.isEntityAlreadyAssigned(list.entity_id) ? 'checked' : ''} onClick={()=>{this.handleSelectFolder(list.entity_id)}}/>
                                       </div>
                               <div className="col-md-8">{list.entity_name}</div>
                                   </div>
-                              </li>)}
+                              </li> )}
                             </ul>   
                         </div>
                         </Modal.Body>
