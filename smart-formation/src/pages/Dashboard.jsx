@@ -220,12 +220,12 @@ import { showToast,showHttpError } from '../utils/library'
                                         <div className="user_welcome">
                                             <span>Hello {this.state.loggedInUserName}</span>
                                         </div>
-                                        <div className="user_addimage">
+                                        {/* <div className="user_addimage">
                                             <a href="#!">add profile pictuer</a>
                                         </div>
                                         <div className="edit_dashboard">
                                             <span><i className="fas fa-th-large"></i>Edit Dashboard</span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="col-md-6">
