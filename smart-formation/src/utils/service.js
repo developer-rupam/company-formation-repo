@@ -104,3 +104,24 @@ export const CreateFile = (payload) =>{
 
     return axios.post(WEBSERVICE + '/directory/create_file', payload, {'Content-Type': 'multipart/form-data' });
 }
+
+/*** FUNCTION DEFINATION FOR ASSIGNING USER WITH ENTITY ***/
+export const addDirectoryAssignedUser = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/directory/add_directory_asigned_user', payload,headers);
+} 
+
+/*** FUNCTION DEFINATION FOR SHARE USER WITH ENTITY ***/
+export const addDirectorySharedUser = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/directory/add_directory_shared_user', payload,headers);
+} 
+
+/*** FUNCTION DEFINATION FOR MAKING ENTITY FAVORITE ***/
+export const addUserFavouriteDirectory = (obj) =>{
+    var payload = JSON.stringify(obj);
+
+    return axios.post(WEBSERVICE + '/directory/add_user_favourite_directory', payload,headers);
+} 

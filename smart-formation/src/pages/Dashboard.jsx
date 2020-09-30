@@ -374,8 +374,13 @@ import { showToast,showHttpError } from '../utils/library'
         
         /*** Setting up dashboard pages with txt and functionalities manipulation ***/
         let loggedInUser = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
+        console.log(loggedInUser)
         if(loggedInUser.user_name != undefined ){
             this.setState({loggedInUserName : loggedInUser.user_name})
+            /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
+		    this.getLoggedInUserDetailsForPermission();
+        }else if(loggedInUser.user_role == 'EMPLOYEE'){
+            this.setState({loggedInUserName : loggedInUser.employee_name})
             /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
 		    this.getLoggedInUserDetailsForPermission();
         }

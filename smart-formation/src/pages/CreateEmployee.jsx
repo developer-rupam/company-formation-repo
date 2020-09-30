@@ -7,7 +7,7 @@ import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
-import {CreateEmployeeService,GetAllSubDirectory} from '../utils/service'
+import {CreateEmployeeService,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
 import { connect } from 'react-redux';
 import {setPersonalFoldersList} from '../utils/redux/action'
 
@@ -70,6 +70,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
         this.handleSelectFolder = this.handleSelectFolder.bind(this)
         this.isFolderMatched = this.isFolderMatched.bind(this)
         this.isEntityAlreadyAssigned = this.isEntityAlreadyAssigned.bind(this)
+        this.assignUserToEntity = this.assignUserToEntity.bind(this)
       
     }
 
@@ -189,10 +190,22 @@ import {setPersonalFoldersList} from '../utils/redux/action'
                         hasPermissionToManageFolderTemplate : false,
                         hasPermissionToManageRemoteUploadForms : false,
                         hasPermissionToManageFileDrops : false,
-                        assignedFolder : [],
                         showLoader : false,
                     })
-                    showToast('success','Client added successfully');
+                    showToast('success','Employee added successfully');
+                    var insertedUserId = response.lastInsertedIds
+                    console.log(insertedUserId)
+                    console.log(this.state.assignedFolder)
+                    if(this.state.assignedFolder.length != 0){
+                        for(let i=0;i<this.state.assignedFolder.length;i++){
+                            let iter = this.state.assignedFolder[i]
+                            console.log(insertedUserId)
+                            for(let j=0;j<insertedUserId.length;j++){
+
+                                this.assignUserToEntity(insertedUserId[j],iter)
+                            }
+                        }
+                    }
                 }, 3000);
                
             }
@@ -315,6 +328,38 @@ import {setPersonalFoldersList} from '../utils/redux/action'
         }else{
             return false
         }
+    }
+
+    /*** FUNCTION DEFINATION TO CALL API FOR ASSIGNING FOLDER TO USER ***/
+    assignUserToEntity = (userId,entityId) => {
+        let arr = []
+        arr.push(userId)
+        let payload = {
+            entity_id : entityId,
+            user_ids : arr
+        }
+        this.setState({showLoader : true})
+        addDirectoryAssignedUser(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                
+                setTimeout(() => {
+                    this.setState({
+                    
+                        assignedFolder : [],
+                        showLoader : false,
+                    })
+                    showToast('success','Folder Assigned Successfully');
+                }, 3000);
+               
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
     }
 
 
