@@ -123,5 +123,5 @@ export const addDirectorySharedUser = (obj) =>{
 export const addUserFavouriteDirectory = (obj) =>{
     var payload = JSON.stringify(obj);
 
-    return axios.post(WEBSERVICE + '/directory/add_user_favourite_directory', payload,headers);
+    return axios.post(WEBSERVICE + '/user/add_user_favourite_directory', payload,headers);
 } 

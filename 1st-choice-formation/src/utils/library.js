@@ -1,5 +1,6 @@
 import { SITENAMEALIAS } from './init'
 import Swal from 'sweetalert2'
+import {addUserFavouriteDirectory} from './service'
 
 
 /*** function defination for storing current route ***/
@@ -63,9 +64,27 @@ export const showHttpError = (error) => {
 }
 
 /*** FUNCTION DEFINATION FOR ADDING & REMOVE FAVORITE ENTITY ***/
-export const manipulateFavoriteEntity = (param,array) => {
+export const manipulateFavoriteEntity = (param,array,callback) => {
   console.log(param)
   console.log(array)
+  let payload = {
+    user_id : param,
+    entity_ids : array,
+  }
+
+  addUserFavouriteDirectory(payload).then(function(res){
+    var response = res.data;
+    //this.setState({showLoader : false})
+    if(response.errorResponse.errorStatusCode != 1000){
+        showToast('error',response.errorResponse.errorStatusType);
+    }else{
+      callback();
+      
+    }
+}.bind(this)).catch(function(err){
+   // this.setState({showLoader : false})
+    showHttpError(err)
+}.bind(this))
 }
 
 

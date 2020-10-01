@@ -127,15 +127,19 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 if(response.errorResponse.errorStatusCode != 1000){
                     showToast('error',response.errorResponse.errorStatusType);
                 }else{
-                    
                     let arr = [];
                     let folders = response.response
                     for(let i=0;i<folders.length;i++){
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             arr.push(folders[i]);
                         }else{
-                            if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
-                                arr.push(folders[i]);
+                            
+                            let userIds = folders[i].shared_user_ids
+                            for(let j=0;j<userIds.length;j++){
+                                console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
+                                if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                                    arr.push(folders[i]);
+                                }
                             }
                         }
                     }
@@ -241,7 +245,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
                                                 <tr className="pointer-cursor" key={list.entity_id}>
-                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(list.entity_id,[])}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
                                                     
                                                     <td>
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
