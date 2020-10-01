@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setPersonalFoldersList} from '../utils/redux/action'
@@ -41,6 +41,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.handleFolderDetails = this.handleFolderDetails.bind(this)
         this.isUserAlreadyAssigned = this.isUserAlreadyAssigned.bind(this)
         this.handleSelectUser  = this.handleSelectUser.bind(this)
+        this.assignUserToEntity = this.assignUserToEntity.bind(this)
 
         
 
@@ -122,7 +123,15 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     showToast('success','Folder created successfully');
                     this.folderNameRef.current.value = ''
                     this.folderDetailsRef.current.value = ''
-                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false,assignedUser :[],userListWithSearchQuery : []})
+                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false,userListWithSearchQuery : []})
+                    var insertedEntityId = response.lastRecordId
+                    console.log(insertedEntityId)
+                    if(this.state.assignedUser.length != 0){
+                        for(let i=0;i<this.state.assignedUser.length;i++){
+                            let iter = this.state.assignedUser[i]
+                            this.assignUserToEntity(iter,insertedEntityId)
+                        }
+                    }
                     this.fetchAllParentDirectory()
                     
                 }
@@ -266,6 +275,41 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.setState({assignedUser : arr})
         console.log(this.state.assignedUser)
     }
+
+
+        /*** FUNCTION DEFINATION TO CALL API FOR ASSIGNING FOLDER TO USER ***/
+        assignUserToEntity = (userId,entityId) => {
+            let arr = []
+            arr.push(userId)
+            let payload = {
+                entity_id : entityId,
+                user_ids : arr
+            }
+            this.setState({showLoader : true})
+            console.log(payload)
+            addDirectoryAssignedUser(payload).then(function(res){
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    this.setState({showLoader : false})
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                    setTimeout(() => {
+                        this.setState({
+                        
+                            assignedUser : [],
+                            showLoader : false,
+                        })
+                        showToast('success','Folder Assigned Successfully');
+                    }, 3000);
+                   
+                }
+             }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+        }
+
 
     render() {
         return (
