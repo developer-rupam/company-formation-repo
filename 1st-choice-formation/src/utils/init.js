@@ -3,7 +3,7 @@ const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/1s
 
 export const mode = "dev" //dev : development; prod : production
 
-if(mode == 'dev'){
+if(mode == 'prod'){
     var url = DEVELOPMENTOBJ.url;
     var api = DEVELOPMENTOBJ.api;
     var baseurl = DEVELOPMENTOBJ.baseurl

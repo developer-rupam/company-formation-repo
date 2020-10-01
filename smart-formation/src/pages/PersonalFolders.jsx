@@ -159,17 +159,9 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     let arr = [];
                     let folders = response.response
                     for(let i=0;i<folders.length;i++){
-                        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+                        
+                        if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
                             arr.push(folders[i]);
-                        }else{
-                           
-                            let userIds = folders[i].asigned_user_ids
-                            for(let j=0;j<userIds.length;j++){
-                                console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
-                                if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
-                                    arr.push(folders[i]);
-                                }
-                            }
                         }
                     }
                     this.setState({foldersList : arr})

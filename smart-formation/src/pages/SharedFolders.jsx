@@ -131,10 +131,14 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     let folders = response.response
                     for(let i=0;i<folders.length;i++){
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
-                            arr.push(folders[i]);
+                            console.log(folders[i].shared_user_ids.length)
+                            if(folders[i].shared_user_ids.length !=0 || folders[i].asigned_user_ids.length){
+                                arr.push(folders[i]);
+                            }
                         }else{
-                            
-                            let userIds = folders[i].shared_user_ids
+                            console.log(folders[i])
+                            let userIds = folders[i].asigned_user_ids
+                            console.log(userIds)
                             for(let j=0;j<userIds.length;j++){
                                 console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
                                 if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
