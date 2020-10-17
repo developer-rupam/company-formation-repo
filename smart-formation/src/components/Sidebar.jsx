@@ -28,9 +28,11 @@ import { withRouter } from 'react-router-dom';
         if(node.parentElement.classList.contains('show')){
             node.parentElement.classList.remove('show')
 			node.nextSibling.classList.remove('show')
+			node.nextSibling.removeAttribute("style")
         }else{
             node.parentElement.classList.add('show')
-            node.nextSibling.classList.add('show')
+			node.nextSibling.classList.add('show')
+			node.nextSibling.setAttribute("style", "top: 0px;left: 0px;")
         }
 	}
 	

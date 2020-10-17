@@ -24,13 +24,17 @@ import { withRouter } from 'react-router-dom';
 
     /**** FUNCTION DEFINATION FOR TOGGLING DROPDOWN OF NAVIGATION ****/
     toggleNavigationDropdown = (e) => {
-        let node = document.getElementById(e.target.id)
+		let node = document.getElementById(e.target.id)
         if(node.parentElement.classList.contains('show')){
+			alert('if')
             node.parentElement.classList.remove('show')
 			node.nextSibling.classList.remove('show')
+			node.nextSibling.removeAttribute("style")
         }else{
+			alert('else')
             node.parentElement.classList.add('show')
             node.nextSibling.classList.add('show')
+            node.nextSibling.setAttribute("style", "top: 0px;left: 0px;")
         }
 	}
 	
