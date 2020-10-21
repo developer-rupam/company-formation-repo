@@ -437,7 +437,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         <Modal.Body>
                         <div className="importmodal_content">
                         <div className="input-group mb-3">
-                        <input type="text" className="form-control" placeholder="Search Folder" onKeyUp={(event)=>{this.isUserMatched(event.target.value)}}/>
+                        <input type="text" className="form-control" placeholder="Search People" onKeyUp={(event)=>{this.isUserMatched(event.target.value)}}/>
                        {/*  <div className="input-group-append">
                             <button className="btn btn-outline-secondary" type="button">Search</button>
                         </div> */}

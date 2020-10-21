@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setSharedFoldersList} from '../utils/redux/action'
@@ -23,17 +23,25 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
+            showAssignUserModal : false,
+            userListWithSearchQuery: [],
+            assignedUser :[],
 
             
         };
          /***  BINDING FUNCTIONS  ***/
         this.openCreateFolderModal = this.openCreateFolderModal.bind(this)
         this.closeCreateFolderModal = this.closeCreateFolderModal.bind(this)
+        this.openAssignUserModal = this.openAssignUserModal.bind(this)
+        this.closeAssignUserModal = this.closeAssignUserModal.bind(this)
         this.handleAddPeople = this.handleAddPeople.bind(this)
         this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
         this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
         this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this)
         this.handleFolderDetails = this.handleFolderDetails.bind(this)
+        this.isUserAlreadyAssigned = this.isUserAlreadyAssigned.bind(this)
+        this.handleSelectUser  = this.handleSelectUser.bind(this)
+        this.assignUserToEntity = this.assignUserToEntity.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -49,20 +57,31 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     }
     /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
     closeCreateFolderModal = () => {
-        this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false})
+        this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false, assignedUser :[],userListWithSearchQuery : []})
     }
 
    /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
    handleAddPeople = (e) => {
+       console.log(e.target.value)
     let assignPeopleBool = false
     if(e.target.value == 'true'){
         assignPeopleBool = true
+        this.openAssignUserModal();
     }
     this.setState({addPeopleToFolder : assignPeopleBool})
    }
 
-   /*** FUNCTION DEFINATION TO HANDLE SUBMIT FOR CREATE FOLDER ***/
-   handleSubmitForCreateFolder = (e) => {
+   /*** FUNCTION DEFINATION FOR OPENING USER MODAL ***/
+   openAssignUserModal = () => {
+    this.setState({showAssignUserModal : true})
+ }
+
+ /*** FUNCTION DEFINATION FOR CLOSING USER MODAL ***/
+ closeAssignUserModal = () => {
+     this.setState({showAssignUserModal : false,userListWithSearchQuery : []})
+ }
+      /*** FUNCTION DEFINATION TO HANDLE SUBMIT FOR CREATE FOLDER ***/
+      handleSubmitForCreateFolder = (e) => {
         e.preventDefault();
         let isAbleToSubmit = false
 
@@ -103,7 +122,15 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     showToast('success','Folder created successfully');
                     this.folderNameRef.current.value = ''
                     this.folderDetailsRef.current.value = ''
-                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false})
+                    this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false,userListWithSearchQuery : []})
+                    var insertedEntityId = response.lastRecordId
+                    console.log(insertedEntityId)
+                    if(this.state.assignedUser.length != 0){
+                        for(let i=0;i<this.state.assignedUser.length;i++){
+                            let iter = this.state.assignedUser[i]
+                            this.assignUserToEntity(iter,insertedEntityId)
+                        }
+                    }
                     this.fetchAllParentDirectory()
                     
                 }
@@ -210,6 +237,80 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     this.props.history.push('/folder-details/'+param+'/personal_folder')
     }  
 
+    /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/
+    isUserAlreadyAssigned = (param) => {
+        if(this.state.assignedUser.includes(param)){
+            return true
+        }else{
+            return false
+        }
+    }
+    /*** FUNCTION DEFINATION TO ASSiGN User to folder ****/
+    handleSelectUser = (param) => {
+        let arr = this.state.assignedUser
+        console.log(arr.includes(param))
+        if(!arr.includes(param)){
+            arr.push(param);
+        }else{
+            let index = arr.indexOf(param);
+            console.log(index)
+            if (index > -1) {
+            arr.splice(index, 1);
+            }
+        }
+        this.setState({assignedUser : arr})
+        console.log(this.state.assignedUser)
+    }
+
+
+        /*** FUNCTION DEFINATION TO CALL API FOR ASSIGNING FOLDER TO USER ***/
+        assignUserToEntity = (userId,entityId) => {
+            let arr = []
+            arr.push(userId)
+            let payload = {
+                entity_id : entityId,
+                user_ids : arr
+            }
+            this.setState({showLoader : true})
+            console.log(payload)
+            addDirectoryAssignedUser(payload).then(function(res){
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    this.setState({showLoader : false})
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                    setTimeout(() => {
+                        this.setState({
+                        
+                            assignedUser : [],
+                            showLoader : false,
+                        })
+                        showToast('success','Folder Assigned Successfully');
+                    }, 3000);
+                   
+                }
+             }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+        }
+
+        /*** FUNCTION DEFINATION TO MATCH FOLDER NAME WITH GIVEN INPUT ***/
+        isUserMatched = (param) => {
+            let arr =[]
+            if(param!='' ){
+                for(let i=0;i<this.props.globalState.clientListReducer.clientsList.length;i++){
+                    let iter = this.props.globalState.clientListReducer.clientsList[i]
+                    if((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1){
+                    arr.push(iter)
+                    }
+                }
+            }else{
+            }
+            this.setState({userListWithSearchQuery : arr})
+            //console.log(this.state.userListWithSearchQuery)
+        }
 
     render() {
         return (
@@ -226,12 +327,12 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                     <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Shared Folders</div>
-                                            {/* <div className="addbutton">
+                                             {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role === 'ADMIN' && <div className="addbutton">
                                                 <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={()=>{this.setState({showCreateFolderDropDown : !this.state.showCreateFolderDropDown})}}><i className="fas fa-plus"></i></span>
                                                 <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
                                                 <button type="button" data-toggle="modal" data-target="#creatfolderModal" onClick={this.openCreateFolderModal}><i className="fas fa-folder-open"></i>Create Folder</button>
                                                 </div>
-                                            </div> */}
+                                            </div>} 
                                         </div>
                                     </div>
                                     <div className="card-body custom_card_body_sharedfolders">
@@ -304,6 +405,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                  <label className="form-check-label">No</label>
                               </div>
                            </div>
+                            <span className="text-danger mt-2">* You must use select yes to assign user or your folder will be treated as personal folder </span>
                         </div>
                         {/* <div className="form-group">
                            <label>Apply Template</label>
@@ -329,6 +431,41 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         </Modal.Body>
                         
                     </Modal>
+
+
+                    <Modal
+                        show={this.state.showAssignUserModal}
+                        onHide={this.closeAssignUserModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Assign People</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                        <div className="input-group mb-3">
+                        <input type="text" className="form-control" placeholder="Search People" onKeyUp={(event)=>{this.isUserMatched(event.target.value)}}/>
+                       {/*  <div className="input-group-append">
+                            <button className="btn btn-outline-secondary" type="button">Search</button>
+                        </div> */}
+                        </div>
+                            <ul className="">
+                              {this.state.userListWithSearchQuery.map((list) =>
+                                <li className="list-group-item" key={list.user_id}>
+                                  <div className="row">
+                                      <div className="col-md-2">
+                                          <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={()=>{this.handleSelectUser(list.user_id)}}/>
+                                      </div>
+                              <div className="col-md-8">{list.user_name}</div>
+                                  </div>
+                              </li> )}
+                            </ul>   
+                        </div>
+                        </Modal.Body>
+                        
+                    </Modal>
+
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
