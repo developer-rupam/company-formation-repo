@@ -7,7 +7,9 @@ import { SITENAMEALIAS } from '../utils/init';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { showToast,showConfirm,showHttpError } from '../utils/library'
-import {UpdateEmployeeService} from '../utils/service'
+import {UpdateEmployeeService,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
+import { Modal } from 'react-bootstrap';
+import {setPersonalFoldersList} from '../utils/redux/action'
 
 
  class UpdateEmployee extends React.Component {
@@ -48,16 +50,25 @@ import {UpdateEmployeeService} from '../utils/service'
             hasPermissionToManageRemoteUploadForms : false,
             hasPermissionToManageFileDrops : false,
             assignedFolder : [],
+            personalFolderList : [],
             userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
             isUserGrouped : false,
             userRole : 'EMPLOYEE',
             userType : 'EMPLOYEE',
+            showAssignFolderModal : false,
+            folderListWithSearchQuery : []
             
         };
          /***  BINDING FUNCTIONS  ***/
         this.handleUpdateEmployee = this.handleUpdateEmployee.bind(this)
         this.getSelectedEmployeeDetails = this.getSelectedEmployeeDetails.bind(this)
         this.updateEmployee = this.updateEmployee.bind(this)
+        this.openAssignFolderModal = this.openAssignFolderModal.bind(this)
+        this.closeAssignFolderModal = this.closeAssignFolderModal.bind(this)
+        this.handleSelectFolder = this.handleSelectFolder.bind(this)
+        this.isFolderMatched = this.isFolderMatched.bind(this)
+        this.isEntityAlreadyAssigned = this.isEntityAlreadyAssigned.bind(this)
+        this.assignUserToEntity = this.assignUserToEntity.bind(this)
        
       
     }
@@ -194,6 +205,15 @@ import {UpdateEmployeeService} from '../utils/service'
             }else{
                 showToast('success','Employee updated successfully');
                 document.getElementById('backBtn').click();
+                if(this.state.assignedFolder.length != 0){
+                    for(let i=0;i<this.state.assignedFolder.length;i++){
+                        let iter = this.state.assignedFolder[i]
+                       // for(let j=0;j<insertedUserId.length;j++){
+
+                            this.assignUserToEntity(this.state.employeeId,iter)
+                       // }
+                    }
+                }
             }
          }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
@@ -202,6 +222,87 @@ import {UpdateEmployeeService} from '../utils/service'
     }
     
  
+    /*** FUNCTION DEFINATION FOR OPENING ASSIGN FOLDER MODAL ***/
+    openAssignFolderModal = () => {
+        this.setState({showAssignFolderModal : true})
+     }
+     /*** FUNCTION DEFINATION FOR CLOSING ASSIGN FOLDER MODAL ***/
+     closeAssignFolderModal = () => {
+        this.setState({showAssignFolderModal : false,folderListWithSearchQuery : []})
+    }
+    /*** FUNCTION DEFINATION TO SELECT FOLDER ***/
+    handleSelectFolder = (param) =>{
+        let arr = this.state.assignedFolder
+        console.log(arr.includes(param))
+        if(!arr.includes(param)){
+            arr.push(param);
+        }else{
+            let index = arr.indexOf(param);
+            console.log(index)
+            if (index > -1) {
+            arr.splice(index, 1);
+            }
+        }
+        this.setState({assignedFolder : arr})
+        console.log(this.state.assignedFolder)
+    }
+
+    /*** FUNCTION DEFINATION TO MATCH FOLDER NAME WITH GIVEN INPUT ***/
+    isFolderMatched = (param) => {
+        let arr =[]
+        if(param!='' ){
+            for(let i=0;i<this.state.personalFolderList.length;i++){
+                let iter = this.state.personalFolderList[i]
+                if((iter.entity_name).toLowerCase().indexOf((param).toLowerCase()) != -1){
+                   arr.push(iter)
+                }
+            }
+        }else{
+        }
+        this.setState({folderListWithSearchQuery : arr})
+        //console.log(this.state.folderListWithSearchQuery)
+    }
+
+    /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/
+    isEntityAlreadyAssigned = (param) => {
+        if(this.state.assignedFolder.includes(param)){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    /*** FUNCTION DEFINATION TO CALL API FOR ASSIGNING FOLDER TO USER ***/
+    assignUserToEntity = (userId,entityId) => {
+        let arr = []
+        arr.push(userId)
+        let payload = {
+            entity_id : entityId,
+            user_ids : arr
+        }
+        this.setState({showLoader : true})
+        addDirectoryAssignedUser(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                
+                setTimeout(() => {
+                    this.setState({
+                    
+                        assignedFolder : [],
+                        showLoader : false,
+                    })
+                    showToast('success','Folder Assigned Successfully');
+                }, 3000);
+               
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
  
      
 
@@ -394,7 +495,7 @@ import {UpdateEmployeeService} from '../utils/service'
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="card card_cstm same_dv_table cust_back_card">
+                                        {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_type == 'ADMIN' ?<div className="card card_cstm same_dv_table cust_back_card">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                 <div className="lft-hdr"><span>3</span>Give User Access To Folders<strong> (Recommended)</strong></div>
@@ -407,7 +508,7 @@ import {UpdateEmployeeService} from '../utils/service'
                                                         <div className="row">
                                                             <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
-                                                                <a href="#!">
+                                                                <a href="javascript:void(0)" onClick={this.openAssignFolderModal}>
                                                                     <div className="createclient_main_body_item_icon">
                                                                         <span><i className="fas fa-folder-open"></i></span>
                                                                     </div>
@@ -417,7 +518,7 @@ import {UpdateEmployeeService} from '../utils/service'
                                                                 </a>
                                                             </div>
                                                             </div>
-                                                            <div className="col-md-4">
+                                                           {/* < div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <a href="#!">
                                                                     <div className="createclient_main_body_item_icon">
@@ -428,8 +529,8 @@ import {UpdateEmployeeService} from '../utils/service'
                                                                     </div>
                                                                 </a>
                                                             </div>
-                                                            </div>
-                                                            <div className="col-md-4">
+                                                            </div> */}
+                                                            {/* <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <a href="#!">
                                                                     <div className="createclient_main_body_item_icon">
@@ -441,13 +542,13 @@ import {UpdateEmployeeService} from '../utils/service'
                                                                     </div>
                                                                 </a>
                                                             </div>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> : '' }
                                         <div className="modal_button_area">
                                             <button type="button" className="submit" onClick={this.handleUpdateEmployee}>Update</button>
                                             <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
@@ -461,6 +562,41 @@ import {UpdateEmployeeService} from '../utils/service'
                     </main>
                 </div>
                 
+
+                <Modal
+                        show={this.state.showAssignFolderModal}
+                        onHide={this.closeAssignFolderModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Assign Folder</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="importmodal_content">
+                        <div className="input-group mb-3">
+                        <input type="text" className="form-control" placeholder="Search Folder" onKeyUp={(event)=>{this.isFolderMatched(event.target.value)}}/>
+                       {/*  <div className="input-group-append">
+                            <button className="btn btn-outline-secondary" type="button">Search</button>
+                        </div> */}
+                        </div>
+                            <ul className="">
+                              {this.state.folderListWithSearchQuery.map((list) =>
+                                <li className="list-group-item" key={list.entity_id}>
+                                  <div className="row">
+                                      <div className="col-md-2">
+                                          <input type="checkbox" checked={this.isEntityAlreadyAssigned(list.entity_id) ? 'checked' : ''} onClick={()=>{this.handleSelectFolder(list.entity_id)}}/>
+                                      </div>
+                              <div className="col-md-8">{list.entity_name}</div>
+                                  </div>
+                              </li> )}
+                            </ul>   
+                        </div>
+                        </Modal.Body>
+                        
+                    </Modal>
+
+
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>
@@ -483,6 +619,46 @@ import {UpdateEmployeeService} from '../utils/service'
             showToast('error',"Employee's id missing");
             this.props.history.push('/browse-employees')
         }
+
+
+        /*** render personal folder list ***/
+        if(this.props.globalState.personalFoldersReducer.length != 0 && this.props.globalState.personalFoldersReducer != undefined){
+            var folders = this.props.globalState.personalFoldersReducer.list;
+            let foldersArray =[];
+            for(let i=0;i<folders.length;i++){
+                foldersArray.push(folders[i])
+            }
+            this.setState({personalFolderList : foldersArray})
+        }else{
+            let payload = {entity_id : ''}
+            this.setState({showLoader : true})
+            GetAllSubDirectory(payload).then(function(res){
+                        var response = res.data;
+                        this.setState({showLoader : false})
+                        if(response.errorResponse.errorStatusCode != 1000){
+                            showToast('error',response.errorResponse.errorStatusType);
+                        }else{
+                            
+                            let arr = [];
+                            let iter = response.response
+                            for(let i=0;i<iter.length;i++){
+                                    arr.push(iter[i]);
+                                
+                            }
+                            this.props.setPersonalFoldersList(arr);
+                            var folders = this.props.globalState.personalFoldersReducer.list;
+                            let foldersArray =[];
+                            for(let i=0;i<folders.length;i++){
+                                foldersArray.push(folders[i])
+                            }
+                            this.setState({personalFolderList : foldersArray})
+                            
+                        }
+                    }.bind(this)).catch(function(err){
+                        this.setState({showLoader : false})
+                        showHttpError(err)
+                    }.bind(this))
+        }
        
    }
     
@@ -494,5 +670,11 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps,null)(UpdateEmployee)
+const mapDispatchToProps = dispatch => {
+    return {
+        setPersonalFoldersList : (array) => dispatch(setPersonalFoldersList(array)),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(UpdateEmployee)
 

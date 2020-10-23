@@ -35,7 +35,7 @@ import { connect } from 'react-redux';
     /*** FUNCTION DEFINATION FOR LOGOUT ***/
     logout = () =>{
         localStorage.removeItem(SITENAMEALIAS + '_session');
-        this.props.history.push(BASEURL)
+        this.props.history.push('/')
     }
 
     handleSearchSubmit = (e) => {
