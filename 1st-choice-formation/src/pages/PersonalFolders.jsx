@@ -349,8 +349,13 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     <td>
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
-                                                    <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
+                                                    <td>
+                                                        {this.getEntityOwnerDetails(list.directory_owner).ownerName}
+                                                    </td>
+                                                <td>
+                                                    {list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}
+                                                    <a href="javascript:void(0)" className="ml-2 btn btn-danger"> <i className="fas fa-trash-alt"></i>Delete</a>
+                                                </td>
                                                 </tr>)}
                                                 
                                                 </tbody>

@@ -7,7 +7,7 @@ import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
-import {CreateUser,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
+import {CreateUser,GetAllSubDirectory,addDirectoryAssignedUser,CreateDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import {setPersonalFoldersList} from '../utils/redux/action'
 
@@ -27,7 +27,10 @@ class CreateClient extends React.Component {
             userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
             isUserGrouped : false,
             showAssignFolderModal : false,
-            folderListWithSearchQuery : []
+            folderListWithSearchQuery : [],
+            showCreateFolderModal : false,
+            assignedUser :[],
+            addPeopleToFolder : false,
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -45,6 +48,15 @@ class CreateClient extends React.Component {
         this.isFolderMatched = this.isFolderMatched.bind(this)
         this.isEntityAlreadyAssigned = this.isEntityAlreadyAssigned.bind(this)
         this.assignUserToEntity = this.assignUserToEntity.bind(this)
+        this.openCreateFolderModal = this.openCreateFolderModal.bind(this)
+        this.closeCreateFolderModal = this.closeCreateFolderModal.bind(this)
+        this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
+        this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
+        this.handleApplyAssignedUser = this.handleApplyAssignedUser.bind(this)
+
+        /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
+        this.folderNameRef = React.createRef();
+        this.folderDetailsRef = React.createRef();
       
     }
 
@@ -192,7 +204,12 @@ class CreateClient extends React.Component {
      }
      /*** FUNCTION DEFINATION FOR CLOSING ASSIGN FOLDER MODAL ***/
      closeAssignFolderModal = () => {
+         this.setState({showAssignFolderModal : false,folderListWithSearchQuery : [],assignUser:[]})
+     }
+     /*** FUNCTION DEFINATION FOR CLOSING ASSIGN FOLDER MODAL ***/
+     handleApplyAssignedUser = () => {
          this.setState({showAssignFolderModal : false,folderListWithSearchQuery : []})
+         console.log(this.state.assignedUser)
      }
 
     /*** function defination for changing value and store in state ***/
@@ -230,6 +247,7 @@ class CreateClient extends React.Component {
     isFolderMatched = (param) => {
         let arr =[]
         if(param!='' ){
+            console.log(this.state.personalFolderList)
             for(let i=0;i<this.state.personalFolderList.length;i++){
                 let iter = this.state.personalFolderList[i]
                 if((iter.entity_name).toLowerCase().indexOf((param).toLowerCase()) != -1){
@@ -282,6 +300,113 @@ class CreateClient extends React.Component {
             showHttpError(err)
         }.bind(this))
     }
+
+    /*** FUNCTION DEFINATION FOR OPENING UPLOAD MODAL ***/
+    openCreateFolderModal = () => {
+        this.setState({showCreateFolderModal : true})
+     }
+     /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
+     closeCreateFolderModal = () => {
+         this.setState({showCreateFolderModal : false})
+     }
+      /*** FUNCTION DEFINATION TO HANDLE SUBMIT FOR CREATE FOLDER ***/
+   handleSubmitForCreateFolder = (e) => {
+    e.preventDefault();
+    let isAbleToSubmit = false
+
+    console.log(this.folderDetailsRef.current.value)
+
+    if(this.folderDetailsRef.current.value.length > this.state.totalCharacterForFolderDetails){
+        showToast('error','Folder Details Exceeded ' + this.state.totalCharacterForFolderDetails + ' characters')
+        isAbleToSubmit = false
+    
+    }else{
+        isAbleToSubmit = true
+    }
+
+    if(this.folderNameRef.current.value != '' && this.folderNameRef.current.value != undefined){
+        isAbleToSubmit = true
+    }else{
+        isAbleToSubmit = false
+    }
+
+    if(isAbleToSubmit){
+
+        let payload = {
+            
+                "entity_name": this.folderNameRef.current.value,
+                "entity_description": this.folderDetailsRef.current.value,
+                "parent_directory_id": "",
+                "directory_owner": JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id
+        
+        }
+
+        this.setState({showLoader : true})
+        CreateDirectory(payload).then(function(res){
+            var response = res.data;
+            this.setState({showLoader : false})
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                showToast('success','Folder created successfully');
+                this.folderNameRef.current.value = ''
+                this.folderDetailsRef.current.value = ''
+                this.setState({showCreateFolderModal : false})
+                var insertedEntityId = response.lastRecordId
+                console.log(insertedEntityId)
+                if(this.state.addPeopleToFolder){
+                    let folderArr = this.state.assignedFolder
+                    folderArr.push(insertedEntityId)
+                    this.setState({assignedFolder : folderArr})
+                }
+                this.fetchAllParentDirectory()
+                
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }else{
+        showToast('error','Please provide valid information')
+    }
+}
+
+
+/*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
+fetchAllParentDirectory = () => {
+let payload = {entity_id : ''}
+this.setState({showLoader : true})
+GetAllSubDirectory(payload).then(function(res){
+            var response = res.data;
+            this.setState({showLoader : false})
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                
+                let arr = [];
+                let folders = response.response
+                for(let i=0;i<folders.length;i++){
+                    
+                    if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                        arr.push(folders[i]);
+                    }
+                }
+                this.setState({personalFolderList : arr})
+                this.props.setPersonalFoldersList(this.state.personalFolderList);
+                console.log(this.state.personalFolderList)
+                console.log(this.props.globalState)
+                
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+}
+
+ /*** function defination for handling or set assign new created folder to current employee ****/
+  handleAssignToCurrentUser = () => {
+      this.setState({addPeopleToFolder : !this.state.addPeopleToFolder})
+  }  
     
 
 
@@ -403,18 +528,18 @@ class CreateClient extends React.Component {
                                                                 </a>
                                                             </div>
                                                             </div>
-                                                           {/* < div className="col-md-4">
+                                                           {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_type === 'ADMIN' && <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
-                                                                <a href="#!">
+                                                            <a href="javascript:void(0)" onClick={this.openCreateFolderModal}>
                                                                     <div className="createclient_main_body_item_icon">
                                                                         <span><i className="fas fa-user-plus"></i></span>
                                                                     </div>
                                                                     <div className="createclient_main_body_item_content">
-                                                                        <span>Add to Distribution Group</span>
+                                                                        <span>Add Folder</span>
                                                                     </div>
                                                                 </a>
                                                             </div>
-                                                            </div> */}
+                                                            </div>}
                                                             {/* <div className="col-md-4">
                                                             <div className="createclient_main_body_item">
                                                                 <a href="#!">
@@ -510,8 +635,72 @@ class CreateClient extends React.Component {
                               <div className="col-md-8">{list.entity_name}</div>
                                   </div>
                               </li> )}
-                            </ul>   
+                            </ul> 
+                            <div className="modal_button_area">
+
+                            <button type="button" className="submit" onClick={this.openCreateFolderModal} >Create New Folder</button>  
+                            <button type="button" className="cancle" onClick={this.handleApplyAssignedUser}>Apply</button>  
+                            </div>
                         </div>
+                        </Modal.Body>
+                        
+                    </Modal>
+
+                    <Modal
+                        show={this.state.showCreateFolderModal}
+                        onHide={this.closeCreateFolderModal}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                        <Modal.Title>Create Folder</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        <div className="modal_cera_folder_area">
+                     <form onSubmit = {this.handleSubmitForCreateFolder}>
+                        <div className="form-group">
+                           <label>Name</label>
+                           <input type="text" className="form-control" placeholder="Name" ref={this.folderNameRef} />
+                        </div>
+                        <div className="form-group">
+                           <label>Details</label>
+                           <textarea className="form-control"rows="5" placeholder="Details" ref={this.folderDetailsRef} ></textarea>
+                            <small className="form-text text-muted text-right">Character Limit: {this.state.totalCharacterForFolderDetails}</small>
+                        </div>
+                        <div className="form-group">
+                           <label>Add Current Client To Folder</label>
+                           <div>
+                              <div className="form-check form-check-inline">
+                                 <input className="form-check-input" type="radio" name="AddPeople" value="true" checked ={this.state.addPeopleToFolder == true} onClick={this.handleAssignToCurrentUser}/>
+                                 <label className="form-check-label">Yes</label>
+                              </div>
+                              <div className="form-check form-check-inline">
+                                 <input className="form-check-input" type="radio" name="AddPeople" value="false" checked ={this.state.addPeopleToFolder == false} onClick={this.handleAssignToCurrentUser}/>
+                                 <label className="form-check-label">No</label>
+                              </div>
+                           </div>
+                        </div>
+                        {/* <div className="form-group">
+                           <label>Apply Template</label>
+                           <div className="form-check">
+                              <input className="form-check-input" type="radio" name="Template" value="Do Not Use A Folder Template" checked/>
+                              <label className="form-check-label">
+                              Do Not Use A Folder Template
+                              </label>
+                           </div>
+                           <div className="form-check">
+                              <input className="form-check-input" type="radio" name="Template" value="Use A Folder Template"/>
+                              <label className="form-check-label">
+                              Use A Folder Template
+                              </label>
+                           </div>
+                        </div> */}
+                        <div className="modal_button_area">
+                           <button type="submit" className="submit">Create Folder</button>
+                           <button type="button" className="cancle" data-dismiss="modal" aria-label="Close" onClick={this.closeCreateFolderModal}>Cancel</button>
+                        </div>
+                     </form>
+                  </div>
                         </Modal.Body>
                         
                     </Modal>

@@ -458,7 +458,7 @@ handleFolderDetails = (param1,param2) => {
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id,list.entity_name)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location} target="_blank" className="btn btn-warning" download={list.entity_name}> <i className="fas fa-eye"></i> Show</a>}</td>
+                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id,list.entity_name)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} <a href="javascript:void(0)" className="ml-2 btn btn-danger"> <i className="fas fa-trash-alt"></i>Delete</a></td>
                                                 </tr>)}
                                                 
                                                 </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}
