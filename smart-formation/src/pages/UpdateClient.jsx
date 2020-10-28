@@ -53,6 +53,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
         this.handleSubmitForCreateFolder = this.handleSubmitForCreateFolder.bind(this)
         this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
         this.handleApplyAssignedUser = this.handleApplyAssignedUser.bind(this)
+        this.sendLoginCredentials = this.sendLoginCredentials.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -360,6 +361,12 @@ fetchAllParentDirectory = () => {
           this.setState({addPeopleToFolder : !this.state.addPeopleToFolder})
       }  
     
+      /*** FUNCTION DEFINATION FOR SENDING LOGIN CREDENTIALS TO CLIENT ****/
+      sendLoginCredentials = () =>{
+        showConfirm('Are You Sure?','Mail client, login credentials','warning',() => {
+            //TODO: call api to send mail for login credential to client
+        })
+      }
 
     render() {
         return (
@@ -487,6 +494,44 @@ fetchAllParentDirectory = () => {
                                                                         <span>Add Folder</span>
                                                                     </div>
                                                                 </a>
+                                                            </div>
+                                                            </div>}
+                                                            {/* <div className="col-md-4">
+                                                            <div className="createclient_main_body_item">
+                                                                <a href="#!">
+                                                                    <div className="createclient_main_body_item_icon">
+                                                                        <span><i className="fas fa-user"></i></span>
+                                                                        <span><i className="fas fa-user"></i></span>
+                                                                    </div>
+                                                                    <div className="createclient_main_body_item_content">
+                                                                        <span>Copy Folder Access From Existing User</span>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            </div> */}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="card card_cstm same_dv_table cust_back_card">
+                                            <div className="card-header">
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                <div className="lft-hdr"><span>4</span>Send Client Credentials<strong> </strong></div>
+                                                </div>
+                                            </div>
+                                            <div className="card-body custom_card_body_addclientsecond">
+                                                <div className="row">
+                                                <div className="col-md-12">
+                                                    <div className="createclient_main_body">
+                                                        <div className="row">
+                                                            
+                                                            {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_type === 'ADMIN' && <div className="col-md-12">
+                                                            <div className="createclient_main_body_item">
+                                                            <a href="javascript:void(0)" onClick={this.sendLoginCredentials}>
+                                                                 Mail login credential to client   
+                                                            </a>
                                                             </div>
                                                             </div>}
                                                             {/* <div className="col-md-4">
