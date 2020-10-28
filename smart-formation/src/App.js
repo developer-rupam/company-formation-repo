@@ -11,6 +11,7 @@ import CreateEmployee from './pages/CreateEmployee'
 import UpdateEmployee from './pages/UpdateEmployee'
 import ManageUserHome from './pages/ManageUserHome'
 import PersonalSettings from './pages/PersonalSettings'
+import EmailSettings from './pages/EmailSettings'
 import PersonalFolders from './pages/PersonalFolders'
 import SharedFolders from './pages/SharedFolders'
 import FavoriteFolders from './pages/FavoriteFolders'
@@ -34,6 +35,7 @@ function App() {
           <ProtectedRoute path="/update-employee/:id" component={UpdateEmployee} />
           <ProtectedRoute path="/manage-user-home" component={ManageUserHome} />
           <ProtectedRoute path="/personal-settings" component={PersonalSettings} />
+          <ProtectedRoute path="/email-settings" component={EmailSettings} />
           <ProtectedRoute path="/personal-folders" component={PersonalFolders} />
           <ProtectedRoute path="/shared-folders" component={SharedFolders} />
           <ProtectedRoute path="/favorite-folders" component={FavoriteFolders} />
