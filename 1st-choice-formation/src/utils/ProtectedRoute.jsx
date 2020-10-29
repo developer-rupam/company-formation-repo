@@ -11,7 +11,7 @@ export default class ProtectedRoute extends React.Component{
         return isAuthenticated ? (
             <Component />
         ) : (
-            <Redirect to={{ pathname: BASEURL }} />
+            <Redirect to={{ pathname: '/' }} />
         );
     }
 }
