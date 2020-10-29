@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS,FILEPATH } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,CreateFile,addDirectoryAssignedUser} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,CreateFile,addDirectoryAssignedUser,removeDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setPersonalFoldersList} from '../utils/redux/action'
@@ -49,6 +49,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.handleSelectUser  = this.handleSelectUser.bind(this)
         this.handleFolderDetails  = this.handleFolderDetails.bind(this)
         this.assignUserToEntity = this.assignUserToEntity.bind(this)
+        this.handleDeleteEntity = this.handleDeleteEntity.bind(this)
 
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
@@ -413,6 +414,37 @@ handleFolderDetails = (param1,param2) => {
             }.bind(this))
         }
 
+
+        /*** FUNCTION DEFINATION TO HANDLE DELETE ENTITY ***/
+        handleDeleteEntity = (param) =>{
+            showConfirm('Delete','Are you sure want to delete?','warning',() => {
+                let payload = {entity_id : param}
+                removeDirectory(payload).then(function(res){
+                    var response = res.data;
+                    if(response.errorResponse.errorStatusCode != 1000){
+                        this.setState({showLoader : false})
+                        showToast('error',response.errorResponse.errorStatusType);
+                    }else{
+                        
+                        showToast('success','Document Deleted Successfully');
+                        const match = matchPath(this.props.history.location.pathname, {
+                            path: '/folder-details/:param1/:param2',
+                            exact: true,
+                            strict: false
+                          })
+                        console.log(match.params)
+                        this.setState({parentFolderId : match.params.param1},()=>{
+                
+                            this.getFolderDetails(match.params.param1,match.params.param2)  
+                        })
+                    }
+                 }.bind(this)).catch(function(err){
+                    this.setState({showLoader : false})
+                    showHttpError(err)
+                }.bind(this))
+            })
+        }
+
     render() {
         return (
                <Fragment>
@@ -458,7 +490,7 @@ handleFolderDetails = (param1,param2) => {
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id,list.entity_name)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} <a href="javascript:void(0)" className="ml-2 btn btn-danger"> <i className="fas fa-trash-alt"></i>Delete</a></td>
+                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id,list.entity_name)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => {this.handleDeleteEntity(list.entity_id)}}> <i className="fas fa-trash-alt"></i>Delete</a></td>
                                                 </tr>)}
                                                 
                                                 </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}

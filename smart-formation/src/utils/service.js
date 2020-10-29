@@ -125,3 +125,9 @@ export const addUserFavouriteDirectory = (obj) =>{
 
     return axios.post(WEBSERVICE + '/user/add_user_favourite_directory', payload,headers);
 } 
+
+/*** FUNCTION DEFINATION FOR DELETING ENTITY ***/
+export const removeDirectory = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/remove_directory', payload,headers);
+}
