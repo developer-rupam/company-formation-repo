@@ -131,3 +131,15 @@ export const removeDirectory = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/directory/remove_directory', payload,headers);
 }
+
+/*** FUNCTION DEFINATION FOR GET ALL EMAIL TEMPLATE ***/
+export const getEmailTemplate = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/email_template/get_email_template', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR ADDING EMAIL TEMPLATE ***/
+export const upsertEmailTemplate = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/email_template/upsert_email_template', payload,headers);
+}

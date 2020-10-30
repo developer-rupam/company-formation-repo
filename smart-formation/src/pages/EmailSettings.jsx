@@ -7,7 +7,7 @@ import { showToast,showConfirm,showHttpError } from '../utils/library'
 import { Link,withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SITENAMEALIAS } from '../utils/init';
-import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from '../utils/service'
+import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
 
 
  class EmailSettings extends React.Component {
@@ -17,26 +17,105 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
             showLoader : false,
             sessionObj:{},
             textareaWidth : 1000,
-            textareaHeight : 10
+            textareaHeight : 10,
+            showLoader : false,
+            templateTypeList:[
+                {id:1,type:'create_client',messageBody: ''},
+                {id:2,type:'create_entity',messageBody: ''},
+                {id:3,type:'send_login_credential',messageBody: ''},
+            ],
+            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createEntityMessageBody : '',
+            createEntityMessageBody : '',
+            sendLoginCredentialMessageBody : '',
         };
+
+        /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
+        this.createClientMessageBodyRef = React.createRef();
+        this.createEntityMessageBodyRef = React.createRef();
+        this.sendLoginCredentialMessageBodyRef = React.createRef();
+        
+
+
          /***  BINDING FUNCTIONS  ***/
-         this.getLoggedInUserDetailsForPermission = this.getLoggedInUserDetailsForPermission.bind(this);
+         this.getAllEmailTemplate = this.getAllEmailTemplate.bind(this);
+         this.saveEmailTemplate = this.saveEmailTemplate.bind(this);
        
     }
 
-    /*** FUNCTION DEFINATION TO GET LOGGED IN USER DETAILS FOR PERMISSION ***/
-	getLoggedInUserDetailsForPermission = () => {
-        let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
-        if(session.user_type == 'ADMIN'){
+    /*** FUNCTION DEFINATION TO GET EMAIL TEMPLATES ***/
+    getAllEmailTemplate = (param) => {
+        let payload = {email_template_type : param}
+        this.setState({showLoader : true})
+        getEmailTemplate(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    if(response.response.email_template_type !== undefined){
+                        let temp1 = '';
+                        let temp2 = '';
+                        let temp3 = '';
+                        if(response.response.email_template_type === '1'){
+                            temp1 = response.response.email_template_body
+                            this.createClientMessageBodyRef.current.value = temp1;
+                        }else if(response.response.email_template_type === '2'){
+                            temp2 = response.response.email_template_body
+                            this.createEntityMessageBodyRef.current.value = temp2;
+                        }else if(response.response.email_template_type === '3'){
+                            temp3 = response.response.email_template_body
+                            this.sendLoginCredentialMessageBodyRef.current.value = temp3;
+                        }
+                        
+                    }
+                    
+                    
+                }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
 
-        }else{
-
-        }
-		
-		
-		
+    /*** FUNCTION DEFINATION TO SAVE EMAIL TEMPLATES ***/
+    saveEmailTemplate = (param1,param2) => {
+        let payload = {email_template_type : param1,email_template_body:param2,directory_owner:this.state.userCreatedBy}
+        this.setState({showLoader : true})
+        console.log(payload)
+        upsertEmailTemplate(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    /*** CALLING FUNCTION TO GET TEMPLATE DETAILS ***/
+                    for(let i= 0;i<this.state.templateTypeList.length;i++){
+                        this.getAllEmailTemplate(this.state.templateTypeList[i].id);
+                    }
+    
+                }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
     }
     
+    /*** FUNCTION DEFINATION TO HANDLE SAVE BUUTON EVENT ***/
+    handleSaveTemplate = () =>{
+        for(let i= 0;i<this.state.templateTypeList.length;i++){
+            if(this.state.templateTypeList[i].id === 1){
+
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.createClientMessageBodyRef.current.value);
+            }else if(this.state.templateTypeList[i].id === 2){
+
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.createEntityMessageBodyRef.current.value);
+            }else if(this.state.templateTypeList[i].id === 3){
+
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.sendLoginCredentialMessageBodyRef.current.value);
+            }
+        }
+    }
 
     
    
@@ -85,7 +164,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                                                                         <label>Message Body</label>
                                                                         
                                                                         <textarea className="form-control" placeholder="Create client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                       ></textarea>
+                                                                       ref={this.createClientMessageBodyRef}></textarea>
                                                                     </div>
                                                                     
                                                                 </div>
@@ -118,7 +197,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                                                                         <label>Message Body</label>
                                                                         
                                                                         <textarea className="form-control" placeholder="Create folder/file message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                       ></textarea>
+                                                                        ref={this.createEntityMessageBodyRef} ></textarea>
                                                                     </div>
                                                                     
                                                                 </div>
@@ -151,7 +230,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                                                                         <label>Message Body</label>
                                                                         
                                                                         <textarea className="form-control" placeholder="Send login credentials to client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                       ></textarea>
+                                                                       ref={this.sendLoginCredentialMessageBodyRef}></textarea>
                                                                     </div>
                                                                     
                                                                 </div>
@@ -168,7 +247,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
 
 
                                         <div className="modal_button_area">
-                                             <button type="button" className="submit">Save</button>
+                                             <button type="button" className="submit" onClick={this.handleSaveTemplate}>Save</button>
                                            
                                         </div>
                                     </div>
@@ -191,8 +270,10 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
 
     componentDidMount(){
 
-       /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
-		this.getLoggedInUserDetailsForPermission();
+       /*** CALLING FUNCTION TO GET TEMPLATE DETAILS ***/
+       for(let i= 0;i<this.state.templateTypeList.length;i++){
+           this.getAllEmailTemplate(this.state.templateTypeList[i].id);
+       }
        
    }
 
