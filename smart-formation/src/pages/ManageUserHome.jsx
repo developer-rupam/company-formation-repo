@@ -70,7 +70,7 @@ import { connect } from 'react-redux';
             
 
                                     <div className="searchinput">
-                                            <div className="dropdown">
+                                           {/*  <div className="dropdown">
                 <div className="caption">All Address Books <i className="fa fa-chevron-circle-down" aria-hidden="true"></i></div>
                 <div className="list">
                 <div className="item">Option 1</div>
@@ -79,7 +79,7 @@ import { connect } from 'react-redux';
                 <div className="item">Option 4</div>
                 <div className="item">Option 5</div>
                 </div>
-            </div>
+            </div> */}
             <form method="get" action="#">
                 <input type="text" name="q" placeholder=" search user" className="text2" />
                 <button type="submit" className="submit"><i className="fas fa-search"></i></button>
