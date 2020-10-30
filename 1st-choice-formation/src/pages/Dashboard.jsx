@@ -269,18 +269,18 @@ import { showToast,showHttpError } from '../utils/library'
                                     <div className="card card_cstm same_dv_table">
                                         <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
-                                            <div className="lft-hdr"><span><i className="fas fa-share"></i></span>Sortcuts</div>
+                                            <div className="lft-hdr"><span><i className="fas fa-share"></i></span>Shortcuts</div>
                                         </div>
                                         </div>
                                     <div className="card-body custom_card_body_sortcut">
                                         <div className="sortcut_area">
                                             <ul>
-                                                <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
-                                                <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li>
+                                               {/*  <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
+                                                <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li> */}
                                                 { (this.state.hasAccessToManageClients || this.state.hasAccessToManageEmployees) ? <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li> :''}
-                                                <li><Link to="/personal-folders"><span><i className="fas fa-user"></i></span>Personal Folders</Link></li>
-                                                <li><Link to="/shared-folders"><span><i className="fas fa-user-friends"></i></span>Shared Folders</Link></li>
-                                                <li><Link to="/favorite-folders"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
+                                                <li><Link to="/personal-folders"><span><i className="fas fa-folder"></i></span>Personal Folders</Link></li>
+                                                <li style={{marginTop : '-16px'}}><Link to="/shared-folders"><span><i className="fas fa-folder-open"></i></span>Shared Folders</Link></li>
+                                                <li style={{marginTop : '-36px'}}><Link to="/favorite-folders"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -378,13 +378,17 @@ import { showToast,showHttpError } from '../utils/library'
         
         /*** Setting up dashboard pages with txt and functionalities manipulation ***/
         let loggedInUser = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
-        console.log(loggedInUser)
-        if(loggedInUser.user_name != undefined ){
+        console.log(loggedInUser.user_name)
+        if(loggedInUser.user_name !== undefined ){
             this.setState({loggedInUserName : loggedInUser.user_name})
             /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
 		    this.getLoggedInUserDetailsForPermission();
         }else if(loggedInUser.user_role == 'EMPLOYEE'){
             this.setState({loggedInUserName : loggedInUser.employee_name})
+            /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
+		    this.getLoggedInUserDetailsForPermission();
+        }else{
+            this.setState({loggedInUserName : 'ADMIN'})
             /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
 		    this.getLoggedInUserDetailsForPermission();
         }
