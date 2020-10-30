@@ -352,7 +352,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultValue={this.state.employeeEmail} onBlur={(event) => {this.setState({employeeEmail : event.target.value})}} readOnly/>
+                                                                        defaultValue={this.state.employeeEmail} onBlur={(event) => {this.setState({employeeEmail : event.target.value})}} />
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>

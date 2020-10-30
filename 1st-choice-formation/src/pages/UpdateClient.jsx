@@ -414,7 +414,7 @@ fetchAllParentDirectory = () => {
                                                                     <div className="form-group col-md-4">
                                                                         <label>Email</label>
                                                                         <input type="text" className="form-control" placeholder="Email" 
-                                                                        defaultValue={this.state.clientEmail} onBlur={(event) => {this.setState({clientEmail : event.target.value})}} readOnly/>
+                                                                        defaultValue={this.state.clientEmail} onBlur={(event) => {this.setState({clientEmail : event.target.value})}} />
                                                                     </div>
                                                                     <div className="form-group col-md-4">
                                                                         <label>Company(optional)</label>
