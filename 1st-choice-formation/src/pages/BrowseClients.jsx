@@ -22,12 +22,13 @@ import { Modal } from 'react-bootstrap';
             selectedAlphabetOfClient : "",
             activePage : 1,
             pageNo : 1,
-            noOfItemsPerPage : 10,
+            noOfItemsPerPage : 100,
             totalCount : 100,
             clientsList : [],
             isPasswordMatched : false,
             showConfirmPasswordModal : false,
             selectedPasswordForDeletion : [],
+            searchQuery:'',
 
         };
          /***  BINDING FUNCTIONS  ***/
@@ -39,6 +40,7 @@ import { Modal } from 'react-bootstrap';
          this.propagateConfirmPasswordModal = this.propagateConfirmPasswordModal.bind(this)
          this.handleSelectMultiUser = this.handleSelectMultiUser.bind(this)
          this.handleInitiateMultipleDelete = this.handleInitiateMultipleDelete.bind(this)
+         this.handleSearchClient = this.handleSearchClient.bind(this)
          
 
 
@@ -84,13 +86,22 @@ import { Modal } from 'react-bootstrap';
                 let clientsList = [];
                 for(let i=0;i<allClientsList.length;i++){
                     if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
-                        console.log(this.state.selectedAlphabetOfClient)
+                        //console.log(this.state.selectedAlphabetOfClient)
+                        console.log(this.state.searchQuery)
                         if(this.state.selectedAlphabetOfClient != ''){
                             console.log('if')
                             let firstCharcterOfName =  allClientsList[i].user_name.charAt(0);
                             let firstCharcterOfEmail =  allClientsList[i].user_email.charAt(0);
                             
                             if(firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfClient || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfClient){
+                                clientsList.push(allClientsList[i])
+                            }
+                        }else if(this.state.searchQuery !== ''){
+                            console.log('else if')
+                            let firstName =  allClientsList[i].user_name;                            
+                            let email =  allClientsList[i].user_email;                            
+                            if(firstName.toLowerCase().indexOf(this.state.searchQuery) !== -1 || email.toLowerCase().indexOf(this.state.searchQuery) !== -1){
+                                console.log(allClientsList[i])
                                 clientsList.push(allClientsList[i])
                             }
                         }else{
@@ -197,6 +208,15 @@ import { Modal } from 'react-bootstrap';
         
     }
 
+    /*** FUNCTION DEFINATION FOR SEARCH CLIENTS ****/
+    handleSearchClient = (param) => {
+        this.setState({searchQuery : param})
+        setTimeout(function(){
+            console.log(this.state.searchQuery)
+            this.getAllClientsList()
+        }.bind(this),1000)
+    }
+
     render() { 
         return (
                <Fragment>
@@ -212,6 +232,9 @@ import { Modal } from 'react-bootstrap';
                                     <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-users"></i></span>Browse Clients</div>
+                                            <div className="lft-hdr">
+                                                <input type="text" className="form-control" placeholder="Search Clients" onKeyUp={(e) => {this.handleSearchClient(e.target.value)}}/>
+                                            </div>
                                             <div className="addbutton">
                                                 <div className="serach_box_bylte">
                                                 <form>

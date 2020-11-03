@@ -28,6 +28,7 @@ import { Modal } from 'react-bootstrap';
             isPasswordMatched : false,
             showConfirmPasswordModal : false,
             selectedPasswordForDeletion : [],
+            searchQuery:''
         };
          /***  BINDING FUNCTIONS  ***/
          this.selectEmployeeNameAlphabet = this.selectEmployeeNameAlphabet.bind(this)
@@ -38,6 +39,7 @@ import { Modal } from 'react-bootstrap';
          this.propagateConfirmPasswordModal = this.propagateConfirmPasswordModal.bind(this)
          this.handleSelectMultiUser = this.handleSelectMultiUser.bind(this)
          this.handleInitiateMultipleDelete = this.handleInitiateMultipleDelete.bind(this)
+         this.handleSearchClient = this.handleSearchClient.bind(this)
 
        /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
        this.passwordRef = React.createRef();
@@ -88,6 +90,14 @@ import { Modal } from 'react-bootstrap';
                             let firstCharcterOfEmail =  allEmployeesList[i].employee_email.charAt(0);
                             
                             if(firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfEmployee || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfEmployee){
+                                employeesList.push(allEmployeesList[i])
+                            }
+                        }else if(this.state.searchQuery !== ''){
+                            console.log('else if')
+                            let firstName =  allEmployeesList[i].employee_name;                            
+                            let email =  allEmployeesList[i].employee_email;                            
+                            if(firstName.toLowerCase().indexOf(this.state.searchQuery) !== -1 || email.toLowerCase().indexOf(this.state.searchQuery) !== -1){
+                                console.log(allEmployeesList[i])
                                 employeesList.push(allEmployeesList[i])
                             }
                         }else{
@@ -195,6 +205,15 @@ import { Modal } from 'react-bootstrap';
         
     }
 
+    /*** FUNCTION DEFINATION FOR SEARCH CLIENTS ****/
+    handleSearchClient = (param) => {
+        this.setState({searchQuery : param})
+        setTimeout(function(){
+            console.log(this.state.searchQuery)
+            this.getAllEmployeesList()
+        }.bind(this),1000)
+    }
+
     render() { 
         return (
                <Fragment>
@@ -210,6 +229,9 @@ import { Modal } from 'react-bootstrap';
                                     <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-users"></i></span>Browse Employees</div>
+                                            <div className="lft-hdr">
+                                                <input type="text" className="form-control" placeholder="Search Employees" onKeyUp={(e) => {this.handleSearchClient(e.target.value)}}/>
+                                            </div>
                                             <div className="addbutton">
                                                 <div className="serach_box_bylte">
                                                 <form>

@@ -71,14 +71,14 @@ import { connect } from 'react-redux';
                         </li>
                     </ul>
                      <ul className="nav navbar-nav ml-auto top_menu">
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <div className="searchheader">
                                 <form onSubmit={this.handleSearchSubmit}>
                                     <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef}/>
                                     <button type="submit"><i className="fas fa-search"></i></button>
                                 </form>
                             </div>
-                        </li>
+                        </li> */}
                         <li className="nav-item">
                             <Link className="nav-link" to={BASEURL}><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
                         </li>

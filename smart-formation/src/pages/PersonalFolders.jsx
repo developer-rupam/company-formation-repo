@@ -340,6 +340,9 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                     <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Personal Folders</div>
+                                            <div className="lft-hdr">
+                                                <input type="text" className="form-control" placeholder="Search folder" />
+                                            </div>
                                             <div className="addbutton">
                                                 <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={()=>{this.setState({showCreateFolderDropDown : !this.state.showCreateFolderDropDown})}}><i className="fas fa-plus"></i></span>
                                                 <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
