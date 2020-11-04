@@ -42,6 +42,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.isUserAlreadyAssigned = this.isUserAlreadyAssigned.bind(this)
         this.handleSelectUser  = this.handleSelectUser.bind(this)
         this.assignUserToEntity = this.assignUserToEntity.bind(this)
+        this.searchEntity = this.searchEntity.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -160,7 +161,14 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             console.log(folders[i].shared_user_ids.length)
                             if(folders[i].shared_user_ids.length !=0 || folders[i].asigned_user_ids.length){
-                                arr.push(folders[i]);
+                                if(this.state.searchQuery != ''){
+                                    if(folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1){
+    
+                                        arr.push(folders[i]);
+                                    }
+                                }else{
+                                    arr.push(folders[i]);
+                                }
                             }
                         }else{
                             console.log(folders[i])
@@ -169,7 +177,14 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                             for(let j=0;j<userIds.length;j++){
                                 console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
                                 if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
-                                    arr.push(folders[i]);
+                                    if(this.state.searchQuery != ''){
+                                        if(folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1){
+        
+                                            arr.push(folders[i]);
+                                        }
+                                    }else{
+                                        arr.push(folders[i]);
+                                    }
                                 }
                             }
                         }
@@ -312,6 +327,13 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             //console.log(this.state.userListWithSearchQuery)
         }
 
+         /*** FUNTION DEFINATION FOR search ENTITY NAME ***/
+         searchEntity = (param) => {
+            this.setState({searchQuery :param},()=>{
+                this.fetchAllParentDirectory();
+            })
+        }
+
     render() {
         return (
                <Fragment>
@@ -328,7 +350,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Shared Folders</div>
                                             <div className="lft-hdr">
-                                                <input type="text" className="form-control" placeholder="Search folder" />
+                                                <input type="text" className="form-control" placeholder="Search folder" onKeyUp={(e)=>{this.searchEntity(e.target.value)}}/>
                                             </div>
                                              {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role === 'ADMIN' && <div className="addbutton">
                                                 <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={()=>{this.setState({showCreateFolderDropDown : !this.state.showCreateFolderDropDown})}}><i className="fas fa-plus"></i></span>
