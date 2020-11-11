@@ -8,7 +8,7 @@ import { showToast,showConfirm,showHttpError } from '../utils/library'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SITENAMEALIAS } from '../utils/init';
-import {UpdateUser,addDirectoryAssignedUser,GetAllSubDirectory,CreateDirectory} from '../utils/service'
+import {UpdateUser,addDirectoryAssignedUser,GetAllSubDirectory,CreateDirectory,sendUserCredential} from '../utils/service'
 import {setPersonalFoldersList} from '../utils/redux/action'
 
 
@@ -364,7 +364,25 @@ fetchAllParentDirectory = () => {
       /*** FUNCTION DEFINATION FOR SENDING LOGIN CREDENTIALS TO CLIENT ****/
       sendLoginCredentials = () =>{
         showConfirm('Are You Sure?','Mail client, login credentials','warning',() => {
-            //TODO: call api to send mail for login credential to client
+            let payload = {
+                user_id : this.state.clientId
+            }
+            
+            this.setState({showLoader : true})
+            sendUserCredential(payload).then(function(res){
+                var response = res.data;
+                this.setState({showLoader : false})
+                if(response.errorResponse.errorStatusCode != 1000){
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                   
+                    showToast('success','Mail sent to client');
+                }
+            }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
         })
       }
 

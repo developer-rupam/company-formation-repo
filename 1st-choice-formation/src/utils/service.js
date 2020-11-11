@@ -143,3 +143,44 @@ export const upsertEmailTemplate = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/email_template/upsert_email_template', payload,headers);
 }
+
+/*** FUNCTION DEFINATION FOR getting favorite directory ***/
+export const getFavouriteDirectoriesByUser = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/user/get_favourite_directories_by_user', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR GETTING SHARED ENTITY BY USER ***/
+export const getDirectoryBySharedUser = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/get_directory_by_shared_user', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR getting favorite directory ***/
+export const getDirectoryByAsignedUser = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/get_directory_by_asigned_user', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR REMOVING AN ENTITY FROM FAVORITE ***/
+export const removeUserFavouriteDirectory = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/user/remove_user_favourite_directory', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR UNASSIGEND AN ENTITY ***/
+export const removeDirectoryAsignedUser = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/remove_directory_asigned_user', payload,headers);
+}
+
+/*** FUNCTION DEFINATION FOR Removing DIRECTORY FROM SHARED USER ***/
+export const removeDirectorySharedUser = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/remove_directory_shared_user', payload,headers);
+}
+/*** FUNCTION DEFINATION FOR Removing DIRECTORY FROM SHARED USER ***/
+export const sendUserCredential = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/user/send_user_credential', payload,headers);
+}

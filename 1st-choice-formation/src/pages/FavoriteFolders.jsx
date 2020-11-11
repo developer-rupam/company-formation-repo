@@ -5,8 +5,8 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory} from '../utils/service'
+import { showToast,showConfirm,showHttpError,manipulateRemoveFavoriteEntity } from '../utils/library'
+import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setFavoriteFoldersList} from '../utils/redux/action'
@@ -34,6 +34,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.fetchAllParentDirectory = this.fetchAllParentDirectory.bind(this)
         this.getEntityOwnerDetails = this.getEntityOwnerDetails.bind(this)
         this.handleFolderDetails = this.handleFolderDetails.bind(this)
+        this.getFavoriteEntities = this.getFavoriteEntities.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -104,7 +105,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     this.folderNameRef.current.value = ''
                     this.folderDetailsRef.current.value = ''
                     this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false,addPeopleToFolder:false})
-                    this.fetchAllParentDirectory()
+                   // this.fetchAllParentDirectory()
                     
                 }
             }.bind(this)).catch(function(err){
@@ -202,6 +203,32 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     this.props.history.push('/folder-details/'+param+'/personal_folder')
     }  
 
+    /**** FUNCTION DEFINATION TO GET FAVORITE ENTITY LIST ****/
+    getFavoriteEntities = () => {
+        let payload = {'user_id' : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id}
+        this.setState({showLoader : true})
+        console.log(payload)
+        getFavouriteDirectoriesByUser(payload).then(function(res){
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                this.setState({showLoader : false})
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                let arr = [];
+                    let folders = response.response.favourite_entity
+                    for(let i=0;i<folders.length;i++){
+                          
+                        arr.push(folders[i]);
+                    }
+                    this.setState({foldersList : arr,showLoader : false})
+                this.props.setFavoriteFoldersList(response.response.favourite_entity)
+               
+            }
+         }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
 
     render() {
         return (
@@ -241,7 +268,9 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
                                                 <tr className="pointer-cursor" key={list.entity_id}>
-                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(list.entity_id,[])}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                    <td><span className="select" style={{color:'#f5941f'}}  onClick={()=>{manipulateRemoveFavoriteEntity(this.state.createdBy,list.entity_id,() => {
+                                                                this.getFavoriteEntities()
+                                                                })}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
                                                     
                                                     <td>
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
@@ -328,8 +357,8 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         )
     }
     componentDidMount(){
-       /*** Get all parent folder's ***/ 
-       this.fetchAllParentDirectory();
+       /*** FETCH FAVORITE FOLDER LIST IF FAVORITE LIST IS NOT AVAILABLE ***/
+        this.getFavoriteEntities();
        
    }
    
