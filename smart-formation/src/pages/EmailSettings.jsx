@@ -181,7 +181,7 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                                        <div className="card card_cstm same_dv_table cust_back_card">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                <div className="lft-hdr"><span>2</span>Create Folder/File Email Template</div>
+                                                <div className="lft-hdr"><span>2</span>Assigned Folder/File Email Template</div>
                                                
                                                 </div>
                                             </div>
