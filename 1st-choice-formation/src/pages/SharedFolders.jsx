@@ -26,6 +26,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showAssignUserModal : false,
             userListWithSearchQuery: [],
             assignedUser :[],
+            searchQuery : '',
 
             
         };
@@ -160,8 +161,10 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     for(let i=0;i<folders.length;i++){
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             console.log(folders[i].shared_user_ids.length)
-                            if(folders[i].shared_user_ids.length !=0 || folders[i].asigned_user_ids.length){
+                            if(folders[i].shared_user_ids.length !=0 || folders[i].asigned_user_ids.length != 0){
                                 if(this.state.searchQuery != ''){
+                                    console.log(folders[i].entity_name)
+                                    console.log(this.state.searchQuery)
                                     if(folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1){
     
                                         arr.push(folders[i]);

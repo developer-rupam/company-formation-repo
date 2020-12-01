@@ -1,5 +1,5 @@
 const DEVELOPMENTOBJ = {url : 'http://localhost:3000',api : 'https://smart-doc.co.uk:7000/v1',baseurl : '/',filePath : '/'};
-const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/1st-choice-formation/dev ',api : 'http://smart-doc.co.uk:7000/v1',baseurl : 'https://1st-choice-formation.smart-doc.co.uk/',filePath : 'https://smart-doc.co.uk/1st-choice-backend/'};
+const PRODUCTIONOBJ = {url : 'https://hostingfordevelopment.000webhostapp.com/1st-choice-formation/dev ',api : 'https://smart-doc.co.uk:7000/v1',baseurl : 'https://1st-choice-formation.smart-doc.co.uk/',filePath : 'https://smart-doc.co.uk/1st-choice-backend/'};
 
 export const mode = "prod" //dev : development; prod : production
 
@@ -9,7 +9,7 @@ if(mode == 'dev'){
     var baseurl = DEVELOPMENTOBJ.baseurl;
     var filePath = DEVELOPMENTOBJ.filePath
 }else{
-    var url = PRODUCTIONOBJ.url;
+    var url = PRODUCTIONOBJ.url; 
     var api = PRODUCTIONOBJ.api;
     var baseurl = PRODUCTIONOBJ.baseurl;
     var filePath = PRODUCTIONOBJ.filePath
