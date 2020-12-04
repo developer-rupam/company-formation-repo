@@ -8,6 +8,8 @@ import { Link,withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SITENAMEALIAS } from '../utils/init';
 import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
 
 
  class EmailSettings extends React.Component {
@@ -16,8 +18,8 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
         this.state = {
             showLoader : false,
             sessionObj:{},
-            textareaWidth : 1000,
-            textareaHeight : 10,
+            textareaWidth : 930,
+            textareaHeight : 200,
             showLoader : false,
             templateTypeList:[
                 {id:1,type:'create_client',messageBody: ''},
@@ -25,7 +27,7 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                 {id:3,type:'send_login_credential',messageBody: ''},
             ],
             userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
-            createEntityMessageBody : '',
+            createClientMessageBody : '',
             createEntityMessageBody : '',
             sendLoginCredentialMessageBody : '',
         };
@@ -60,12 +62,17 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                         if(response.response.email_template_type === '1'){
                             temp1 = response.response.email_template_body
                             this.createClientMessageBodyRef.current.value = temp1;
+                            this.setState({createClientMessageBody : temp1})
                         }else if(response.response.email_template_type === '2'){
                             temp2 = response.response.email_template_body
                             this.createEntityMessageBodyRef.current.value = temp2;
+                            this.setState({createEntityMessageBody : temp2})
+
                         }else if(response.response.email_template_type === '3'){
                             temp3 = response.response.email_template_body
                             this.sendLoginCredentialMessageBodyRef.current.value = temp3;
+                            this.setState({sendLoginCredentialMessageBody : temp3})
+
                         }
                         
                     }
@@ -104,20 +111,40 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
     /*** FUNCTION DEFINATION TO HANDLE SAVE BUUTON EVENT ***/
     handleSaveTemplate = () =>{
         for(let i= 0;i<this.state.templateTypeList.length;i++){
-            if(this.state.templateTypeList[i].id === 1){
+            console.log(this.createEntityMessageBodyRef.current.value)
+             if(this.state.templateTypeList[i].id === 1){
 
-                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.createClientMessageBodyRef.current.value);
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.state.createClientMessageBody);
             }else if(this.state.templateTypeList[i].id === 2){
 
-                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.createEntityMessageBodyRef.current.value);
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.state.createEntityMessageBody);
             }else if(this.state.templateTypeList[i].id === 3){
 
-                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.sendLoginCredentialMessageBodyRef.current.value);
-            }
+                this.saveEmailTemplate(this.state.templateTypeList[i].id,this.state.sendLoginCredentialMessageBody);
+            } 
         }
     }
 
+    /**** FUNCTION DEFINATION TO GET CREATE CLIENT MESSAGE BODY *****/
+    handleUpdatedCreateClientMessageBody = (e) =>{
+        this.setState({
+            createClientMessageBody : e
+        })
+    }
     
+    /**** FUNCTION DEFINATION TO GET CREATE CLIENT MESSAGE BODY *****/
+    handleUpdatedCreateEntityMessageBody = (e) =>{
+        this.setState({
+            createEntityMessageBody : e
+        })
+    }
+
+    /**** FUNCTION DEFINATION TO GET CREATE CLIENT MESSAGE BODY *****/
+    handleUpdatedSendCredentialMessageBody = (e) =>{
+        this.setState({
+            sendLoginCredentialMessageBody : e
+        })
+    }
    
     
 
@@ -163,8 +190,10 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                                                                     <div className="form-group col-md-12">
                                                                         <label>Message Body</label>
                                                                         
-                                                                        <textarea className="form-control" placeholder="Create client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                       ref={this.createClientMessageBodyRef}></textarea>
+                                                                        {/* <textarea className="form-control" placeholder="Create client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
+                                                                       ref={this.createClientMessageBodyRef}></textarea> */}
+                                                                        <SunEditor ref={this.createClientMessageBodyRef} height={this.state.textareaHeight} width={this.state.textareaWidth} setContents={this.state.createClientMessageBody} onChange={this.handleUpdatedCreateClientMessageBody}/>
+
                                                                     </div>
                                                                     
                                                                 </div>
@@ -181,7 +210,7 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                                        <div className="card card_cstm same_dv_table cust_back_card">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                <div className="lft-hdr"><span>2</span>Assigned Folder/File Email Template</div>
+                                                <div className="lft-hdr"><span>2</span>Assigned File Email Template</div>
                                                
                                                 </div>
                                             </div>
@@ -196,8 +225,9 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                                                                     <div className="form-group col-md-12">
                                                                         <label>Message Body</label>
                                                                         
-                                                                        <textarea className="form-control" placeholder="Create folder/file message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                        ref={this.createEntityMessageBodyRef} ></textarea>
+                                                                        {/* <textarea className="form-control" placeholder="Create folder/file message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
+                                                                        ref={this.createEntityMessageBodyRef} ></textarea> */}
+                                                                        <SunEditor ref={this.createEntityMessageBodyRef} height={this.state.textareaHeight} width={this.state.textareaWidth} setContents={this.state.createEntityMessageBody} onChange={this.handleUpdatedCreateEntityMessageBody}/>
                                                                     </div>
                                                                     
                                                                 </div>
@@ -229,8 +259,10 @@ import {upsertEmailTemplate,getEmailTemplate} from '../utils/service'
                                                                     <div className="form-group col-md-12">
                                                                         <label>Message Body</label>
                                                                         
-                                                                        <textarea className="form-control" placeholder="Send login credentials to client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
-                                                                       ref={this.sendLoginCredentialMessageBodyRef}></textarea>
+                                                                        {/* <textarea className="form-control" placeholder="Send login credentials to client message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
+                                                                       ref={this.sendLoginCredentialMessageBodyRef}></textarea> */}
+                                                                        <SunEditor ref={this.sendLoginCredentialMessageBodyRef} height={this.state.textareaHeight} width={this.state.textareaWidth} setContents={this.state.sendLoginCredentialMessageBody} onChange={this.handleUpdatedSendCredentialMessageBody}/>
+                                                                       <p className="error">*For generating email and password use keyword USER_EMAIL_IDENTIFIER & USER_PASSWORD_IDENTIFIER</p>
                                                                     </div>
                                                                     
                                                                 </div>
