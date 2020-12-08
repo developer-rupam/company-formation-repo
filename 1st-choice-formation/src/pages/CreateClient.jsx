@@ -117,40 +117,42 @@ class CreateClient extends React.Component {
             payload.push(obj)
         }
         this.setState({showLoader : true})
-        CreateUser(payload).then(function(res){
-            var response = res.data;
-            if(response.errorResponse.errorStatusCode != 1000){
-                this.setState({showLoader : false})
-                showToast('error',response.errorResponse.errorStatusType);
-            }else{
-                
-                setTimeout(() => {
-                    this.setState({
-                        addClientList : [],
-                        hasPermissionToChangePassword : false,
-                        hasPermissionToAccessPersonalSettings : false,
-                        showLoader : false,
-                    })
-                    showToast('success','Client added successfully');
-                    var insertedUserId = response.lastInsertedIds
-                    console.log(insertedUserId)
-                    if(this.state.assignedFolder.length != 0){
-                        for(let i=0;i<this.state.assignedFolder.length;i++){
-                            let iter = this.state.assignedFolder[i]
-                            console.log(insertedUserId)
-                            for(let j=0;j<insertedUserId.length;j++){
-
-                                this.assignUserToEntity(insertedUserId[j],iter)
+        setTimeout(() => {
+            CreateUser(payload).then(function(res){
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    this.setState({showLoader : false})
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    
+                    setTimeout(() => {
+                        this.setState({
+                            addClientList : [],
+                            hasPermissionToChangePassword : false,
+                            hasPermissionToAccessPersonalSettings : false,
+                            showLoader : false,
+                        })
+                        showToast('success','Client added successfully');
+                        var insertedUserId = response.lastInsertedIds
+                        console.log(insertedUserId)
+                        if(this.state.assignedFolder.length != 0){
+                            for(let i=0;i<this.state.assignedFolder.length;i++){
+                                let iter = this.state.assignedFolder[i]
+                                console.log(insertedUserId)
+                                for(let j=0;j<insertedUserId.length;j++){
+    
+                                    this.assignUserToEntity(insertedUserId[j],iter)
+                                }
                             }
                         }
-                    }
-                }, 3000);
-               
-            }
-         }.bind(this)).catch(function(err){
-            this.setState({showLoader : false})
-            showHttpError(err)
-        }.bind(this))
+                    }, 3000);
+                   
+                }
+             }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
+        }, 3000);
     }
 
     /*** FUNCTION DEFINATION FOR DELETING CLIENT ROW ***/
