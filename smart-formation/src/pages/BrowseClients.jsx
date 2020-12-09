@@ -22,6 +22,7 @@ class BrowseClients extends React.Component {
             selectedAlphabetOfClient: "",
             activePage: 1,
             pageNo: 1,
+            limitForCall: 100000,
             noOfItemsPerPage: 100,
             totalCount: 0,
             clientsList: [],
@@ -54,7 +55,7 @@ class BrowseClients extends React.Component {
         this.setState({ selectedAlphabetOfClient: e.target.value })
         setTimeout(function () {
             console.log(this.state.selectedAlphabetOfClient)
-            this.getAllClientsList()
+            this.renderClientList()
         }.bind(this), 1000)
     }
 
@@ -65,7 +66,7 @@ class BrowseClients extends React.Component {
             pageNo: page
         })
         setTimeout(() => {
-            this.getAllClientsList()
+            this.renderClientList()
         }, 1000);
     }
 
@@ -73,7 +74,7 @@ class BrowseClients extends React.Component {
     getAllClientsList = () => {
         let payload = {
             page_no: this.state.pageNo,
-            page_size: this.state.noOfItemsPerPage,
+            page_size: this.state.limitForCall,
         }
         this.setState({ showLoader: true })
         GetAllUser(payload).then(function (res) {
@@ -86,39 +87,52 @@ class BrowseClients extends React.Component {
                 let clientsList = [];
                 for (let i = 0; i < allClientsList.length; i++) {
                     if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
-                        //console.log(this.state.selectedAlphabetOfClient)
-                        console.log(this.state.searchQuery)
-                        if (this.state.selectedAlphabetOfClient != '') {
-                            console.log('if')
-                            let firstCharcterOfName = allClientsList[i].user_name.charAt(0);
-                            let firstCharcterOfEmail = allClientsList[i].user_email.charAt(0);
-
-                            if (firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfClient || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfClient) {
-                                clientsList.push(allClientsList[i])
-                            }
-                        } else if (this.state.searchQuery !== '') {
-                            console.log('else if')
-                            let firstName = allClientsList[i].user_name;
-                            let email = allClientsList[i].user_email;
-                            let company = allClientsList[i].user_company;
-                            if (firstName.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1 || email.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1 || company.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1) {
-                                console.log(allClientsList[i])
-                                clientsList.push(allClientsList[i])
-                            }
-                        } else {
-                            console.log('else')
-                            clientsList.push(allClientsList[i])
-                        }
+                        clientsList.push(allClientsList[i]);
                     }
                 }
                 this.props.setClientList(clientsList);
-                this.setState({ clientsList: this.props.globalState.clientListReducer.clientsList,totalCount:response.totalCount })
+                this.renderClientList()
+                this.setState({ totalCount: response.totalCount })
 
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
             showHttpError(err)
         }.bind(this))
+    }
+
+    /**** FUNCTION DEFINATION TO RENDER CLIENT LIST *****/
+    renderClientList = () => {
+        let clients = this.props.globalState.clientListReducer.clientsList;
+        let end = this.state.noOfItemsPerPage * this.state.pageNo;
+        let start = end - this.state.noOfItemsPerPage;
+        let list = [];
+
+        if (this.state.selectedAlphabetOfClient != '') {
+            for (let i = 0; i < clients.length; i++) {
+                let firstCharcterOfName = clients[i].user_name.charAt(0);
+                let firstCharcterOfEmail = clients[i].user_email.charAt(0);
+                if (firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfClient || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfClient) {
+                    list.push(clients[i])
+                }
+            }
+        } else if (this.state.searchQuery !== '') {
+            for (let i = 0; i < clients.length; i++) {
+                let firstName = clients[i].user_name;
+                let email = clients[i].user_email;
+                let company = clients[i].user_company;
+                if (firstName.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1 || email.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1 || company.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1) {
+                    list.push(clients[i])
+                }
+            }
+        } else {
+            for (let i = start; i <= end; i++) {
+                if(clients[i]){
+                    list.push(clients[i]);
+                }
+            }
+        }
+        this.setState({ clientsList: list });
     }
 
     /**** FUNCTION DEFINATION FOR DELETING CLIENT ****/
@@ -214,7 +228,7 @@ class BrowseClients extends React.Component {
         this.setState({ searchQuery: param })
         setTimeout(function () {
             console.log(this.state.searchQuery)
-            this.getAllClientsList()
+            this.renderClientList()
         }.bind(this), 1000)
     }
 
@@ -241,7 +255,7 @@ class BrowseClients extends React.Component {
                                         <div className="card card_cstm same_dv_table">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                    <div className="lft-hdr"><span><i className="fas fa-users"></i></span>Browse Clients</div>
+                                                    <div className="lft-hdr"><span><i className="fas fa-users"></i></span>Browse Clients({this.state.totalCount} {this.state.totalCount === 1 ? 'Client' : 'Clients'})</div>
                                                     <div className="lft-hdr">
                                                         <input type="text" className="form-control" placeholder="Search Clients" onChange={(e) => { this.handleSearchClient(e.target.value) }} />
                                                     </div>

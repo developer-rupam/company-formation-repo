@@ -381,7 +381,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
                                                     
                                                     <td>
-                                                        <Moment format="YYYY/MM/DD" date={list.user_created}/>
+                                                        <Moment format="YYYY/MM/DD" date={list.entity_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
                                                     <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>

@@ -430,7 +430,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     </td>
                                                     
                                                     <td>
-                                                        <Moment format="YYYY/MM/DD" date={list.user_created}/>
+                                                        <Moment format="YYYY/MM/DD" date={list.entity_created}/>
                                                     </td>
                                                     <td>
                                                         {this.getEntityOwnerDetails(list.directory_owner).ownerName}
