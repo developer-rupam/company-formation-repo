@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity } from '../utils/library'
+import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity,isEntityExist } from '../utils/library'
 import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
@@ -104,7 +104,9 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         }
 
         if(isAbleToSubmit){
-
+            if (isEntityExist(this.props.globalState.sharedFoldersReducer.list, this.folderNameRef.current.value)) {
+                showToast('error', 'Folder name already exists')
+            } else {
             let payload = {
                 
                     "entity_name": this.folderNameRef.current.value,
@@ -140,6 +142,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 this.setState({showLoader : false})
                 showHttpError(err)
             }.bind(this))
+        }
         }else{
             showToast('error','Please provide valid information')
         }

@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { Modal } from 'react-bootstrap';
-import { showToast,showConfirm,showHttpError } from '../utils/library'
+import { showToast,showConfirm,showHttpError,isEntityExist } from '../utils/library'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SITENAMEALIAS } from '../utils/init';
@@ -285,7 +285,9 @@ import {setPersonalFoldersList} from '../utils/redux/action'
     }
 
     if(isAbleToSubmit){
-
+        if (isEntityExist(this.props.globalState.personalFoldersReducer.list, this.folderNameRef.current.value)) {
+            showToast('error', 'Folder name already exists')
+        } else {
         let payload = {
             
                 "entity_name": this.folderNameRef.current.value,
@@ -320,6 +322,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             this.setState({showLoader : false})
             showHttpError(err)
         }.bind(this))
+    }
     }else{
         showToast('error','Please provide valid information')
     }

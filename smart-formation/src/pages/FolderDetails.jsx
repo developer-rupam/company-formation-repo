@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS, FILEPATH } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity } from '../utils/library'
+import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist } from '../utils/library'
 import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
@@ -118,42 +118,45 @@ class FolderDetails extends React.Component {
         }
 
         if (isAbleToSubmit) {
+            if (isEntityExist(this.props.globalState.personalFoldersReducer.list, this.folderNameRef.current.value)) {
+                showToast('error', 'Folder name already exists')
+            } else {
+                let payload = {
 
-            let payload = {
-
-                "entity_name": this.folderNameRef.current.value,
-                "entity_description": this.folderDetailsRef.current.value,
-                "parent_directory_id": this.state.parentFolderId,
-                "directory_owner": this.state.createdBy
-
-            }
-
-            this.setState({ showLoader: true })
-            CreateDirectory(payload).then(function (res) {
-                var response = res.data;
-                this.setState({ showLoader: false })
-                if (response.errorResponse.errorStatusCode != 1000) {
-                    showToast('error', response.errorResponse.errorStatusType);
-                } else {
-                    showToast('success', 'Folder created successfully');
-                    this.folderNameRef.current.value = ''
-                    this.folderDetailsRef.current.value = ''
-                    this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false })
-                    var insertedEntityId = response.lastRecordId
-                    console.log(insertedEntityId)
-                    if (this.state.assignedUser.length != 0) {
-                        for (let i = 0; i < this.state.assignedUser.length; i++) {
-                            let iter = this.state.assignedUser[i]
-                            this.assignUserToEntity(iter, insertedEntityId)
-                        }
-                    }
-                    this.fetchAllParentDirectory()
+                    "entity_name": this.folderNameRef.current.value,
+                    "entity_description": this.folderDetailsRef.current.value,
+                    "parent_directory_id": this.state.parentFolderId,
+                    "directory_owner": this.state.createdBy
 
                 }
-            }.bind(this)).catch(function (err) {
-                this.setState({ showLoader: false })
-                showHttpError(err)
-            }.bind(this))
+
+                this.setState({ showLoader: true })
+                CreateDirectory(payload).then(function (res) {
+                    var response = res.data;
+                    this.setState({ showLoader: false })
+                    if (response.errorResponse.errorStatusCode != 1000) {
+                        showToast('error', response.errorResponse.errorStatusType);
+                    } else {
+                        showToast('success', 'Folder created successfully');
+                        this.folderNameRef.current.value = ''
+                        this.folderDetailsRef.current.value = ''
+                        this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false })
+                        var insertedEntityId = response.lastRecordId
+                        console.log(insertedEntityId)
+                        if (this.state.assignedUser.length != 0) {
+                            for (let i = 0; i < this.state.assignedUser.length; i++) {
+                                let iter = this.state.assignedUser[i]
+                                this.assignUserToEntity(iter, insertedEntityId)
+                            }
+                        }
+                        this.fetchAllParentDirectory()
+
+                    }
+                }.bind(this)).catch(function (err) {
+                    this.setState({ showLoader: false })
+                    showHttpError(err)
+                }.bind(this))
+            }
         } else {
             showToast('error', 'Please provide valid information')
         }

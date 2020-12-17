@@ -3,7 +3,13 @@ import Swal from 'sweetalert2'
 const axios = require('axios');
 
 /*** Initializing headers ***/
-const headers = {headers: {'Content-Type': 'application/json',}}
+const headers = {headers: {
+    'Content-Type': 'application/json',
+    'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+    'X-Frame-Options' : 'SAMEORIGIN',
+    'X-Content-Type-Options' : 'nosniff'
+}}
+
 
 
 

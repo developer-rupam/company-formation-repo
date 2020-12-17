@@ -111,4 +111,15 @@ export const manipulateRemoveFavoriteEntity = (param,entity,callback) => {
 }.bind(this))
 }
 
+/**** METHOD DEFINATION TO CHECK IF FOLDER EXIST *****/
+export const isEntityExist = (array,name) => {
+  let isExist = false;
+  for(let i=0;i<array.length;i++){
+    if(array[i].entity_name.toLowerCase() === name.toLowerCase()){
+      isExist = true;
+    }
+  }
+  return isExist;
+}
+
 
