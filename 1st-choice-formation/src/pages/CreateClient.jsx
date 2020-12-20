@@ -167,7 +167,7 @@ class CreateClient extends React.Component {
     handleCsvFile = () => {
         let file = document.getElementById('uploadFile');
         let type = (file.files[0].name.split('.'))[1];
-        if (type == 'xls' || type == 'xlsx') {
+        if (type == 'xls' || type == 'xlsx' || type == 'application/vnd.ms-excel' || type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             readXlsxFile(file.files[0]).then((rows) => {
                 let arr = [];
                 for (let i = 0; i < rows.length; i++) {
@@ -591,7 +591,7 @@ class CreateClient extends React.Component {
                         <div className="importmodal_content">
                             <div className="importmodal_contentfirst">
                                 <strong>Step 1</strong>
-                                <p>To Add Multiple Users Download the <a href="#!">Template Spreadsheet</a> And Add As Many users as desired</p>
+                                <p>To Add Multiple Users Download the <a href="https://smart-doc.co.uk/images/test.xlsx" download>Template Spreadsheet</a> And Add As Many users as desired</p>
                             </div>
                             <div className="importmodal_contentsecond">
                                 <strong>Step 2</strong>
