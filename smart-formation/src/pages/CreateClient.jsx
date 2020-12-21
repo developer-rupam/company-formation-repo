@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
@@ -566,7 +567,9 @@ class CreateClient extends React.Component {
                                                 </div> : ''}
                                                 <div className="modal_button_area">
                                                     <button type="button" className="submit" onClick={this.handleSubmitClient}>Submit</button>
-                                                    <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
+                                                    <button type="button" className="cancle" data-dismiss="modal" aria-label="Close" onClick={()=>{
+                                                         this.props.history.push('/dashboard');
+                                                    }}>Cancel</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -776,5 +779,5 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateClient)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CreateClient))
 

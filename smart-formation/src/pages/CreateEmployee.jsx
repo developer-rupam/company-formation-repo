@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
@@ -611,7 +612,9 @@ import {setPersonalFoldersList} from '../utils/redux/action'
                                         </div> : '' }
                                         <div className="modal_button_area">
                                             <button type="button" className="submit" onClick={this.handleSubmitEmployee}>Submit</button>
-                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close">Cancel</button>
+                                            <button type="button" className="cancle" data-dismiss="modal" aria-label="Close" onClick={()=>{
+                                                         this.props.history.push('/dashboard');
+                                                    }}>Cancel</button>
                                         </div>
                                     </div>
                                     </div>
@@ -757,4 +760,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(CreateEmployee)
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(CreateEmployee))
