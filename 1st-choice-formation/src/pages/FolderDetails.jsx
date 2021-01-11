@@ -21,6 +21,7 @@ class FolderDetails extends React.Component {
             showUploadFileModal: false,
             showCreateFolderDropDown: false,
             createdBy: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder: false,
             addPeopleToFile: false,
             totalCharacterForFolderDetails: 1000,
@@ -363,6 +364,7 @@ class FolderDetails extends React.Component {
                      }  */
                     //}
                 }
+                arr = arr.reverse();
                 this.setState({ foldersList: arr })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
@@ -503,7 +505,7 @@ class FolderDetails extends React.Component {
                                         <div className="card card_cstm same_dv_table">
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                    <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>{this.state.fromPage} <i class="fas fa-arrow-right"></i>  {this.state.parentFolderName}</div>
+                                                    <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>{this.state.fromPage} <i class="fas fa-arrow-right ml-2 mr-2"></i>  {this.state.parentFolderName}</div>
                                                     <div className="addbutton">
                                                         <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={() => { this.setState({ showCreateFolderDropDown: !this.state.showCreateFolderDropDown }) }}><i className="fas fa-plus"></i></span>
                                                         <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
@@ -534,7 +536,7 @@ class FolderDetails extends React.Component {
                                                                         <Moment format="YYYY/MM/DD" date={list.entity_created} />
                                                                     </td>
                                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                                    <td>{list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => { this.handleDeleteEntity(list.entity_id) }}> <i className="fas fa-trash-alt"></i>Delete</a></td>
+                                                                    <td>{list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} {this.state.loggedInUserRole === 'ADMIN' ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => { this.handleDeleteEntity(list.entity_id) }}> <i className="fas fa-trash-alt"></i>Delete</a> : ''}</td>
                                                                 </tr>)}
 
                                                         </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}
@@ -699,7 +701,9 @@ class FolderDetails extends React.Component {
             exact: true,
             strict: false
         })
-        console.log(match.params)
+       // console.log(match.params)
+        //console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))))
+        console.log(this.state.loggedInUserRole)
         this.setState({ parentFolderId: match.params.param1 }, () => {
 
             this.getFolderDetails(match.params.param1, match.params.param2)

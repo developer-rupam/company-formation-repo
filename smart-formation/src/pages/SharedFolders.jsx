@@ -195,6 +195,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                             }
                         }
                     }
+                    arr=arr.reverse();
                     this.setState({foldersList : arr})
                     this.props.setSharedFoldersList(this.state.foldersList);
                     console.log(this.state.foldersList)
@@ -255,7 +256,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
     /*** function defination to handle folder details ***/
    handleFolderDetails = (param) => {
-    this.props.history.push('/folder-details/'+param+'/personal_folder')
+    this.props.history.push('/folder-details/'+param+'/shared_folder')
     }  
 
     /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/

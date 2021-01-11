@@ -21,12 +21,12 @@ import { Link,NavLink } from 'react-router-dom';
             <Fragment>
                <footer className="app-footer log_foot">
                 <div>
-                    <Link to="/dashboard">1st Choice Formations</Link>
-                    <span>© 2020 .</span>
+                    <Link to="/dashboard">Smart Docustore Ltd</Link>
+                    <span>© 2021 .</span>
                 </div>
                 <div className="termbox">
                     <Link to="/dashboard">Term and Conditions</Link>
-                    <Link to="/dashboard">Privacy Policy</Link>
+                    <Link to="/dashboard">GDPR Privacy Policy</Link>
                 </div>
             </footer>
             </Fragment>

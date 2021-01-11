@@ -181,6 +181,7 @@ class PersonalFolders extends React.Component {
                         }
                     }
                 }
+                arr=arr.reverse();
                 this.setState({ foldersList: arr })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
