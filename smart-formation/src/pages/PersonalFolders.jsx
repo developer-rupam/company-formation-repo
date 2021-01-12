@@ -251,7 +251,7 @@ class PersonalFolders extends React.Component {
         if (param != '') {
             for (let i = 0; i < this.props.globalState.clientListReducer.clientsList.length; i++) {
                 let iter = this.props.globalState.clientListReducer.clientsList[i]
-                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1) {
+                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1 || (iter.user_email).toLowerCase().indexOf((param).toLowerCase()) != -1) {
                     arr.push(iter)
                 }
             }
@@ -548,7 +548,7 @@ class PersonalFolders extends React.Component {
                                             <div className="col-md-2">
                                                 <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={() => { this.handleSelectUser(list.user_id) }} />
                                             </div>
-                                            <div className="col-md-8">{list.user_name}</div>
+                                            <div className="col-md-8">{list.user_name}({list.user_email})</div>
                                         </div>
                                     </li>)}
                             </ul>
