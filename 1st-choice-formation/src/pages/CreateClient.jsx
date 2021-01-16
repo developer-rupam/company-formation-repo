@@ -73,27 +73,43 @@ class CreateClient extends React.Component {
     /**** function defination for submit clients ****/
     handleSubmitClient = () => {
         let isAbleForSubmission = false;
+        let proceedFurther = true
 
+        //checking for if same email name given in input field
         let clientList = this.state.addClientList;
-        for (let i = 0; i < clientList.length; i++) {
-            if (clientList[i].name != '' && clientList[i].email != '' && clientList[i].password != '') {
-                isAbleForSubmission = true
-            } else {
-                isAbleForSubmission = false
+        clientList.map(v => v.email).sort().sort((a, b) => {
+            console.log(a, b)
+            if (a === b) {
+                //isAbleForSubmission = false;
+                proceedFurther = false
+                return false;
+            } 
+        })
+        if (proceedFurther) {
+            for (let i = 0; i < clientList.length; i++) {
+                if (clientList[i].name != '' && clientList[i].email != '' && clientList[i].password != '') {
+                    isAbleForSubmission = true
+                } else {
+                    isAbleForSubmission = false
+                }
             }
+            if (isAbleForSubmission == true) {
+                if (this.state.assignedFolder.length == 0) {
+                    showConfirm('Are You Sure?', 'No file assigned', 'warning', () => {
+                        this.addClient()
+                    })
+                } else {
+                    this.addClient()
+                }
+            } else {
+                showToast('error', 'Please provide valid information before adding client')
+            }
+        }else{
+            showToast('error', 'You have provided redundant data for email')
         }
 
-        if (isAbleForSubmission == true) {
-            if (this.state.assignedFolder.length == 0) {
-                showConfirm('Are You Sure?', 'No file assigned', 'warning', () => {
-                    this.addClient()
-                })
-            } else {
-                this.addClient()
-            }
-        } else {
-            showToast('error', 'Please provide valid information before adding client')
-        }
+
+       
 
 
     }
@@ -567,8 +583,8 @@ class CreateClient extends React.Component {
                                                 </div> : ''}
                                                 <div className="modal_button_area">
                                                     <button type="button" className="submit" onClick={this.handleSubmitClient}>Submit</button>
-                                                    <button type="button" className="cancle" data-dismiss="modal" aria-label="Close" onClick={()=>{
-                                                         this.props.history.push('/dashboard');
+                                                    <button type="button" className="cancle" data-dismiss="modal" aria-label="Close" onClick={() => {
+                                                        this.props.history.push('/dashboard');
                                                     }}>Cancel</button>
                                                 </div>
                                             </div>
