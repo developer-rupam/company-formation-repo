@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity,isEntityExist } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser,removeDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setSharedFoldersList} from '../utils/redux/action'
@@ -20,6 +20,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
             createdBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
@@ -44,6 +45,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.handleSelectUser  = this.handleSelectUser.bind(this)
         this.assignUserToEntity = this.assignUserToEntity.bind(this)
         this.searchEntity = this.searchEntity.bind(this)
+        this.handleDeleteEntity = this.handleDeleteEntity.bind(this)
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
@@ -60,6 +62,26 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     /*** FUNCTION DEFINATION FOR CLOSING UPLOAD MODAL ***/
     closeCreateFolderModal = () => {
         this.setState({showCreateFolderModal : false,showCreateFolderDropDown:false, assignedUser :[],userListWithSearchQuery : []})
+    }
+    /*** FUNCTION DEFINATION TO HANDLE DELETE ENTITY ***/
+    handleDeleteEntity = (param) => {
+        showConfirm('Delete', 'Are you sure want to delete?', 'warning', () => {
+            let payload = { entity_id: param }
+            removeDirectory(payload).then(function (res) {
+                var response = res.data;
+                if (response.errorResponse.errorStatusCode != 1000) {
+                    this.setState({ showLoader: false })
+                    showToast('error', response.errorResponse.errorStatusType);
+                } else {
+
+                    showToast('success', 'Document Deleted Successfully');
+                    this.fetchAllParentDirectory();
+                }
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
+        })
     }
 
    /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -388,7 +410,10 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                         <Moment format="YYYY/MM/DD" date={list.entity_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                    <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
+                                                    <td>
+                                                        {list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} 
+                                                        {this.state.loggedInUserRole === 'ADMIN' ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => { this.handleDeleteEntity(list.entity_id) }}> <i className="fas fa-trash-alt" ></i>Delete</a> : ''}
+                                                        </td>
                                                 </tr>)}
                                                 
                                                 </tbody>
@@ -493,6 +518,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                   </div>
                               </li> )}
                             </ul>   
+                            <button type="button" className="btn btn-primary" onClick={this.closeAssignUserModal}>Assign </button> 
                         </div>
                         </Modal.Body>
                         
@@ -507,7 +533,6 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     componentDidMount(){
        /*** Get all parent folder's ***/ 
        this.fetchAllParentDirectory();
-       
    }
    
     

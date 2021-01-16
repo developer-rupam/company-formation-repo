@@ -6,11 +6,11 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast, showConfirm, showHttpError, isEntityExist } from '../utils/library'
+import { showToast, showConfirm, showHttpError, isEntityExist,isEmailExist } from '../utils/library'
 import readXlsxFile from 'read-excel-file'
-import { CreateUser, GetAllSubDirectory, addDirectoryAssignedUser, CreateDirectory } from '../utils/service'
+import { CreateUser, GetAllSubDirectory, addDirectoryAssignedUser, CreateDirectory,GetAllUser } from '../utils/service'
 import { connect } from 'react-redux';
-import { setPersonalFoldersList } from '../utils/redux/action'
+import { setPersonalFoldersList,setEmployeeList,setClientList } from '../utils/redux/action'
 
 class CreateClient extends React.Component {
     constructor(props) {
@@ -81,10 +81,32 @@ class CreateClient extends React.Component {
             console.log(a, b)
             if (a === b) {
                 //isAbleForSubmission = false;
+                let elem = document.querySelectorAll('.emailField');
+                elem.forEach(function (el) {
+                    console.log(el.value)
+                    let email = el.value
+                    if (email === a) {
+                        el.style.borderColor= 'red';
+                    }
+                })
                 proceedFurther = false
                 return false;
-            } 
+            }
+            //checking if email exist in database i.e previously inserted
+            if(isEmailExist(this.props.globalState.clientListReducer.clientsList,a)){
+                let elem = document.querySelectorAll('.emailField');
+                elem.forEach(function (el) {
+                    console.log(el.value)
+                    let email = el.value
+                    if (email === a) {
+                        el.style.borderColor= 'red';
+                    }
+                })
+                proceedFurther = false
+                return false;
+            }
         })
+        
         if (proceedFurther) {
             for (let i = 0; i < clientList.length; i++) {
                 if (clientList[i].name != '' && clientList[i].email != '' && clientList[i].password != '') {
@@ -104,12 +126,12 @@ class CreateClient extends React.Component {
             } else {
                 showToast('error', 'Please provide valid information before adding client')
             }
-        }else{
-            showToast('error', 'You have provided redundant data for email')
+        } else {
+            showToast('error', 'You have provided redundant data for email or already exists')
         }
 
 
-       
+
 
 
     }
@@ -430,6 +452,35 @@ class CreateClient extends React.Component {
         this.setState({ addPeopleToFolder: !this.state.addPeopleToFolder })
     }
 
+    /**** FUNCTION DEFINATION TO GET CLIENT LIST****/
+    getAllClientsList = () =>{
+        let payload ={
+            page_no : 1,
+            page_size : 100000,
+        }
+        this.setState({showLoader : true})
+        GetAllUser(payload).then(function(res){
+            this.setState({showLoader : false})
+            var response = res.data;
+            if(response.errorResponse.errorStatusCode != 1000){
+                showToast('error',response.errorResponse.errorStatusType);
+            }else{
+                let allClientsList = response.response;
+                let clientsList = [];
+                for(let i=0;i<allClientsList.length;i++){
+                    if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                        clientsList.push(allClientsList[i])
+                    }
+                }
+                this.props.setClientList(clientsList);
+               
+            }
+        }.bind(this)).catch(function(err){
+            this.setState({showLoader : false})
+            showHttpError(err)
+        }.bind(this))
+    }
+
 
 
     render() {
@@ -476,7 +527,7 @@ class CreateClient extends React.Component {
                                                                                     </div>
                                                                                     <div className="form-group col-md-4">
                                                                                         <label>Email</label>
-                                                                                        <input type="text" className="form-control" placeholder="Email"
+                                                                                        <input type="text" className="form-control emailField" placeholder="Email"
                                                                                             defaultValue={list.email} onBlur={(event) => { this.handleValueChangeInField(event.target.value, list.index, 'email') }} />
                                                                                     </div>
                                                                                     <div className="form-group col-md-4">
@@ -737,7 +788,8 @@ class CreateClient extends React.Component {
     }
 
     componentDidMount() {
-
+        /*** render client list ***/
+        this.getAllClientsList();
         /*** render personal folder list ***/
         if (this.props.globalState.personalFoldersReducer.length != 0 && this.props.globalState.personalFoldersReducer != undefined) {
             var folders = this.props.globalState.personalFoldersReducer.list;
@@ -792,6 +844,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setPersonalFoldersList: (array) => dispatch(setPersonalFoldersList(array)),
+        setEmployeeList : (array) => dispatch(setEmployeeList(array)),
+        setClientList : (array) => dispatch(setClientList(array)),
     }
 }
 

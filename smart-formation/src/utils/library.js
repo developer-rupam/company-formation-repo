@@ -121,5 +121,14 @@ export const isEntityExist = (array,name) => {
   }
   return isExist;
 }
-
+/**** METHOD DEFINATION TO CHECK IF Email EXIST *****/
+export const isEmailExist = (array,email) => {
+  let isExist = false;
+  for(let i=0;i<array.length;i++){
+    if(array[i].user_email.toLowerCase() === email.toLowerCase()){
+      isExist = true;
+    }
+  }
+  return isExist;
+}
 

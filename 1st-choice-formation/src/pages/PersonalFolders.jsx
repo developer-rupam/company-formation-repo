@@ -552,6 +552,7 @@ class PersonalFolders extends React.Component {
                                         </div>
                                     </li>)}
                             </ul>
+                            <button type="button" className="btn btn-primary" onClick={this.closeAssignUserModal}>Assign </button> 
                         </div>
                     </Modal.Body>
 
