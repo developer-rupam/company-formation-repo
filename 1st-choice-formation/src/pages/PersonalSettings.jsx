@@ -82,9 +82,9 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
 
     /*** FUNCTION DEFINATION FOR HANDLING SUBMIT FOR PERSONAL DATA ***/
     handleUpdatePersonalData = () => {
-        if(this.state.sessionType == 'ADMIN' || this.state.sessionType == 'CLIENT'){
+        if(this.state.sessionObj.user_role == 'ADMIN' || this.state.sessionObj.user_role == 'CLIENT'){
             var payload  = {
-                "user_id": this.state.sessionId,
+                "user_id": this.state.sessionObj.user_id,
                 "user_name": this.state.sessionObj.user_name,
                 "user_email": this.state.sessionEmail,
                 "user_password": this.state.sessionPassword,
@@ -261,7 +261,6 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
     }
 
     componentDidMount(){
-
        /** Calling FUNCTION TO GET LOGGED IN USER DETAILS ***/
 		this.getLoggedInUserDetailsForPermission();
        
