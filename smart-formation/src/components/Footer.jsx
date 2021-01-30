@@ -25,8 +25,8 @@ import { Link,NavLink } from 'react-router-dom';
                     <span>© 2021 .</span>
                 </div>
                 <div className="termbox">
-                    <Link to="/dashboard">Term and Conditions</Link>
-                    <Link to="/dashboard">GDPR Privacy Policy</Link>
+                <a href="https://smart-formation.smart-doc.co.uk/extra/terms.html" target="_blank">Term and Conditions</a>
+                    <a href="https://smart-formation.smart-doc.co.uk/extra/privacy.html" target="_blank">GDPR Privacy Policy</a>
                 </div>
             </footer>
             </Fragment>
