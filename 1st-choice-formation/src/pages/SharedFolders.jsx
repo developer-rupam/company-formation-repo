@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity,isEntityExist } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser,removeDirectory} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser,removeDirectory,getEntitySize} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setSharedFoldersList} from '../utils/redux/action'
@@ -28,6 +28,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             userListWithSearchQuery: [],
             assignedUser :[],
             searchQuery : '',
+            selectedEntityInfo: {}
 
             
         };
@@ -104,6 +105,14 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
  closeAssignUserModal = () => {
      this.setState({showAssignUserModal : false,userListWithSearchQuery : []})
  }
+  /*** FUNCTION DEFINATION FOR OPENING ENTITY INFO MODAL ***/
+  openEntityInfoModal = () => {
+    this.setState({ showEntityInfoModal: true })
+}
+/*** FUNCTION DEFINATION FOR CLOSING ENTITY INFO MODAL ***/
+closeEntityInfoModal = () => {
+    this.setState({ showEntityInfoModal: false, selectedEntityInfo: {} })
+}
       /*** FUNCTION DEFINATION TO HANDLE SUBMIT FOR CREATE FOLDER ***/
       handleSubmitForCreateFolder = (e) => {
         e.preventDefault();
@@ -362,6 +371,20 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 this.fetchAllParentDirectory();
             })
         }
+         /***  Function defination for handling file folder information ****/
+    getFileFolderInfo = (id, name, location) => {
+        this.showLoader = true;
+        getEntitySize('/' + location).then(function (res) {
+            let size = res.headers['content-length']
+            this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                this.openEntityInfoModal();
+            });
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
+
+    }
 
     render() {
         return (
@@ -404,7 +427,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
                                                 <tr className="pointer-cursor" key={list.entity_id}>
-                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list.entity_id, list.entity_name, list.entity_location) }}><i className="fas fa-info-circle"></i></span></td>
                                                     
                                                     <td>
                                                         <Moment format="YYYY/MM/DD" date={list.entity_created}/>
@@ -523,7 +546,22 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         </Modal.Body>
                         
                     </Modal>
+                    <Modal
+                    show={this.state.showEntityInfoModal}
+                    onHide={this.closeEntityInfoModal}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>{this.state.selectedEntityInfo.name}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="importmodal_content">
+                            <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span>
+                        </div>
+                    </Modal.Body>
 
+                </Modal>
                 <Footer/>
                 <Loader show={this.state.showLoader}/>
                </Fragment>

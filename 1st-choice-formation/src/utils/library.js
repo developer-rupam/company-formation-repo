@@ -1,6 +1,7 @@
-import { SITENAMEALIAS } from './init'
+import { SITENAMEALIAS,FILEPATH } from './init'
 import Swal from 'sweetalert2'
-import {addUserFavouriteDirectory,removeUserFavouriteDirectory} from './service'
+import {addUserFavouriteDirectory,removeUserFavouriteDirectory,getEntitySize} from './service'
+const axios = require('axios');
 
 
 /*** function defination for storing current route ***/
@@ -131,5 +132,7 @@ export const isEmailExist = (array,email) => {
   }
   return isExist;
 }
+
+
 
 
