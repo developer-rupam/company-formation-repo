@@ -23,7 +23,8 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
-            selectedEntityInfo: {}
+            selectedEntityInfo: {},
+            selectedFolderAssignedTo : [],
 
             
         };
@@ -59,7 +60,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
     }
     /*** FUNCTION DEFINATION FOR CLOSING ENTITY INFO MODAL ***/
     closeEntityInfoModal = () => {
-        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {} })
+        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {},selectedFolderAssignedTo : [] })
     }
 
    /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -239,6 +240,43 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         }.bind(this))
     }
 
+    /***  Function defination for handling file folder information ****/
+    getFileFolderInfo = (param) => {
+
+        /* Entity Size */
+        let id = param.entity_id
+        let name = param.entity_name
+        let location = param.entity_location
+        this.showLoader = true;
+        getEntitySize('/' + location).then(function (res) {
+            let size = res.headers['content-length']
+            this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                this.openEntityInfoModal();
+            });
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
+
+        /* Entity Assignee */
+        let nameArr = [];
+        let clients = this.props.globalState.clientListReducer.clientsList
+        if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
+            for(let i=0;i<param.asigned_user_ids.length;i++){
+                let id = param.asigned_user_ids[i];
+                for(let j=0;j<clients.length;j++){
+                    if(id === clients[j].user_id){
+                        console.log('here')
+                        nameArr.push(clients[j].user_name) ;
+                    }
+                }
+               
+            }
+        }
+        this.setState({ selectedFolderAssignedTo : nameArr});
+
+
+    }
     render() {
         return (
                <Fragment>
@@ -371,6 +409,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                     <Modal.Body>
                         <div className="importmodal_content">
                             <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span>
+                            <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) =><p style={{whiteSpace: "pre-line"}} key={name}>{name}</p>)}</span>
                         </div>
                     </Modal.Body>
 

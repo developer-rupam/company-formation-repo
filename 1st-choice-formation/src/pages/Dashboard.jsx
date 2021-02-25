@@ -17,7 +17,7 @@ import { showToast,showHttpError } from '../utils/library'
         this.state = {
             showLoader : false,
             pageNo : 1,
-            noOfItemsPerPage : 20,
+            noOfItemsPerPage : 100000,
             loggedInUserName : 'Guest',
             recentFileList : [],
             hasAccessToManageEmployees : false,

@@ -28,7 +28,8 @@ class PersonalFolders extends React.Component {
             userListWithSearchQuery: [],
             assignedUser: [],
             searchQuery: '',
-            selectedEntityInfo: {}
+            selectedEntityInfo: {},
+            selectedFolderAssignedTo : [],
 
 
         };
@@ -81,7 +82,7 @@ class PersonalFolders extends React.Component {
     }
     /*** FUNCTION DEFINATION FOR CLOSING ENTITY INFO MODAL ***/
     closeEntityInfoModal = () => {
-        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {} })
+        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {},selectedFolderAssignedTo : [] })
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -395,7 +396,12 @@ class PersonalFolders extends React.Component {
     }
 
     /***  Function defination for handling file folder information ****/
-    getFileFolderInfo = (id, name, location) => {
+    getFileFolderInfo = (param) => {
+
+        /* Entity Size */
+        let id = param.entity_id
+        let name = param.entity_name
+        let location = param.entity_location
         this.showLoader = true;
         getEntitySize('/' + location).then(function (res) {
             let size = res.headers['content-length']
@@ -406,6 +412,24 @@ class PersonalFolders extends React.Component {
             this.setState({ showLoader: false })
             showHttpError(err)
         }.bind(this))
+
+        /* Entity Assignee */
+        let nameArr = [];
+        let clients = this.props.globalState.clientListReducer.clientsList
+        if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
+            for(let i=0;i<param.asigned_user_ids.length;i++){
+                let id = param.asigned_user_ids[i];
+                for(let j=0;j<clients.length;j++){
+                    if(id === clients[j].user_id){
+                        console.log('here')
+                        nameArr.push(clients[j].user_name) ;
+                    }
+                }
+               
+            }
+        }
+        this.setState({ selectedFolderAssignedTo : nameArr});
+
 
     }
 
@@ -464,7 +488,7 @@ class PersonalFolders extends React.Component {
                                                                                 //this.fetchAllParentDirectory()
                                                                             })
                                                                         }}><i className="far fa-star"></i></span>}
-                                                                        <span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list.entity_id, list.entity_name, list.entity_location) }}><i className="fas fa-info-circle"></i></span>
+                                                                        <span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list) }}><i className="fas fa-info-circle"></i></span>
                                                                     </td>
 
                                                                     <td>
@@ -596,7 +620,8 @@ class PersonalFolders extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="importmodal_content">
-                            <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span>
+                            <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span><br></br>
+                            <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) =><p style={{whiteSpace: "pre-line"}} key={name}>{name}</p>)}</span>
                         </div>
                     </Modal.Body>
 
@@ -608,6 +633,7 @@ class PersonalFolders extends React.Component {
         )
     }
     componentDidMount() {
+       
         /*** Get all parent folder's ***/
         this.fetchAllParentDirectory();
 
