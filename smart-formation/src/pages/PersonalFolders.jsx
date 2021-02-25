@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, manipulateRemoveFavoriteEntity, isEntityExist } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser } from '../utils/service'
+import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, getEntitySize } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList, setFavoriteFoldersList } from '../utils/redux/action'
@@ -24,9 +24,11 @@ class PersonalFolders extends React.Component {
             totalCharacterForFolderDetails: 1000,
             foldersList: [],
             showAssignUserModal: false,
+            showEntityInfoModal: false,
             userListWithSearchQuery: [],
             assignedUser: [],
             searchQuery: '',
+            selectedEntityInfo: {}
 
 
         };
@@ -72,6 +74,14 @@ class PersonalFolders extends React.Component {
     /*** FUNCTION DEFINATION FOR CLOSING USER MODAL ***/
     closeAssignUserModal = () => {
         this.setState({ showAssignUserModal: false, userListWithSearchQuery: [] })
+    }
+    /*** FUNCTION DEFINATION FOR OPENING ENTITY INFO MODAL ***/
+    openEntityInfoModal = () => {
+        this.setState({ showEntityInfoModal: true })
+    }
+    /*** FUNCTION DEFINATION FOR CLOSING ENTITY INFO MODAL ***/
+    closeEntityInfoModal = () => {
+        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {} })
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -181,7 +191,7 @@ class PersonalFolders extends React.Component {
                         }
                     }
                 }
-                arr=arr.reverse();
+                arr = arr.reverse();
                 this.setState({ foldersList: arr })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
@@ -384,6 +394,23 @@ class PersonalFolders extends React.Component {
         return isExist
     }
 
+    /***  Function defination for handling file folder information ****/
+    getFileFolderInfo = (id, name, location) => {
+        this.showLoader = true;
+        getEntitySize('/' + location).then(function (res) {
+            let size = res.headers['content-length']
+            this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                this.openEntityInfoModal();
+            });
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
+
+    }
+
+
+
     render() {
         return (
             <Fragment>
@@ -437,7 +464,7 @@ class PersonalFolders extends React.Component {
                                                                                 //this.fetchAllParentDirectory()
                                                                             })
                                                                         }}><i className="far fa-star"></i></span>}
-                                                                        <span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a>
+                                                                        <span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list.entity_id, list.entity_name, list.entity_location) }}><i className="fas fa-info-circle"></i></span>
                                                                     </td>
 
                                                                     <td>
@@ -557,6 +584,23 @@ class PersonalFolders extends React.Component {
                     </Modal.Body>
 
                 </Modal>
+
+                <Modal
+                    show={this.state.showEntityInfoModal}
+                    onHide={this.closeEntityInfoModal}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>{this.state.selectedEntityInfo.name}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="importmodal_content">
+                            <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span>
+                        </div>
+                    </Modal.Body>
+
+                </Modal>
                 <Footer />
                 <Loader show={this.state.showLoader} />
             </Fragment>
@@ -566,6 +610,7 @@ class PersonalFolders extends React.Component {
     componentDidMount() {
         /*** Get all parent folder's ***/
         this.fetchAllParentDirectory();
+
 
         /*** FETCH FAVORITE FOLDER LIST IF FAVORITE LIST IS NOT AVAILABLE ***/
         if (this.props.globalState.favoriteFoldersReducer.length === 0) {

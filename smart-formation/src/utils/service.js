@@ -1,4 +1,4 @@
-import { SITENAMEALIAS,WEBSERVICE } from './init'
+import { SITENAMEALIAS,WEBSERVICE,FILEPATH } from './init'
 import Swal from 'sweetalert2'
 const axios = require('axios');
 
@@ -190,3 +190,7 @@ export const sendUserCredential = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/user/send_user_credential', payload,headers);
 }
+/*** Functiondefination for getting entity size ***/
+export const getEntitySize = (param) =>{
+    return axios.get(FILEPATH + param);
+  }
