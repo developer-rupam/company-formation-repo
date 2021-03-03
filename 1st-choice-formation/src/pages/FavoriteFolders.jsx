@@ -317,10 +317,10 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 <tr className="pointer-cursor" key={list.entity_id}>
                                                     <td><span className="select" style={{color:'#f5941f'}}  onClick={()=>{manipulateRemoveFavoriteEntity(this.state.createdBy,list.entity_id,() => {
                                                                 this.getFavoriteEntities()
-                                                                })}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list.entity_id, list.entity_name, list.entity_location) }}><i className="fas fa-info-circle"></i></span></td>
+                                                                })}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list) }}><i className="fas fa-info-circle"></i></span></td>
                                                     
                                                     <td>
-                                                        <Moment format="YYYY/MM/DD" date={list.entity_created}/>
+                                                        <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
                                                     <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>

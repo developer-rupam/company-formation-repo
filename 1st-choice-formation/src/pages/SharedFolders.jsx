@@ -380,6 +380,7 @@ closeEntityInfoModal = () => {
             let name = param.entity_name
             let location = param.entity_location
             this.showLoader = true;
+            //console.log('location',location)
             getEntitySize('/' + location).then(function (res) {
                 let size = res.headers['content-length']
                 this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
@@ -452,10 +453,10 @@ closeEntityInfoModal = () => {
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
                                                 <tr className="pointer-cursor" key={list.entity_id}>
-                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list.entity_id, list.entity_name, list.entity_location) }}><i className="fas fa-info-circle"></i></span></td>
+                                                    <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list) }}><i className="fas fa-info-circle"></i></span></td>
                                                     
                                                     <td>
-                                                        <Moment format="YYYY/MM/DD" date={list.entity_created}/>
+                                                        <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created}/>
                                                     </td>
                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
                                                     <td>
