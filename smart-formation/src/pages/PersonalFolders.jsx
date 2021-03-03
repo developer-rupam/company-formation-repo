@@ -492,7 +492,7 @@ class PersonalFolders extends React.Component {
                                                                     </td>
 
                                                                     <td>
-                                                                        <Moment format="YYYY/MM/DD" date={list.entity_created} />
+                                                                        <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
                                                                     </td>
                                                                     <td>
                                                                         {this.getEntityOwnerDetails(list.directory_owner).ownerName}
