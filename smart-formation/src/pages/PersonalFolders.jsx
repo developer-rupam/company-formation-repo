@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, manipulateRemoveFavoriteEntity, isEntityExist } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, getEntitySize } from '../utils/service'
+import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, GetDirectory } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList, setFavoriteFoldersList } from '../utils/redux/action'
@@ -30,6 +30,7 @@ class PersonalFolders extends React.Component {
             searchQuery: '',
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
+            selectedSortingType : 'desc',
 
 
         };
@@ -192,7 +193,11 @@ class PersonalFolders extends React.Component {
                         }
                     }
                 }
-                arr = arr.reverse();
+                if(this.state.selectedSortingType === 'desc'){
+                    arr = arr.reverse();
+                }else if(this.state.selectedSortingType === 'asc'){
+                    arr = arr;
+                }
                 this.setState({ foldersList: arr })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
@@ -403,11 +408,15 @@ class PersonalFolders extends React.Component {
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        getEntitySize('/' + location).then(function (res) {
-            let size = res.headers['content-length']
-            this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
-                this.openEntityInfoModal();
-            });
+        let payload = {directoryName : name}
+        GetDirectory(payload).then(function (res) {
+            let response = res.data.response;
+            if(response !== null){
+                let size = response.folderSize;
+                this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                    this.openEntityInfoModal();
+                });
+            }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
             showHttpError(err)
@@ -433,6 +442,12 @@ class PersonalFolders extends React.Component {
 
     }
 
+    /*** Method defination for handling folder sorting ***/
+    handleFolderSorting = (param) => {
+        this.setState({selectedSortingType : param},()=>{
+            this.fetchAllParentDirectory();
+        })
+    }
 
 
     render() {
@@ -450,6 +465,18 @@ class PersonalFolders extends React.Component {
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Personal Folders</div>
+                                                    <div className="lft-hdr">
+                                                        <label>Sort : </label>
+                                                    </div>
+                                                    <div className="lft-hdr">
+                                                        <select className="form-control" onChange={(e)=>{this.handleFolderSorting(e.target.value)}}>
+                                                            <option value="desc">Decending Order </option>
+                                                            <option value="name">Ascending Order</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="lft-hdr">
+                                                        <label>Search : </label>
+                                                    </div>
                                                     <div className="lft-hdr">
                                                         <input type="text" className="form-control" placeholder="Search folder" onKeyUp={(e) => { this.searchEntity(e.target.value) }} />
                                                     </div>

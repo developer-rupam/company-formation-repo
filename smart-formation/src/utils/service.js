@@ -7,7 +7,8 @@ const headers = {headers: {
     'Content-Type': 'application/json',
     'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
     'X-Frame-Options' : 'SAMEORIGIN',
-    'X-Content-Type-Options' : 'nosniff'
+    'X-Content-Type-Options' : 'nosniff',
+    'Access-Control-Allow-Headers': "*"
 }}
 
 
@@ -190,7 +191,8 @@ export const sendUserCredential = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/user/send_user_credential', payload,headers);
 }
-/*** Functiondefination for getting entity size ***/
-export const getEntitySize = (param) =>{
-    return axios.get(FILEPATH + param);
-  }
+/*** FUNCTION DEFINATION FOR Removing DIRECTORY FROM SHARED USER ***/
+export const GetDirectory = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/get_directory', payload,headers);
+}

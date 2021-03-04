@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateFavoriteEntity,isEntityExist } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser,removeDirectory,getEntitySize} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,addDirectoryAssignedUser,removeDirectory,GetDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setSharedFoldersList} from '../utils/redux/action'
@@ -30,6 +30,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             searchQuery : '',
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
+            selectedSortingType : 'desc'
 
             
         };
@@ -227,7 +228,11 @@ closeEntityInfoModal = () => {
                             }
                         }
                     }
-                    arr=arr.reverse();
+                    if(this.state.selectedSortingType === 'desc'){
+                        arr = arr.reverse();
+                    }else if(this.state.selectedSortingType === 'asc'){
+                        arr = arr;
+                    }
                     this.setState({foldersList : arr})
                     this.props.setSharedFoldersList(this.state.foldersList);
                     console.log(this.state.foldersList)
@@ -373,43 +378,52 @@ closeEntityInfoModal = () => {
             })
         }
          /***  Function defination for handling file folder information ****/
-         getFileFolderInfo = (param) => {
+    getFileFolderInfo = (param) => {
 
-            /* Entity Size */
-            let id = param.entity_id
-            let name = param.entity_name
-            let location = param.entity_location
-            this.showLoader = true;
-            //console.log('location',location)
-            getEntitySize('/' + location).then(function (res) {
-                let size = res.headers['content-length']
+        /* Entity Size */
+        let id = param.entity_id
+        let name = param.entity_name
+        let location = param.entity_location
+        this.showLoader = true;
+        let payload = {directoryName : name}
+        GetDirectory(payload).then(function (res) {
+            let response = res.data.response;
+            if(response !== null){
+                let size = response.folderSize;
                 this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
                     this.openEntityInfoModal();
                 });
-            }.bind(this)).catch(function (err) {
-                this.setState({ showLoader: false })
-                showHttpError(err)
-            }.bind(this))
-    
-            /* Entity Assignee */
-            let nameArr = [];
-            let clients = this.props.globalState.clientListReducer.clientsList
-            if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
-                for(let i=0;i<param.asigned_user_ids.length;i++){
-                    let id = param.asigned_user_ids[i];
-                    for(let j=0;j<clients.length;j++){
-                        if(id === clients[j].user_id){
-                            console.log('here')
-                            nameArr.push(clients[j].user_name) ;
-                        }
-                    }
-                   
-                }
             }
-            this.setState({ selectedFolderAssignedTo : nameArr});
-    
-    
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
+
+        /* Entity Assignee */
+        let nameArr = [];
+        let clients = this.props.globalState.clientListReducer.clientsList
+        if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
+            for(let i=0;i<param.asigned_user_ids.length;i++){
+                let id = param.asigned_user_ids[i];
+                for(let j=0;j<clients.length;j++){
+                    if(id === clients[j].user_id){
+                        console.log('here')
+                        nameArr.push(clients[j].user_name) ;
+                    }
+                }
+               
+            }
         }
+        this.setState({ selectedFolderAssignedTo : nameArr});
+
+
+    }
+    /*** Method defination for handling folder sorting ***/
+    handleFolderSorting = (param) => {
+        this.setState({selectedSortingType : param},()=>{
+            this.fetchAllParentDirectory();
+        })
+    }
     
 
     render() {
@@ -428,6 +442,18 @@ closeEntityInfoModal = () => {
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Shared Folders</div>
                                             <div className="lft-hdr">
+                                                        <label>Sort : </label>
+                                                    </div>
+                                                    <div className="lft-hdr">
+                                                        <select className="form-control" onChange={(e)=>{this.handleFolderSorting(e.target.value)}}>
+                                                            <option value="desc">Decending Order </option>
+                                                            <option value="name">Ascending Order</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="lft-hdr">
+                                                        <label>Search : </label>
+                                                    </div>
+                                                    <div className="lft-hdr">
                                                 <input type="text" className="form-control" placeholder="Search folder" onKeyUp={(e)=>{this.searchEntity(e.target.value)}}/>
                                             </div>
                                              {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role === 'ADMIN' && <div className="addbutton">

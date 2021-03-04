@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateRemoveFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,getEntitySize} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,GetDirectory} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setFavoriteFoldersList} from '../utils/redux/action'
@@ -25,7 +25,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             foldersList : [],
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
-
+            selectedSortingType : 'desc'
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -150,6 +150,11 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                             }
                         }
                     }
+                    if(this.state.selectedSortingType === 'desc'){
+                        arr = arr.reverse();
+                    }else if(this.state.selectedSortingType === 'asc'){
+                        arr = arr;
+                    }
                     this.setState({foldersList : arr})
                     this.props.setFavoriteFoldersList(this.state.foldersList);
                     console.log(this.state.foldersList)
@@ -248,11 +253,15 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        getEntitySize('/' + location).then(function (res) {
-            let size = res.headers['content-length']
-            this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
-                this.openEntityInfoModal();
-            });
+        let payload = {directoryName : name}
+        GetDirectory(payload).then(function (res) {
+            let response = res.data.response;
+            if(response !== null){
+                let size = response.folderSize;
+                this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                    this.openEntityInfoModal();
+                });
+            }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
             showHttpError(err)
@@ -276,6 +285,12 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         this.setState({ selectedFolderAssignedTo : nameArr});
 
 
+    }
+    /*** Method defination for handling folder sorting ***/
+    handleFolderSorting = (param) => {
+        this.setState({selectedSortingType : param},()=>{
+            this.fetchAllParentDirectory();
+        })
     }
     render() {
         return (
