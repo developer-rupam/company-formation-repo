@@ -32,6 +32,7 @@ class FolderDetails extends React.Component {
             showAssignUserModal: false,
             userListWithSearchQuery: [],
             assignedUser: [],
+            selectedEntityArray: [],
 
 
         };
@@ -490,6 +491,73 @@ class FolderDetails extends React.Component {
             }.bind(this))
         })
     }
+    /**** FUNCTION DEFINATION FOR SELECTION ALL ENTITY ****/
+    selectAllEntity = (e) => {
+        let checkedValue = e.target.checked
+        console.log(checkedValue)
+        let elem = document.getElementsByClassName('desCheckBox');
+        for (let i = 0; i < elem.length; i++) {
+            if (checkedValue) {
+                if (elem[i].checked === false) {
+                    elem[i].click();
+                }
+            } else {
+                elem[i].click();
+            }
+        }
+    }
+    /*** Function defination to select multiple entity for deletion using check box ***/
+    handleSelectMultiEntity = (e) => {
+        let arr = this.state.selectedEntityArray;
+        let id = e.target.getAttribute("data-id");
+        if (e.target.checked) {
+            arr.push(id)
+        } else {
+            var index = arr.indexOf(id);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+        }
+        this.setState({ selectedEntityArray: arr })
+    }
+
+    /*** Function defination to for deleting entity by multiselect ***/
+    handleDeleteByMutliSelect = () => {
+        let arr = this.state.selectedEntityArray
+        showConfirm('Delete', 'Are you sure want to delete?', 'warning', () => {
+            for (let i = 0; i < arr.length; i++) {
+                let payload = { entity_id: arr[i] }
+                removeDirectory(payload).then(function (res) {
+                    var response = res.data;
+                    if (response.errorResponse.errorStatusCode != 1000) {
+                        this.setState({ showLoader: false })
+                        showToast('error', response.errorResponse.errorStatusType);
+                    } else {
+                        if (i + 1 === arr.length) {
+                            showToast('success', 'Document Deleted Successfully');
+                            const match = matchPath(this.props.history.location.pathname, {
+                                path: '/folder-details/:param1/:param2',
+                                exact: true,
+                                strict: false
+                            })
+                            console.log(match.params)
+                            this.setState({ parentFolderId: match.params.param1 }, () => {
+
+
+
+                                this.getFolderDetails(match.params.param1, match.params.param2)
+                            })
+                        }
+                    }
+                }.bind(this)).catch(function (err) {
+                    this.setState({ showLoader: false })
+                    showHttpError(err)
+                }.bind(this))
+            }
+
+        })
+    }
+
 
     render() {
         return (
@@ -506,6 +574,9 @@ class FolderDetails extends React.Component {
                                             <div className="card-header">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>{this.state.fromPage} <i class="fas fa-arrow-right ml-2 mr-2"></i>  {this.state.parentFolderName}</div>
+                                                    <div className="lft-hdr">
+                                                        {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt"></i>Delete Selected</a> : ''}
+                                                    </div>
                                                     <div className="addbutton">
                                                         <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={() => { this.setState({ showCreateFolderDropDown: !this.state.showCreateFolderDropDown }) }}><i className="fas fa-plus"></i></span>
                                                         <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
@@ -520,6 +591,12 @@ class FolderDetails extends React.Component {
                                                     <table className="table_all table dt-responsive nowrap">
                                                         <thead>
                                                             <tr>
+                                                                <th>
+                                                                    <div className="custom-control custom-checkbox">
+                                                                        <input type="checkbox" className="custom-control-input " id="check_all" onClick={(event) => { this.selectAllEntity(event) }} />
+                                                                        <label className="custom-control-label" htmlFor="check_all"></label>
+                                                                    </div>
+                                                                </th>
                                                                 <th>Name</th>
                                                                 {/* <th>Size</th> */}
                                                                 <th>Uploaded</th>
@@ -530,13 +607,19 @@ class FolderDetails extends React.Component {
                                                         {this.state.foldersList.length != 0 ? <tbody>
                                                             {this.state.foldersList.map((list) =>
                                                                 <tr className="pointer-cursor" key={list.entity_id}>
+                                                                    <td>
+                                                                        <div className="custom-control custom-checkbox">
+                                                                            <input type="checkbox" className="custom-control-input checkbox desCheckBox" data-id={list.entity_id} id={list.entity_id} onClick={(e) => { this.handleSelectMultiEntity(e) }} />
+                                                                            <label className="custom-control-label" htmlFor={list.entity_id}></label>
+                                                                        </div>
+                                                                    </td>
                                                                     <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
 
                                                                     <td>
-                                                                        <Moment format="YYYY/MM/DD" date={list.entity_created} />
+                                                                        <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
                                                                     </td>
                                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                                    <td>{list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>} {this.state.loggedInUserRole === 'ADMIN' ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => { this.handleDeleteEntity(list.entity_id) }}> <i className="fas fa-trash-alt"></i>Delete</a> : ''}</td>
+                                                                    <td>{list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
                                                                 </tr>)}
 
                                                         </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}
@@ -701,7 +784,7 @@ class FolderDetails extends React.Component {
             exact: true,
             strict: false
         })
-       // console.log(match.params)
+        // console.log(match.params)
         //console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))))
         console.log(this.state.loggedInUserRole)
         this.setState({ parentFolderId: match.params.param1 }, () => {
