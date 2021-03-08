@@ -30,9 +30,13 @@ class FolderDetails extends React.Component {
             fromPage: '',
             parentFolderName: '',
             showAssignUserModal: false,
+            showPeoplesModal: false,
             userListWithSearchQuery: [],
             assignedUser: [],
             selectedEntityArray: [],
+            assignedUsers: [],
+            isReadyToReassign : false,
+            selectedReducerFolderList : [], 
 
 
         };
@@ -85,7 +89,15 @@ class FolderDetails extends React.Component {
     }
     /*** FUNCTION DEFINATION FOR CLOSING USER MODAL ***/
     closeAssignUserModal = () => {
-        this.setState({ showAssignUserModal: false, userListWithSearchQuery: [] })
+        this.setState({ showAssignUserModal: false, userListWithSearchQuery: [] ,isReadyToReassign:true})
+    }
+    /*** FUNCTION DEFINATION FOR OPENING PEOPLES MODAL ***/
+    openPeoplesModal = () => {
+        this.setState({ showPeoplesModal: true })
+    }
+    /*** FUNCTION DEFINATION FOR CLOSING PEOPLES MODAL ***/
+    closePeoplesModal = () => {
+        this.setState({ showPeoplesModal: false, userListWithSearchQuery: [] })
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -244,13 +256,17 @@ class FolderDetails extends React.Component {
                 }
             }
             this.fetchAllParentDirectory()
+            /* fetching assignee */
+            this.getAllAssignedUsers(folders);
         } else {
             this.props.history.push(fallBackRoute)
         }
 
+       
         this.setState({
             parentFolderName: foldername,
             fromPage: parentPage,
+            selectedReducerFolderList : folders
         })
 
     }
@@ -359,6 +375,7 @@ class FolderDetails extends React.Component {
                 for (let i = 0; i < folders.length; i++) {
                     //  if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                     arr.push(folders[i]);
+
                     // }else{
                     /* if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
                          arr.push(folders[i]);
@@ -396,6 +413,9 @@ class FolderDetails extends React.Component {
 
     /*** FUNCTION DEFINATION TO CHECK IF A FOLDER IS ALREADY ASSIGNED ****/
     isUserAlreadyAssigned = (param) => {
+        console.log(param)
+        console.log(this.state.assignedUser)
+        
         if (this.state.assignedUser.includes(param)) {
             return true
         } else {
@@ -410,7 +430,6 @@ class FolderDetails extends React.Component {
             arr.push(param);
         } else {
             let index = arr.indexOf(param);
-            console.log(index)
             if (index > -1) {
                 arr.splice(index, 1);
             }
@@ -450,8 +469,12 @@ class FolderDetails extends React.Component {
 
                         assignedUser: [],
                         showLoader: false,
+                        isReadyToReassign : false,
+                        showAssignUserModal:false,
+                        showPeoplesModal:false
                     })
                     showToast('success', 'Folder Assigned Successfully');
+                    this.getAllAssignedUsers(this.state.selectedReducerFolderList);
                 }, 3000);
 
             }
@@ -558,6 +581,35 @@ class FolderDetails extends React.Component {
         })
     }
 
+    /** Method defination to get all assigned users to this directory **/
+    getAllAssignedUsers = (arr) => {
+        let assignee = [];
+        let assigneeIds = [];
+        for(let i=0;i<arr.length;i++){
+            console.log('parentFolderId',this.state.parentFolderId)
+            console.log('entity_id',arr[i].entity_id)
+            if(this.state.parentFolderId == arr[i].entity_id){
+                let clients = this.props.globalState.clientListReducer.clientsList;
+                for(let j=0;j<clients.length;j++){
+                    if( arr[i].asigned_user_ids.includes(clients[j].user_id)){
+                        assignee.push(clients[j])
+                    }
+                }
+                for(let j=0;j<arr[i].asigned_user_ids.length;j++){
+                    assigneeIds.push(arr[i].asigned_user_ids[j])
+
+                }
+                console.log(assignee)
+                this.setState({assignedUsers : assignee,assignedUser:assigneeIds})
+                break;
+            }
+        }
+    }
+
+    /*** Method defonation for re assigning folder ****/
+    handleReassignFolder = () => {
+                this.assignUserToEntity(this.state.assignedUser[0],this.state.parentFolderId);
+    }
 
     render() {
         return (
@@ -575,7 +627,10 @@ class FolderDetails extends React.Component {
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>{this.state.fromPage} <i class="fas fa-arrow-right ml-2 mr-2"></i>  {this.state.parentFolderName}</div>
                                                     <div className="lft-hdr">
-                                                        {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt"></i>Delete Selected</a> : ''}
+                                                        {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt mr-2"></i>Delete Selected</a> : ''}
+                                                    </div>
+                                                    <div className="lft-hdr">
+                                                        <a href="javascript:void(0)" className="ml-2 btn btn-info" onClick={this.openPeoplesModal}> <i class="fas fa-users mr-2"></i>People in this Folder</a> 
                                                     </div>
                                                     <div className="addbutton">
                                                         <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={() => { this.setState({ showCreateFolderDropDown: !this.state.showCreateFolderDropDown }) }}><i className="fas fa-plus"></i></span>
@@ -748,7 +803,7 @@ class FolderDetails extends React.Component {
                     <Modal.Body>
                         <div className="importmodal_content">
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="Search Folder" onKeyUp={(event) => { this.isUserMatched(event.target.value) }} />
+                                <input type="text" className="form-control" placeholder="Search People" onKeyUp={(event) => { this.isUserMatched(event.target.value) }} />
                                 {/*  <div className="input-group-append">
                             <button className="btn btn-outline-secondary" type="button">Search</button>
                         </div> */}
@@ -760,11 +815,46 @@ class FolderDetails extends React.Component {
                                             <div className="col-md-2">
                                                 <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={() => { this.handleSelectUser(list.user_id) }} />
                                             </div>
-                                            <div className="col-md-8">{list.user_name}</div>
+                                            <div className="col-md-8">{list.user_name}({list.user_email})</div>
                                         </div>
                                     </li>)}
                             </ul>
+                            <button type="button" className="btn btn-primary" onClick={this.closeAssignUserModal}>Assign </button>
+                        </div>
+                    </Modal.Body>
 
+                </Modal>
+                <Modal
+                    show={this.state.showPeoplesModal}
+                    onHide={this.closePeoplesModal}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Assigned To This Folder</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="importmodal_content">
+                           
+                            <ul className="">
+                                {this.state.assignedUsers.map((peps) =>
+                                    <li className="list-group-item" key={peps.user_id}>
+                                        <div className="row">
+                                            <div className="col-md-2">
+                                            <i className="fas fa-user-tie"></i>
+                                            </div>
+                                            <div className="col-md-8">{peps.user_name}</div>
+                                        </div>
+                                    </li>)}
+                            </ul>
+                                   <div className="row mt-2">
+                                       <div className="col-md-4"></div>
+                                       <div className="col-md-4">
+                                           {!this.state.isReadyToReassign && <button className="btn btn-warning" onClick={this.openAssignUserModal}><i className="fas fa-share mr-2"></i> Reassign</button>}
+                                           {this.state.isReadyToReassign && <button className="btn btn-warning" onClick={this.handleReassignFolder}><i className="fas fa-share mr-2"></i> Proceed to Reassign</button>}
+                                        </div>
+                                       <div className="col-md-4"></div>
+                                       </div> 
                         </div>
                     </Modal.Body>
 
@@ -789,7 +879,8 @@ class FolderDetails extends React.Component {
         console.log(this.state.loggedInUserRole)
         this.setState({ parentFolderId: match.params.param1 }, () => {
 
-            this.getFolderDetails(match.params.param1, match.params.param2)
+            this.getFolderDetails(match.params.param1, match.params.param2);
+
         })
 
 
