@@ -305,7 +305,7 @@ class FolderDetails extends React.Component {
                         if (this.state.assignedUser.length != 0) {
                             for (let i = 0; i < this.state.assignedUser.length; i++) {
                                 let iter = this.state.assignedUser[i]
-                                this.assignUserToEntity(iter, insertedEntityId)
+                                //this.assignUserToEntity(iter, insertedEntityId)
                             }
                         }
                     }
