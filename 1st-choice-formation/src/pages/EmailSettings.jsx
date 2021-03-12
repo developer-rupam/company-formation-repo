@@ -228,6 +228,7 @@ import 'suneditor/dist/css/suneditor.min.css';
                                                                         {/* <textarea className="form-control" placeholder="Create folder/file message body" cols={this.state.textareaWidth} rows={this.state.textareaHeight}
                                                                         ref={this.createEntityMessageBodyRef} ></textarea> */}
                                                                         <SunEditor ref={this.createEntityMessageBodyRef} height={this.state.textareaHeight} width={this.state.textareaWidth} setContents={this.state.createEntityMessageBody} onChange={this.handleUpdatedCreateEntityMessageBody}/>
+                                                                        <p className="error">*For generating folder name where a file has been uploaded use identifier ASSIGNED_FOLDER_NAME </p>
                                                                     </div>
                                                                     
                                                                 </div>
