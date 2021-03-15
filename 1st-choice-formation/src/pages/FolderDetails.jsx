@@ -305,7 +305,7 @@ class FolderDetails extends React.Component {
                         if (this.state.assignedUser.length != 0) {
                             for (let i = 0; i < this.state.assignedUser.length; i++) {
                                 let iter = this.state.assignedUser[i]
-                               // this.assignUserToEntity(iter, insertedEntityId)
+                                //this.assignUserToEntity(iter, insertedEntityId)
                             }
                         }
                     }
@@ -446,10 +446,10 @@ class FolderDetails extends React.Component {
 
     /*** FUNCTION DEFINATION TO CALL API FOR ASSIGNING FOLDER TO USER ***/
     assignUserToEntity = (userId, entityId) => {
-      //  let arr = []
-       // arr.push(userId)
+        //  let arr = []
+        // arr.push(userId)
         console.log(userId);
-       // console.log(arr)
+        // console.log(arr)
         let payload = {
             entity_id: entityId,
             user_ids: userId
@@ -619,7 +619,7 @@ class FolderDetails extends React.Component {
     /* Method defination for removing asignee */
     handleRemoveAssignee = () => {
         let totalAssignee = this.state.assignedUsers.length
-        if(totalAssignee != 0){
+        if (totalAssignee != 0) {
             showConfirm('Remove Assignee', 'Are you sure want to remove current Assignee?', 'warning', () => {
                 for (let i = 0; i < this.state.assignedUsers.length; i++) {
                     let user = this.state.assignedUsers[i]
@@ -639,7 +639,7 @@ class FolderDetails extends React.Component {
                                 showToast('success', 'Assignee Removed successfully')
                                 this.setState({ assignedUser: [], assignedUsers: [] });
                                 this.setState({ showLoader: false })
-    
+
                                 this.openAssignUserModal();
                             }
                         }
@@ -649,13 +649,29 @@ class FolderDetails extends React.Component {
                     }.bind(this))
                 }
             })
-        }else{
+        } else {
             this.openAssignUserModal();
         }
-        
+
 
     }
 
+    /** Method defination for handle download files **/
+    handleDownloadFiles = () => {
+        let files = document.getElementsByClassName('downloadFile')
+        console.log(files)
+        console.log(files.length)
+        console.log(typeof(files))
+        console.log(this.state.selectedEntityArray)
+        for(let i=0;i<files.length;i++){
+            let id = files[i].getAttribute('id')
+            console.log(this.state.selectedEntityArray.includes(id))
+            if(this.state.selectedEntityArray.includes(id)){
+                files[i].click()
+            }
+        }
+      
+    }
 
 
     render() {
@@ -674,7 +690,12 @@ class FolderDetails extends React.Component {
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>{this.state.fromPage} <i class="fas fa-arrow-right ml-2 mr-2"></i>  {this.state.parentFolderName}</div>
                                                     <div className="lft-hdr">
-                                                        {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt mr-2"></i>Delete Selected</a> : ''}
+                                                        {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <Fragment>
+                                                            <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt mr-2"></i>Delete Selected</a>
+
+                                                            <a href="javascript:void(0)" className="ml-2 btn btn-success" onClick={this.handleDownloadFiles}> <i class="fas fa-file-download mr-2"></i>Download Selected</a>
+
+                                                        </Fragment> : ''}
                                                     </div>
                                                     <div className="lft-hdr">
                                                         <a href="javascript:void(0)" className="ml-2 btn btn-info" onClick={this.openPeoplesModal}> <i class="fas fa-users mr-2"></i>People in this Folder</a>
@@ -715,13 +736,18 @@ class FolderDetails extends React.Component {
                                                                             <label className="custom-control-label" htmlFor={list.entity_id}></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a></td>
+                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a> </td>
 
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
                                                                     </td>
                                                                     <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
-                                                                    <td>{list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
+                                                                    <td>
+                                                                        {list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <Fragment>
+                                                                            <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>
+                                                                            <a href={FILEPATH + list.entity_location.replace("../", "")} style={{ display: 'none' }} className="downloadFile" id={list.entity_id} download={FILEPATH + list.entity_location.replace("../", "")} target="_blank"></a>
+                                                                        </Fragment>}
+                                                                    </td>
                                                                 </tr>)}
 
                                                         </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}
