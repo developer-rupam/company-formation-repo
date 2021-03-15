@@ -662,9 +662,13 @@ class FolderDetails extends React.Component {
         console.log(files)
         console.log(files.length)
         console.log(typeof(files))
+        console.log(this.state.selectedEntityArray)
         for(let i=0;i<files.length;i++){
-            files[i].click()
-            //console.log(files[i])
+            let id = files[i].getAttribute('id')
+            console.log(this.state.selectedEntityArray.includes(id))
+            if(this.state.selectedEntityArray.includes(id)){
+                files[i].click()
+            }
         }
       
     }
@@ -741,7 +745,7 @@ class FolderDetails extends React.Component {
                                                                     <td>
                                                                         {list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <Fragment>
                                                                             <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>
-                                                                            <a href={FILEPATH + list.entity_location.replace("../", "")} style={{ display: 'none' }} className="downloadFile" download={FILEPATH + list.entity_location.replace("../", "")}></a>
+                                                                            <a href={FILEPATH + list.entity_location.replace("../", "")} style={{ display: 'none' }} className="downloadFile" id={list.entity_id} download={FILEPATH + list.entity_location.replace("../", "")} target="_blank"></a>
                                                                         </Fragment>}
                                                                     </td>
                                                                 </tr>)}
