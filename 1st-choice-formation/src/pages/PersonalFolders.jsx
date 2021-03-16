@@ -29,12 +29,13 @@ class PersonalFolders extends React.Component {
             assignedUser: [],
             searchQuery: '',
             selectedEntityInfo: {},
-            selectedFolderAssignedTo : [],
-            selectedSortingType : 'desc',
-            page : 1,
-            noOfItemsPerPage : 50,
-            totalCount : 0,
-            sort : -1
+            selectedFolderAssignedTo: [],
+            page: 0,
+            noOfItemsPerPage: 50,
+            totalCount: 0,
+            sort: -1,
+            totalPageToRender : 0,
+            pageButtonArr : []
 
 
         };
@@ -87,7 +88,7 @@ class PersonalFolders extends React.Component {
     }
     /*** FUNCTION DEFINATION FOR CLOSING ENTITY INFO MODAL ***/
     closeEntityInfoModal = () => {
-        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {},selectedFolderAssignedTo : [] })
+        this.setState({ showEntityInfoModal: false, selectedEntityInfo: {}, selectedFolderAssignedTo: [] })
     }
 
     /*** FUNCTION DEFINATION FOR HANDLING RADIO FOR ADD/ASSIGN PEOPLE TO FOLDER***/
@@ -173,7 +174,7 @@ class PersonalFolders extends React.Component {
 
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     fetchAllParentDirectory = () => {
-        let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
+        let payload = { entity_id: '', page: this.state.page, limit: this.state.noOfItemsPerPage, sort: this.state.sort, searchQuery: this.state.searchQuery }
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
             var response = res.data;
@@ -187,25 +188,22 @@ class PersonalFolders extends React.Component {
                 for (let i = 0; i < folders.length; i++) {
 
                     if (folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
-                        if (this.state.searchQuery != '') {
+                        /* if (this.state.searchQuery != '') {
                             if (folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1) {
 
                                 arr.push(folders[i]);
                             }
-                        } else {
+                        } else { */
                             arr.push(folders[i]);
-                        }
+                        //}
                     }
                 }
-                if(this.state.selectedSortingType === 'desc'){
-                    arr = arr.reverse();
-                }else if(this.state.selectedSortingType === 'asc'){
-                    arr = arr;
-                }
-                this.setState({ foldersList: arr })
+                
+                this.setState({ foldersList: arr,totalCount : response.totalCount })
                 this.props.setPersonalFoldersList(this.state.foldersList);
-                console.log(this.state.foldersList)
-                console.log(this.props.globalState)
+               // console.log(this.state.foldersList)
+                //console.log(this.props.globalState)
+                this.handlePaginationLogic();
 
             }
         }.bind(this)).catch(function (err) {
@@ -412,12 +410,12 @@ class PersonalFolders extends React.Component {
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        let payload = {directoryName : name}
+        let payload = { directoryName: name }
         GetDirectory(payload).then(function (res) {
             let response = res.data.response;
-            if(response !== null){
+            if (response !== null) {
                 let size = response.folderSize;
-                this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
                     this.openEntityInfoModal();
                 });
             }
@@ -429,32 +427,50 @@ class PersonalFolders extends React.Component {
         /* Entity Assignee */
         let nameArr = [];
         let clients = this.props.globalState.clientListReducer.clientsList
-        if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
-            for(let i=0;i<param.asigned_user_ids.length;i++){
+        if (param.asigned_user_ids.length !== 0 && clients.length !== 0) {
+            for (let i = 0; i < param.asigned_user_ids.length; i++) {
                 let id = param.asigned_user_ids[i];
-                for(let j=0;j<clients.length;j++){
-                    if(id === clients[j].user_id){
+                for (let j = 0; j < clients.length; j++) {
+                    if (id === clients[j].user_id) {
                         console.log('here')
-                        nameArr.push(clients[j].user_name) ;
+                        nameArr.push(clients[j].user_name);
                     }
                 }
-               
+
             }
         }
-        this.setState({ selectedFolderAssignedTo : nameArr});
+        this.setState({ selectedFolderAssignedTo: nameArr });
 
 
     }
 
     /*** Method defination for handling folder sorting ***/
     handleFolderSorting = (param) => {
-        this.setState({selectedSortingType : param},()=>{
+        this.setState({ sort: param }, () => {
             this.fetchAllParentDirectory();
         })
     }
 
+    /* method defination for handling pagination logic */
+    handlePaginationLogic = () =>{
+        /* logic for pagination page button rendering */
+        let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
+        let pageButtonArr = [];
+        let start = 0
+        for(let i=start;i<totalPageToRender;i++){
+            pageButtonArr.push(i)
+        }
+        this.setState({
+            totalPageToRender : totalPageToRender,
+            pageButtonArr : pageButtonArr
+        },()=>{
+            console.log(this.state.totalPageToRender,this.state.page)
+        })
+    }
 
     render() {
+
+        
         return (
             <Fragment>
                 <Header />
@@ -473,9 +489,9 @@ class PersonalFolders extends React.Component {
                                                         <label>Sort : </label>
                                                     </div>
                                                     <div className="lft-hdr">
-                                                        <select className="form-control" onChange={(e)=>{this.handleFolderSorting(e.target.value)}}>
-                                                            <option value="desc">Decending Order </option>
-                                                            <option value="name">Ascending Order</option>
+                                                        <select className="form-control" onChange={(e) => { this.handleFolderSorting(e.target.value) }}>
+                                                            <option value="-1">Decending Order </option>
+                                                            <option value="1">Ascending Order</option>
                                                         </select>
                                                     </div>
                                                     <div className="lft-hdr">
@@ -536,6 +552,33 @@ class PersonalFolders extends React.Component {
 
                                                         </tbody>
                                                     </table>
+                                                    {this.state.totalCount >= 0 && <nav aria-label="Page navigation example">
+                                                        <ul className="pagination justify-content-center">
+                                                            {this.state.page > 0 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e)=>{
+                                                                    this.setState({
+                                                                        page : this.state.page - 1
+                                                                    },()=>{
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Previous</a>
+                                                            </li>}
+                                                            {this.state.pageButtonArr.map((pagi)=><li className="page-item" key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e)=>{
+                                                                this.setState({page : pagi},()=>{
+                                                                    this.fetchAllParentDirectory();
+                                                                })
+                                                            }}>{pagi + 1}</a></li>)}
+                                                            { this.state.totalPageToRender > this.state.page + 1 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" onClick={(e)=>{
+                                                                    this.setState({
+                                                                        page : this.state.page + 1
+                                                                    },()=>{
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Next</a>
+                                                            </li>}
+                                                        </ul>
+                                                    </nav>}
                                                 </div>
                                             </div>
                                         </div>
@@ -651,8 +694,8 @@ class PersonalFolders extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="importmodal_content">
-                            <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span><br></br>
-                            <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) =><p style={{whiteSpace: "pre-line"}} key={name}>{name}</p>)}</span>
+                            <span>Size : {parseInt(this.state.selectedEntityInfo.size) / 1000} KB</span><br></br>
+                            <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) => <p style={{ whiteSpace: "pre-line" }} key={name}>{name}</p>)}</span>
                         </div>
                     </Modal.Body>
 
@@ -664,7 +707,7 @@ class PersonalFolders extends React.Component {
         )
     }
     componentDidMount() {
-       
+
         /*** Get all parent folder's ***/
         this.fetchAllParentDirectory();
 

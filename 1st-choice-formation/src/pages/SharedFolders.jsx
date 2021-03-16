@@ -30,11 +30,12 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             searchQuery : '',
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
-            selectedSortingType : 'desc',
-            page : 1,
+            page : 0,
             noOfItemsPerPage : 50,
             totalCount : 0,
-            sort : -1
+            sort : -1,
+            totalPageToRender : 0,
+            pageButtonArr : []
 
             
         };
@@ -202,16 +203,16 @@ closeEntityInfoModal = () => {
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             console.log(folders[i].shared_user_ids.length)
                             if(folders[i].shared_user_ids.length !=0 || folders[i].asigned_user_ids.length != 0){
-                                if(this.state.searchQuery != ''){
+                                /* if(this.state.searchQuery != ''){
                                     console.log(folders[i].entity_name)
                                     console.log(this.state.searchQuery)
                                     if(folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1){
     
                                         arr.push(folders[i]);
                                     }
-                                }else{
+                                }else{ */
                                     arr.push(folders[i]);
-                                }
+                                //}
                             }
                         }else{
                             console.log(folders[i])
@@ -232,15 +233,12 @@ closeEntityInfoModal = () => {
                             }
                         }
                     }
-                    if(this.state.selectedSortingType === 'desc'){
-                        arr = arr.reverse();
-                    }else if(this.state.selectedSortingType === 'asc'){
-                        arr = arr;
-                    }
-                    this.setState({foldersList : arr})
+                    
+                    this.setState({foldersList : arr,totalCount : response.totalCount })
                     this.props.setSharedFoldersList(this.state.foldersList);
-                    console.log(this.state.foldersList)
-                    console.log(this.props.globalState)
+                   // console.log(this.state.foldersList)
+                //console.log(this.props.globalState)
+                this.handlePaginationLogic();
                     
                 }
             }.bind(this)).catch(function(err){
@@ -424,8 +422,25 @@ closeEntityInfoModal = () => {
     }
     /*** Method defination for handling folder sorting ***/
     handleFolderSorting = (param) => {
-        this.setState({selectedSortingType : param},()=>{
+        this.setState({sort : param},()=>{
             this.fetchAllParentDirectory();
+        })
+    }
+
+    /* method defination for handling pagination logic */
+    handlePaginationLogic = () =>{
+        /* logic for pagination page button rendering */
+        let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
+        let pageButtonArr = [];
+        let start = 0
+        for(let i=start;i<totalPageToRender;i++){
+            pageButtonArr.push(i)
+        }
+        this.setState({
+            totalPageToRender : totalPageToRender,
+            pageButtonArr : pageButtonArr
+        },()=>{
+            console.log(this.state.totalPageToRender,this.state.page)
         })
     }
 
@@ -449,8 +464,8 @@ closeEntityInfoModal = () => {
                                                     </div>
                                                     <div className="lft-hdr">
                                                         <select className="form-control" onChange={(e)=>{this.handleFolderSorting(e.target.value)}}>
-                                                            <option value="desc">Decending Order </option>
-                                                            <option value="name">Ascending Order</option>
+                                                            <option value="-1">Decending Order </option>
+                                                            <option value="1">Ascending Order</option>
                                                         </select>
                                                     </div>
                                                     <div className="lft-hdr">
@@ -496,6 +511,33 @@ closeEntityInfoModal = () => {
                                                 
                                                 </tbody>
                                             </table>
+                                            {this.state.totalCount >= 0 && <nav aria-label="Page navigation example">
+                                                        <ul className="pagination justify-content-center">
+                                                            {this.state.page > 0 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e)=>{
+                                                                    this.setState({
+                                                                        page : this.state.page - 1
+                                                                    },()=>{
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Previous</a>
+                                                            </li>}
+                                                            {this.state.pageButtonArr.map((pagi)=><li className="page-item" key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e)=>{
+                                                                this.setState({page : pagi},()=>{
+                                                                    this.fetchAllParentDirectory();
+                                                                })
+                                                            }}>{pagi + 1}</a></li>)}
+                                                            { this.state.totalPageToRender > this.state.page + 1 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" onClick={(e)=>{
+                                                                    this.setState({
+                                                                        page : this.state.page + 1
+                                                                    },()=>{
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Next</a>
+                                                            </li>}
+                                                        </ul>
+                                                    </nav>}
                                         </div>
                                     </div>
                                     </div>

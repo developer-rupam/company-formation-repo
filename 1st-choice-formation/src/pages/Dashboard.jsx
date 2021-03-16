@@ -110,7 +110,7 @@ import { showToast,showHttpError } from '../utils/library'
 
       /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
    getRecentFiles = () => {
-    let payload = {entity_id : '',page : 1,limit:50,sort:-1,searchQuery:''}
+    let payload = {entity_id : '',page : 0,limit:10,sort:-1,searchQuery:''}
     this.setState({showLoader : true})
     GetAllSubDirectory(payload).then(function(res){
                 var response = res.data;
