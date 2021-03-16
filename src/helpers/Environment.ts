@@ -4,7 +4,7 @@ import {resolve} from 'path';
 export const PROD_PATH = ".."
 export const DEV_PATH = "."
 
-dotenv.config({path:resolve(process.cwd(),`${PROD_PATH}/.env`)})
+dotenv.config({path:resolve(process.cwd(),`${DEV_PATH}/.env`)})
 
 export class Environment{
     public static ROOT_FOLDER_DESTINATION=process.env.ROOT_FOLDER_DESTINATION;

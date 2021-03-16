@@ -13,8 +13,8 @@ async function main() {
        //key: readFileSync(join(__dirname,"../","cert","privkey.pem"),'utf8'),
       //key: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/server.key'),
       //cert: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/b3b47f0fe2b15b84.crt'),
-      key: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/private.key'),
-      cert: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/certificate.crt'),
+     // key: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/private.key'),
+     // cert: readFileSync('/home/ukcosmartdoc/public_html/1st-choice-backend/certificate.crt'),
     }, app);
 
     httpsServer.listen(PORT, () => {
