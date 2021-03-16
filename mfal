@@ -1,0 +1,104 @@
+[33m300e267[m[33m ([m[1;36mHEAD -> [m[1;32mbackend[m[33m)[m setup backend for development phase
+[33mad2c0ba[m[33m ([m[1;31morigin/backend[m[33m)[m backend setup
+[33mdd80e8d[m[33m ([m[1;31morigin/development[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdevelopment[m[33m)[m text chnaged in email setting
+[33m3122766[m SSL & email template style
+[33m96846f7[m favorite files and email sending resolved
+[33mdcc599f[m setup for ssl
+[33m092a8f2[m search functionality for entity
+[33m415d6ea[m Search option for browse client and employee
+[33mb6620c6[m email setting save and retrieve
+[33mef9ebf4[m omit address book dropdown from manage users
+[33m9e14088[m dashboard modified
+[33m8a27ed2[m making email writeablle for update client and empoyee
+[33mf9e0ad7[m protected route's redirection modified
+[33mdcbb31c[m functionalities for removing entity
+[33ma3e40fc[m email settings page setup
+[33mfd19669[m adding mailing credential option in update client
+[33mf7f0683[m Add folder in add and update client, delete button given in personal folder and folder details
+[33ma5e8686[m production build
+[33mf1a4e83[m adding create folder option for admin in shared folder
+[33m386b561[m removing alert messages
+[33m9c2cef7[m toggle function bug fixed
+[33mf545785[m base url for production
+[33mee6c66c[m rendering personal & shared folders
+[33m1c0389e[m assign folder to user
+[33m6f5fada[m adding to favorites, showing assigned folder for clients and employees
+[33mf56065d[m assigned entity to users
+[33m0d9f67a[m dashboard markup commented
+[33mb84ccbf[m add user to folder option
+[33mfde9cfc[m selecting entity for assign folder
+[33mab9a808[m assign folder to client and employee
+[33mccf5b87[m show option in file list
+[33m37adefe[m shared,personal,favorite folder ui modified
+[33m839789f[m shared folder & favorite folder pages
+[33m069b9c9[m shared folder & favorite folder pages
+[33m301609e[m Add folder to sub directory, add file (unsettled)
+[33mb8e860a[m add & render personal folders
+[33m78ee83d[m personal folder
+[33mc2dca7a[m personal folder
+[33m6d7b32f[m multi deletion functionalities for client & employee
+[33mb5b3290[m personal settings page
+[33m377d80b[m setting up permission on basis of user type
+[33ma1960ef[m delete employee
+[33m74f0162[m Delete clients
+[33m3fa38b2[m update employee
+[33m055943f[m updating clients
+[33m603df3c[m create & browse employees
+[33md3ec761[m Showing client
+[33m96c84e7[m Adding client
+[33m31bfb1c[m showing user name in dashboard
+[33m21d795f[m populating data in update client page
+[33m53221c4[m rendering password in login bug fixed
+[33m124c348[m browse client & employee rendering
+[33m168c5f9[m dasboard initialization,reducer modified
+[33m430d83e[m login API call bug fixes
+[33mfef156b[m API endpoint modified
+[33mb1eedfd[m update employee & client page setup
+[33m95885f5[m setting up browse clients & employee
+[33me87dbe2[m redux for employee list & client list
+[33m9360e23[m adding permission for employee & defining services
+[33m2be492d[m link changes for going to create employee page from browse employee
+[33m1392889[m add employee & prod deployment setup modified
+[33m954d88b[m baseurl (unsettled)
+[33mec8e299[m bugs fixes for production setup
+[33md916aff[m production setup modified
+[33m82649ad[m setup for deployment
+[33m6bd4f23[m setting up init file
+[33m946c77c[m bypassing login for smart choice
+[33m255e3d6[m validation for adding client
+[33mc372d71[m protected route bug fixed
+[33m7c12c6c[m consuming login API (unsettled)
+[33m1dc44ed[m removing default modal code
+[33mebcc977[m Adding employee & clients from xls files
+[33m6633c2c[m bug fixed for defauly value in create client
+[33mfb12550[m adding link to dashboard
+[33mbac2d8b[m redux setup for employee & client list
+[33m80ba2a4[m browse & create employee
+[33m5bdee32[m mange user home page setup
+[33m20d3749[m smart formation setup
+[33me462d37[m css & logo modified
+[33m01b0a21[m installing packages
+[33m0e24a4c[m active class in parent nav
+[33mf28f4a1[m redux for header search
+[33m66376f2[m deleteing client list
+[33m61f04b9[m adding client form
+[33m6711663[m login default value in field
+[33me2e29c3[m login and logout functinality (mock data for login)
+[33m32d4260[m create client page set up
+[33mb7c87a3[m browse client page setup
+[33mf778bf6[m adding search in header & loader in dashboard
+[33md0eddf4[m Login page setup with loader and validation
+[33m93850c9[m updated design for login, client module
+[33m35f141c[m Not found component
+[33m8de6bee[m protected routes
+[33maf444ad[m adding active class and Navlink
+[33mfbaa110[m installing font awesome
+[33m1844cf7[m navigation manipulation
+[33mbd4c400[m alligned header icons
+[33m13aa4cc[m rendering dashboard
+[33m55bb1cf[m setting up sidebar & header
+[33m8b4b0f2[m Adding assets
+[33m115e951[m smart choice formation setup
+[33mc4eb6c5[m 1st choice formation setup
+[33m537d7f9[m smart formation app creation
+[33ma4c8602[m 1st choice formation app creation
