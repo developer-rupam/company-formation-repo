@@ -1,0 +1,8 @@
+export enum StatusCodes {
+  SUCCESS = "1000",
+  FAILURE = "1001",
+  RETRY = "1002",
+  TOKEN_VEIFICATION_ERROR = "1003",
+  TOKEN_EXPIRED_ERROR = "1004",
+  JSON_WEB_TOKEN_ERROR = "1005"
+}
