@@ -32,6 +32,10 @@ class CreateClient extends React.Component {
             showCreateFolderModal: false,
             assignedUser: [],
             addPeopleToFolder: false,
+            page : 1,
+            noOfItemsPerPage : 1000,
+            totalCount : 0,
+            sort : -1
 
         };
         /***  BINDING FUNCTIONS  ***/
@@ -418,7 +422,7 @@ class CreateClient extends React.Component {
 
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     fetchAllParentDirectory = () => {
-        let payload = { entity_id: '' }
+        let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
             var response = res.data;
@@ -799,7 +803,7 @@ class CreateClient extends React.Component {
             }
             this.setState({ personalFolderList: foldersArray })
         } else {
-            let payload = { entity_id: '' }
+            let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
             this.setState({ showLoader: true })
             GetAllSubDirectory(payload).then(function (res) {
                 var response = res.data;

@@ -56,7 +56,12 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             userRole : 'EMPLOYEE',
             userType : 'EMPLOYEE',
             showAssignFolderModal : false,
-            folderListWithSearchQuery : []
+            folderListWithSearchQuery : [],
+            page : 1,
+            noOfItemsPerPage : 50,
+            totalCount : 0,
+            sort : -1
+
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -630,7 +635,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             }
             this.setState({personalFolderList : foldersArray})
         }else{
-            let payload = {entity_id : ''}
+            let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
             this.setState({showLoader : true})
             GetAllSubDirectory(payload).then(function(res){
                         var response = res.data;

@@ -25,7 +25,12 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             foldersList : [],
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
-            selectedSortingType : 'desc'
+            selectedSortingType : 'desc',
+            page : 1,
+            noOfItemsPerPage : 50,
+            totalCount : 0,
+            sort : -1
+
             
         };
          /***  BINDING FUNCTIONS  ***/
@@ -130,7 +135,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
    /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
    fetchAllParentDirectory = () => {
-    let payload = {entity_id : ''}
+    let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
     this.setState({showLoader : true})
     GetAllSubDirectory(payload).then(function(res){
                 var response = res.data;
