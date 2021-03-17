@@ -37,7 +37,7 @@ class FolderDetails extends React.Component {
             assignedUsers: [],
             isReadyToReassign: false,
             selectedReducerFolderList: [],
-            page : 1,
+            page : 0,
             noOfItemsPerPage : 50,
             totalCount : 0,
             sort : -1
@@ -375,19 +375,8 @@ class FolderDetails extends React.Component {
             } else {
 
                 let arr = [];
-                let folders = response.response
-                for (let i = 0; i < folders.length; i++) {
-                    //  if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
-                    arr.push(folders[i]);
-
-                    // }else{
-                    /* if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
-                         arr.push(folders[i]);
-                     }  */
-                    //}
-                }
-                arr = arr.reverse();
-                this.setState({ foldersList: arr })
+                //arr = arr.reverse();
+                this.setState({ foldersList: response.response,totalCount : response.totalCount })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
                 console.log(this.props.globalState)
