@@ -552,7 +552,7 @@ class PersonalFolders extends React.Component {
 
                                                         </tbody>
                                                     </table>
-                                                    {this.state.totalCount >= 0 && <nav aria-label="Page navigation example">
+                                                    {this.state.totalCount > 0 && <nav aria-label="Page navigation example">
                                                         <ul className="pagination justify-content-center">
                                                             {this.state.page > 0 && <li className="page-item">
                                                                 <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e)=>{

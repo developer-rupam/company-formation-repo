@@ -233,8 +233,15 @@ closeEntityInfoModal = () => {
                             }
                         }
                     }
-                    
-                    this.setState({foldersList : arr,totalCount : response.totalCount })
+                    let lengthOfFolders = 0;
+                    console.log(arr.length,this.state.noOfItemsPerPage)
+                    if(arr.length < this.state.noOfItemsPerPage){
+                        lengthOfFolders = arr.length;
+                    }else{
+                        lengthOfFolders = response.totalCount;
+                    }
+                    console.log('lengthOfFolders',lengthOfFolders)
+                    this.setState({foldersList : arr,totalCount : lengthOfFolders })
                     this.props.setSharedFoldersList(this.state.foldersList);
                    // console.log(this.state.foldersList)
                 //console.log(this.props.globalState)
@@ -511,7 +518,7 @@ closeEntityInfoModal = () => {
                                                 
                                                 </tbody>
                                             </table>
-                                            {this.state.totalCount >= 0 && <nav aria-label="Page navigation example">
+                                            {this.state.totalCount > 0 && <nav aria-label="Page navigation example">
                                                         <ul className="pagination justify-content-center">
                                                             {this.state.page > 0 && <li className="page-item">
                                                                 <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e)=>{
