@@ -52,3 +52,6 @@
 .pointer-cursor{
   cursor: pointer;
 }
+.pointer-cursor td:nth-child(2) {
+  text-align: left;
+}
