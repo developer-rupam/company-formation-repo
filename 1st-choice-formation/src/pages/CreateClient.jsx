@@ -422,7 +422,7 @@ class CreateClient extends React.Component {
 
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     fetchAllParentDirectory = () => {
-        let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
+        let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:''}
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
             var response = res.data;
@@ -803,7 +803,7 @@ class CreateClient extends React.Component {
             }
             this.setState({ personalFolderList: foldersArray })
         } else {
-            let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
+            let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:''}
             this.setState({ showLoader: true })
             GetAllSubDirectory(payload).then(function (res) {
                 var response = res.data;

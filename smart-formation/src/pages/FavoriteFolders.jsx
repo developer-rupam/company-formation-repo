@@ -25,12 +25,14 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             foldersList : [],
             selectedEntityInfo: {},
             selectedFolderAssignedTo : [],
-            page : 0,
-            noOfItemsPerPage : 50,
-            totalCount : 0,
-            sort : -1,
-            totalPageToRender : 0,
-            pageButtonArr : []
+            page: 0,
+            noOfItemsPerPage: 50,
+            totalCount: 0,
+            sort: -1,
+            totalPageToRender: 10,
+            pageRenderingStartsAt: 0,
+            pageButtonArr: [],
+            paginationType: 'increase'
 
             
         };
@@ -136,7 +138,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
    /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
    fetchAllParentDirectory = () => {
-    let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery}
+    let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:''}
     this.setState({showLoader : true})
     GetAllSubDirectory(payload).then(function(res){
                 var response = res.data;
@@ -302,19 +304,46 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         })
     }
     /* method defination for handling pagination logic */
-    handlePaginationLogic = () =>{
+    handlePaginationLogic = () => {
+        console.log("Page : ",this.state.page+1)
         /* logic for pagination page button rendering */
-        let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
+        // let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
+        
+        let start = this.state.pageRenderingStartsAt
+        let end = start + this.state.totalPageToRender
+        console.log(start,end)
+        console.log(this.state.page + 1,end)
+        if (parseInt(this.state.page + 1) >= parseInt(end)) {
+            if(this.state.paginationType == 'increase'){
+                start = start + this.state.totalPageToRender-1;
+                end = end + this.state.totalPageToRender
+            }else{
+                start = start - this.state.totalPageToRender-1;
+                end = end - this.state.totalPageToRender+1
+            }
+        }else{
+            if(this.state.page<this.state.totalPageToRender){
+                start = 0;
+                end = 10;
+            }else{
+                start = this.state.page-this.state.totalPageToRender/2;
+                end = this.state.page + this.state.totalPageToRender/2;
+            }
+        }
+                  
+        console.log(start,end)
         let pageButtonArr = [];
-        let start = 0
-        for(let i=start;i<totalPageToRender;i++){
+        if(end > Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)){
+            end = Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)
+        }
+        for (let i = start; i < end; i++) {
             pageButtonArr.push(i)
         }
         this.setState({
-            totalPageToRender : totalPageToRender,
-            pageButtonArr : pageButtonArr
-        },()=>{
-            console.log(this.state.totalPageToRender,this.state.page)
+            pageButtonArr: pageButtonArr,
+            pageRenderingStartsAt: start
+        }, () => {
+            //console.log(this.state.totalPageToRender,this.state.page)
         })
     }
     render() {
@@ -368,27 +397,29 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                 
                                                 </tbody>
                                             </table>
-                                            {this.state.totalCount > 0 && <nav aria-label="Page navigation example">
+                                            {this.state.foldersList.length > this.state.noOfItemsPerPage/2 && <nav aria-label="Page navigation example">
                                                         <ul className="pagination justify-content-center">
                                                             {this.state.page > 0 && <li className="page-item">
-                                                                <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e)=>{
+                                                                <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e) => {
                                                                     this.setState({
-                                                                        page : this.state.page - 1
-                                                                    },()=>{
+                                                                        page: this.state.page - 1,
+                                                                        paginationType : 'decrease'
+                                                                    }, () => {
                                                                         this.fetchAllParentDirectory();
                                                                     })
                                                                 }}>Previous</a>
                                                             </li>}
-                                                            {this.state.pageButtonArr.map((pagi)=><li className="page-item" key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e)=>{
-                                                                this.setState({page : pagi},()=>{
+                                                            {this.state.pageButtonArr.map((pagi) => <li className={this.state.page === pagi ?"page-item active":"page-item"} key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e) => {
+                                                                this.setState({ page: pagi,paginationType:'increase' }, () => {
                                                                     this.fetchAllParentDirectory();
                                                                 })
                                                             }}>{pagi + 1}</a></li>)}
-                                                            { this.state.totalPageToRender > this.state.page + 1 && <li className="page-item">
-                                                                <a className="page-link" href="javascript:void(0)" onClick={(e)=>{
+                                                            {Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage) > this.state.page + 1 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" onClick={(e) => {
                                                                     this.setState({
-                                                                        page : this.state.page + 1
-                                                                    },()=>{
+                                                                        page: this.state.page + 1,
+                                                                        paginationType : 'increase'
+                                                                    }, () => {
                                                                         this.fetchAllParentDirectory();
                                                                     })
                                                                 }}>Next</a>

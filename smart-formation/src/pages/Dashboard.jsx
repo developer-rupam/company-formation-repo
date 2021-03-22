@@ -110,7 +110,14 @@ import { showToast,showHttpError } from '../utils/library'
 
       /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
    getRecentFiles = () => {
-    let payload = {entity_id : '',page : 0,limit:10,sort:-1,searchQuery:''}
+       let payload = {}
+    if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+
+        payload = {entity_id : '',page : 0,limit:10,sort:-1,searchQuery:'',asigned_user_id:''}
+    }else{
+
+        payload = {entity_id : '',page : 0,limit:10,sort:-1,searchQuery:'',asigned_user_id:JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id}
+    } 
     this.setState({showLoader : true})
     GetAllSubDirectory(payload).then(function(res){
                 var response = res.data;
@@ -123,7 +130,7 @@ import { showToast,showHttpError } from '../utils/library'
                     let recentFilesArr = [];
                     let folders = response.response
                     for(let i=0;i<folders.length;i++){
-                        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+                        /* if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             arr.push(folders[i]);
                         }else{
                             let userIds = folders[i].asigned_user_ids
@@ -133,7 +140,8 @@ import { showToast,showHttpError } from '../utils/library'
                                     arr.push(folders[i]);
                                 }
                             }
-                        }
+                        } */
+                        arr.push(folders[i]);
                     }
                     //this.setState({recentFileList : arr})
                     let range = 0
