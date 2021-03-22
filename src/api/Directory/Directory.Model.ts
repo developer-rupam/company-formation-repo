@@ -120,6 +120,7 @@ export interface SubDirectoryInputModel {
   limit: number;
   searchQuery?: string;
   sort?: number;
+  asigned_user_id?: string;
 }
 
 export interface SubDirectoryOutputModel { 

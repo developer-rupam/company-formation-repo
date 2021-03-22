@@ -40,9 +40,13 @@ export const updateDirectoryLocation = async (
   }
 };
 
-export const getAllDirectories = async (sortOrder: number): Promise<Array<IDirectory>> => {
+export const getAllDirectories = async (sortOrder: number, params:any = null): Promise<Array<IDirectory>> => {
+  const limit = params.limit ? params.limit : 1000;
   try {
-    const doc = await Directory.find({},{_id:0,__v:0}).sort({_id: sortOrder});
+    const doc = await Directory.find({},{_id:0,__v:0})
+    .skip(params.page ? limit * params.page : 0)
+    .limit(limit)
+    .sort({_id: sortOrder});
     let directoryResult: Array<IDirectory> =doc.map((singleDoc) => singleDoc.toObject());
     return directoryResult;
   } catch (error) {
@@ -270,7 +274,7 @@ export const removeDirectoryById = async (entityId: string): Promise<number> => 
 export const getAllSubDirectories = async (directory: SubDirectoryInputModel): Promise<SubDirectoryOutputModel> => {
   
   const limit = directory.limit ? directory.limit : 10;
-  const filter:SubDirectoryFilterModel = {
+  let filter:SubDirectoryFilterModel = {
     parent_directory_id: ""
   }; 
   if(directory.entity_id && directory.entity_id.trim().length){
@@ -278,6 +282,15 @@ export const getAllSubDirectories = async (directory: SubDirectoryInputModel): P
   }
   if(directory.searchQuery && directory.searchQuery.trim().length){
     filter.entity_name = {$regex: new RegExp(directory.searchQuery.trim(), "i")};
+  }
+  if(directory.asigned_user_id && directory.asigned_user_id.trim().length){
+    filter = {...filter, 
+              ...{ $or:  [ 
+                          {shared_user_ids: { $eq: directory.asigned_user_id.trim() }},
+                          {asigned_user_ids: { $eq: directory.asigned_user_id.trim() }}
+                         ]
+                 } 
+             };
   }
   try {
     const totalCount = await Directory.count(filter);
