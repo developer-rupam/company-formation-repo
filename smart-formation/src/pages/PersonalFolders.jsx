@@ -128,9 +128,7 @@ class PersonalFolders extends React.Component {
 
         if (isAbleToSubmit) {
 
-            if (isEntityExist(this.props.globalState.personalFoldersReducer.list, this.folderNameRef.current.value)) {
-                showToast('error', 'Folder name already exists')
-            } else {
+           
                 let payload = {
 
                     "entity_name": this.folderNameRef.current.value,
@@ -166,7 +164,6 @@ class PersonalFolders extends React.Component {
                     this.setState({ showLoader: false })
                     showHttpError(err)
                 }.bind(this))
-            }
 
         } else {
             showToast('error', 'Please provide valid information')
@@ -412,7 +409,7 @@ class PersonalFolders extends React.Component {
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        let payload = { directoryName: name }
+        let payload = { directoryName: id }
         GetDirectory(payload).then(function (res) {
             let response = res.data.response;
             if (response !== null) {

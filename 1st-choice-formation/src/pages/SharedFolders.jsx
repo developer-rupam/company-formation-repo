@@ -144,9 +144,7 @@ closeEntityInfoModal = () => {
         }
 
         if(isAbleToSubmit){
-            if (isEntityExist(this.props.globalState.sharedFoldersReducer.list, this.folderNameRef.current.value)) {
-                showToast('error', 'Folder name already exists')
-            } else {
+           
             let payload = {
                 
                     "entity_name": this.folderNameRef.current.value,
@@ -182,7 +180,6 @@ closeEntityInfoModal = () => {
                 this.setState({showLoader : false})
                 showHttpError(err)
             }.bind(this))
-        }
         }else{
             showToast('error','Please provide valid information')
         }
@@ -191,7 +188,12 @@ closeEntityInfoModal = () => {
 
    /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
    fetchAllParentDirectory = () => {
-    let payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:this.state.createdBy}
+    let payload = {};
+    if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
+     payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:''}
+    }else{
+     payload = {entity_id : '',page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:this.state.createdBy}
+    }  
     this.setState({showLoader : true})
     GetAllSubDirectory(payload).then(function(res){
                 var response = res.data;
@@ -401,7 +403,7 @@ closeEntityInfoModal = () => {
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        let payload = {directoryName : name}
+        let payload = {directoryName : id}
         GetDirectory(payload).then(function (res) {
             let response = res.data.response;
             if(response !== null){

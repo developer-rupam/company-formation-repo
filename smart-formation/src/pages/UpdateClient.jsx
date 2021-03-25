@@ -289,9 +289,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
     }
 
     if(isAbleToSubmit){
-        if (isEntityExist(this.props.globalState.personalFoldersReducer.list, this.folderNameRef.current.value)) {
-            showToast('error', 'Folder name already exists')
-        } else {
+       
         let payload = {
             
                 "entity_name": this.folderNameRef.current.value,
@@ -326,7 +324,6 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             this.setState({showLoader : false})
             showHttpError(err)
         }.bind(this))
-    }
     }else{
         showToast('error','Please provide valid information')
     }

@@ -264,7 +264,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        let payload = {directoryName : name}
+        let payload = {directoryName : id}
         GetDirectory(payload).then(function (res) {
             let response = res.data.response;
             if(response !== null){
