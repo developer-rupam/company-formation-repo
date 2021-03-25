@@ -110,7 +110,7 @@ export default class Login extends React.Component {
                                                 </div>
                                                 </div>
                                                 <div className="foorgot">
-                                                <Link to="/">Forgot Password?</Link>
+                                                <Link to="/forgot-password">Forgot Password?</Link>
                                                 </div>
                                             </div>
                                             <div className="loging_buttom"><button type="submit" className="" >Login</button></div>

@@ -16,6 +16,7 @@ import PersonalFolders from './pages/PersonalFolders'
 import SharedFolders from './pages/SharedFolders'
 import FavoriteFolders from './pages/FavoriteFolders'
 import FolderDetails from './pages/FolderDetails'
+import ForgotPassword from './pages/ForgotPassword'
 import {BrowserRouter as Router, Switch,Route,withRouter,NavLink} from 'react-router-dom';
 import { SITENAMEALIAS } from './utils/init';
 import ProtectedRoute from './utils/ProtectedRoute'
@@ -26,6 +27,7 @@ function App() {
       <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route path="/" component={Login} exact/>
+          <Route path="/forgot-password" component={ForgotPassword} />
           <ProtectedRoute path="/dashboard" component={Dashboard} />
           <ProtectedRoute path="/browse-clients" component={BrowseClients} />
           <ProtectedRoute path="/create-client" component={CreateClient} />

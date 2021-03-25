@@ -196,3 +196,18 @@ export const GetDirectory = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/directory/get_directory', payload,headers);
 }
+/*** FUNCTION DEFINATION FOR Sending OTP ***/
+export const SendOtp = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/otp/send_otp', payload,headers);
+}
+/*** FUNCTION DEFINATION FOR Sending OTP ***/
+export const VerifyOtp = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/otp/verify_otp', payload,headers);
+}
+/*** FUNCTION DEFINATION FOR Sending OTP ***/
+export const ChangePassword = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/otp/change_password', payload,headers);
+}
