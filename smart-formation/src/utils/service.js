@@ -209,5 +209,5 @@ export const VerifyOtp = (obj) => {
 /*** FUNCTION DEFINATION FOR Sending OTP ***/
 export const ChangePassword = (obj) => {
     var payload = JSON.stringify(obj);
-    return axios.post(WEBSERVICE + '/otp/change_password', payload,headers);
+    return axios.post(WEBSERVICE + '/user/change_password', payload,headers);
 }
