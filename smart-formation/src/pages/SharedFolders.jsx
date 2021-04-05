@@ -487,6 +487,11 @@ closeEntityInfoModal = () => {
         })
     }
 
+    /* method for handling folder name chnage */
+    handleUpdateFolderName = () => {
+
+    }
+    
     render() {
         return (
                <Fragment>
@@ -701,6 +706,17 @@ closeEntityInfoModal = () => {
                         <div className="importmodal_content">
                             <span>Size : {parseInt(this.state.selectedEntityInfo.size)/1000} KB</span>
                             <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) =><p style={{whiteSpace: "pre-line"}} key={name}>{name}</p>)}</span>
+                        </div>
+                        <div className="importmodal_content">
+                            <h4>  Rename Folder </h4>
+                            <form className="form-inline" onSubmit={this.handleUpdateFolderName}>
+                                <div className="form-group mb-2">
+                                
+                                    <input type="text" readonly className="form-control mr-2"  value={this.state.selectedEntityInfo.name}/>
+                                </div>
+
+                                <button type="submit" className="btn btn-primary mb-2">Save</button>
+                            </form>
                         </div>
                     </Modal.Body>
 

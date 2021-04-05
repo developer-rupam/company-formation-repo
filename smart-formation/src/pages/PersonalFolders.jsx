@@ -128,42 +128,42 @@ class PersonalFolders extends React.Component {
 
         if (isAbleToSubmit) {
 
-           
-                let payload = {
 
-                    "entity_name": this.folderNameRef.current.value,
-                    "entity_description": this.folderDetailsRef.current.value,
-                    "parent_directory_id": "",
-                    "directory_owner": this.state.createdBy
+            let payload = {
+
+                "entity_name": this.folderNameRef.current.value,
+                "entity_description": this.folderDetailsRef.current.value,
+                "parent_directory_id": "",
+                "directory_owner": this.state.createdBy
+
+            }
+
+            this.setState({ showLoader: true })
+            CreateDirectory(payload).then(function (res) {
+                var response = res.data;
+                this.setState({ showLoader: false })
+                if (response.errorResponse.errorStatusCode != 1000) {
+                    showToast('error', response.errorResponse.errorStatusType);
+                } else {
+                    showToast('success', 'Folder created successfully');
+                    this.folderNameRef.current.value = ''
+                    this.folderDetailsRef.current.value = ''
+                    this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false, userListWithSearchQuery: [] })
+                    var insertedEntityId = response.lastRecordId
+                    console.log(insertedEntityId)
+                    if (this.state.assignedUser.length != 0) {
+                        for (let i = 0; i < this.state.assignedUser.length; i++) {
+                            let iter = this.state.assignedUser[i]
+                            this.assignUserToEntity(iter, insertedEntityId)
+                        }
+                    }
+                    this.fetchAllParentDirectory()
 
                 }
-
-                this.setState({ showLoader: true })
-                CreateDirectory(payload).then(function (res) {
-                    var response = res.data;
-                    this.setState({ showLoader: false })
-                    if (response.errorResponse.errorStatusCode != 1000) {
-                        showToast('error', response.errorResponse.errorStatusType);
-                    } else {
-                        showToast('success', 'Folder created successfully');
-                        this.folderNameRef.current.value = ''
-                        this.folderDetailsRef.current.value = ''
-                        this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false, userListWithSearchQuery: [] })
-                        var insertedEntityId = response.lastRecordId
-                        console.log(insertedEntityId)
-                        if (this.state.assignedUser.length != 0) {
-                            for (let i = 0; i < this.state.assignedUser.length; i++) {
-                                let iter = this.state.assignedUser[i]
-                                this.assignUserToEntity(iter, insertedEntityId)
-                            }
-                        }
-                        this.fetchAllParentDirectory()
-
-                    }
-                }.bind(this)).catch(function (err) {
-                    this.setState({ showLoader: false })
-                    showHttpError(err)
-                }.bind(this))
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
 
         } else {
             showToast('error', 'Please provide valid information')
@@ -173,7 +173,7 @@ class PersonalFolders extends React.Component {
 
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     fetchAllParentDirectory = () => {
-        let payload = { entity_id: '', page: this.state.page, limit: this.state.noOfItemsPerPage, sort: this.state.sort, searchQuery: this.state.searchQuery,asigned_user_id:'' }
+        let payload = { entity_id: '', page: this.state.page, limit: this.state.noOfItemsPerPage, sort: this.state.sort, searchQuery: this.state.searchQuery, asigned_user_id: '' }
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
             var response = res.data;
@@ -452,35 +452,35 @@ class PersonalFolders extends React.Component {
 
     /* method defination for handling pagination logic */
     handlePaginationLogic = () => {
-        console.log("Page : ",this.state.page+1)
+        console.log("Page : ", this.state.page + 1)
         /* logic for pagination page button rendering */
         // let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
-        
+
         let start = this.state.pageRenderingStartsAt
         let end = start + this.state.totalPageToRender
-        console.log(start,end)
-        console.log(this.state.page + 1,end)
+        console.log(start, end)
+        console.log(this.state.page + 1, end)
         if (parseInt(this.state.page + 1) >= parseInt(end)) {
-            if(this.state.paginationType == 'increase'){
-                start = start + this.state.totalPageToRender-1;
+            if (this.state.paginationType == 'increase') {
+                start = start + this.state.totalPageToRender - 1;
                 end = end + this.state.totalPageToRender
-            }else{
-                start = start - this.state.totalPageToRender-1;
-                end = end - this.state.totalPageToRender+1
+            } else {
+                start = start - this.state.totalPageToRender - 1;
+                end = end - this.state.totalPageToRender + 1
             }
-        }else{
-            if(this.state.page<this.state.totalPageToRender){
+        } else {
+            if (this.state.page < this.state.totalPageToRender) {
                 start = 0;
                 end = 10;
-            }else{
-                start = this.state.page-this.state.totalPageToRender/2;
-                end = this.state.page + this.state.totalPageToRender/2;
+            } else {
+                start = this.state.page - this.state.totalPageToRender / 2;
+                end = this.state.page + this.state.totalPageToRender / 2;
             }
         }
-                  
-        console.log(start,end)
+
+        console.log(start, end)
         let pageButtonArr = [];
-        if(end > Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)){
+        if (end > Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)) {
             end = Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)
         }
         for (let i = start; i < end; i++) {
@@ -494,6 +494,10 @@ class PersonalFolders extends React.Component {
         })
     }
 
+    /* method for handling folder name chnage */
+    handleUpdateFolderName = () => {
+
+    }
     render() {
 
 
@@ -578,29 +582,29 @@ class PersonalFolders extends React.Component {
 
                                                         </tbody>
                                                     </table>
-                                                    {this.state.foldersList.length > this.state.noOfItemsPerPage/2 && <nav aria-label="Page navigation example">
+                                                    {this.state.foldersList.length > this.state.noOfItemsPerPage / 2 && <nav aria-label="Page navigation example">
                                                         <ul className="pagination justify-content-center">
                                                             {this.state.page > 0 && <li className="page-item">
                                                                 <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e) => {
                                                                     this.setState({
                                                                         page: this.state.page - 1,
-                                                                        paginationType : 'decrease'
+                                                                        paginationType: 'decrease'
                                                                     }, () => {
                                                                         this.fetchAllParentDirectory();
                                                                     })
                                                                 }}>Previous</a>
                                                             </li>}
-                                                            {this.state.pageButtonArr.map((pagi) => 
-                                                            <li className={this.state.page === pagi ?"page-item active":"page-item"} key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e) => {
-                                                                this.setState({ page: pagi,paginationType:'increase' }, () => {
-                                                                    this.fetchAllParentDirectory();
-                                                                })
-                                                            }}>{pagi + 1}</a></li>)}
+                                                            {this.state.pageButtonArr.map((pagi) =>
+                                                                <li className={this.state.page === pagi ? "page-item active" : "page-item"} key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e) => {
+                                                                    this.setState({ page: pagi, paginationType: 'increase' }, () => {
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>{pagi + 1}</a></li>)}
                                                             {Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage) > this.state.page + 1 && <li className="page-item">
                                                                 <a className="page-link" href="javascript:void(0)" onClick={(e) => {
                                                                     this.setState({
                                                                         page: this.state.page + 1,
-                                                                        paginationType : 'increase'
+                                                                        paginationType: 'increase'
                                                                     }, () => {
                                                                         this.fetchAllParentDirectory();
                                                                     })
@@ -725,6 +729,18 @@ class PersonalFolders extends React.Component {
                         <div className="importmodal_content">
                             <span>Size : {parseInt(this.state.selectedEntityInfo.size) / 1000} KB</span><br></br>
                             <span>Assigned To :  {this.state.selectedFolderAssignedTo.map((name) => <p style={{ whiteSpace: "pre-line" }} key={name}>{name}</p>)}</span>
+                        </div>
+                        <hr></hr>
+                        <div className="importmodal_content">
+                            <h4>  Rename Folder </h4>
+                            <form className="form-inline" onSubmit={this.handleUpdateFolderName}>
+                                <div className="form-group mb-2">
+                                
+                                    <input type="text" readonly className="form-control mr-2"  value={this.state.selectedEntityInfo.name}/>
+                                </div>
+
+                                <button type="submit" className="btn btn-primary mb-2">Save</button>
+                            </form>
                         </div>
                     </Modal.Body>
 
