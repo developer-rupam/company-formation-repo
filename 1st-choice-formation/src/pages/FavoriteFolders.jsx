@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateRemoveFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,GetDirectory} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,GetDirectory,RenameFolder} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setFavoriteFoldersList} from '../utils/redux/action'
@@ -48,6 +48,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
+        this.folderNameForUpdateRef = React.createRef();
         this.folderDetailsRef = React.createRef();
       
     }
@@ -243,8 +244,10 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 let arr = [];
                     let folders = response.response.favourite_entity
                     for(let i=0;i<folders.length;i++){
-                          
-                        arr.push(folders[i]);
+                         if(folders[i]!=null){
+
+                             arr.push(folders[i]);
+                         } 
                     }
                     this.setState({foldersList : arr,showLoader : false})
                 this.props.setFavoriteFoldersList(response.response.favourite_entity)
@@ -346,9 +349,22 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             //console.log(this.state.totalPageToRender,this.state.page)
         })
     }
-    /* method for handling folder name chnage */
-    handleUpdateFolderName = () => {
-
+     /* method for handling folder name chnage */
+     handleUpdateFolderName = () => {
+        let payload = {
+            entity_id : this.state.selectedEntityInfo.id,
+            entity_name : this.folderNameForUpdateRef.current.value,
+        }
+        RenameFolder(payload).then(function (res) {
+            let response = res.data.response;
+            if (response !== null) {
+                this.getFavoriteEntities();
+                this.closeEntityInfoModal();
+            }
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
     }
     render() {
         return (
@@ -515,13 +531,13 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         </div>
                         <div className="importmodal_content">
                             <h4>  Rename Folder </h4>
-                            <form className="form-inline" onSubmit={this.handleUpdateFolderName}>
+                            <form className="form-inline" >
                                 <div className="form-group mb-2">
                                 
-                                    <input type="text" readonly className="form-control mr-2"  value={this.state.selectedEntityInfo.name}/>
+                                    <input type="text" readonly className="form-control mr-2" defaultValue={this.state.selectedEntityInfo.name}  ref={this.folderNameForUpdateRef}/>
                                 </div>
 
-                                <button type="submit" className="btn btn-primary mb-2">Save</button>
+                                <button type="button" className="btn btn-primary mb-2" onClick={this.handleUpdateFolderName}>Save</button>
                             </form>
                         </div>
                     </Modal.Body>

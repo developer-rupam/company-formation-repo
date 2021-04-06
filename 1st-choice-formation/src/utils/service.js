@@ -211,3 +211,8 @@ export const ChangePassword = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/user/change_password', payload,headers);
 }
+/*** FUNCTION DEFINATION FOR Renaming folder ***/
+export const RenameFolder = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/directory/rename_folder', payload,headers);
+}

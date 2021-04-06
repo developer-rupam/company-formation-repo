@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, manipulateRemoveFavoriteEntity, isEntityExist } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, GetDirectory } from '../utils/service'
+import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, GetDirectory,RenameFolder } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList, setFavoriteFoldersList } from '../utils/redux/action'
@@ -62,6 +62,7 @@ class PersonalFolders extends React.Component {
 
         /*** REFERENCE FOR RETRIEVING INPUT FIELDS DATA ***/
         this.folderNameRef = React.createRef();
+        this.folderNameForUpdateRef = React.createRef();
         this.folderDetailsRef = React.createRef();
 
     }
@@ -392,10 +393,13 @@ class PersonalFolders extends React.Component {
         let isExist = false
         if (entities !== undefined) {
             entities.forEach((list) => {
-                if (param.toLowerCase() === list.entity_id.toLowerCase()) {
-                    isExist = true;
-                    return false;
+                if(list !== null){
+                    if (param.toLowerCase() === list.entity_id.toLowerCase()) {
+                        isExist = true;
+                        return false;
+                    }
                 }
+                
             })
         }
         return isExist
@@ -494,9 +498,23 @@ class PersonalFolders extends React.Component {
         })
     }
 
+    
     /* method for handling folder name chnage */
     handleUpdateFolderName = () => {
-
+        let payload = {
+            entity_id : this.state.selectedEntityInfo.id,
+            entity_name : this.folderNameForUpdateRef.current.value,
+        }
+        RenameFolder(payload).then(function (res) {
+            let response = res.data.response;
+            if (response !== null) {
+                this.fetchAllParentDirectory();
+                this.closeEntityInfoModal();
+            }
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err)
+        }.bind(this))
     }
     render() {
 
@@ -733,13 +751,13 @@ class PersonalFolders extends React.Component {
                         <hr></hr>
                         <div className="importmodal_content">
                             <h4>  Rename Folder </h4>
-                            <form className="form-inline" onSubmit={this.handleUpdateFolderName}>
+                            <form className="form-inline" >
                                 <div className="form-group mb-2">
                                 
-                                    <input type="text" readonly className="form-control mr-2"  value={this.state.selectedEntityInfo.name}/>
+                                    <input type="text" readonly className="form-control mr-2" defaultValue={this.state.selectedEntityInfo.name}  ref={this.folderNameForUpdateRef}/>
                                 </div>
 
-                                <button type="submit" className="btn btn-primary mb-2">Save</button>
+                                <button type="button" className="btn btn-primary mb-2" onClick={this.handleUpdateFolderName}>Save</button>
                             </form>
                         </div>
                     </Modal.Body>
