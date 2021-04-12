@@ -55,3 +55,18 @@
 .pointer-cursor td:nth-child(2) {
   text-align: left;
 }
+tr.pointer-cursor i.fas.fa-info-circle {
+  font-size: 20px;
+  color: #15adee;
+}
+.sortcut_area ul li {
+  width: 25%;
+  margin-bottom: 17px;
+  text-align: center;
+}
+i.fas.fa-folder {
+  margin: 0 10px 0 0;
+}
+i.fas.fa-trash-alt {
+  margin: 0 6px;
+}
