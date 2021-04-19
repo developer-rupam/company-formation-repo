@@ -690,13 +690,13 @@ class FolderDetails extends React.Component {
                                                     <div className="lft-hdr">
                                                         <a href="javascript:void(0)" className="ml-2 btn btn-info" onClick={this.openPeoplesModal}> <i class="fas fa-users mr-2"></i>People in this Folder</a>
                                                     </div>
-                                                    <div className="addbutton">
+                                                    {this.state.loggedInUserRole === 'ADMIN' && <div className="addbutton">
                                                         <span className={this.state.showCreateFolderDropDown ? "addbutton_click cross" : "addbutton_click"} onClick={() => { this.setState({ showCreateFolderDropDown: !this.state.showCreateFolderDropDown }) }}><i className="fas fa-plus"></i></span>
                                                         <div className={this.state.showCreateFolderDropDown ? "drop_menu view_drop" : "drop_menu"}>
                                                             <button type="button" data-toggle="modal" data-target="#creatfolderModal" onClick={this.openCreateFolderModal}><i className="fas fa-folder-open"></i>Create Folder</button>
                                                             <button type="button" onClick={this.openUploadFileModal}><i className="fas fa-file-pdf"></i>Upload File</button>
                                                         </div>
-                                                    </div>
+                                                    </div>}
                                                 </div>
                                             </div>
                                             <div className="card-body custom_card_body_sharedfolders">
