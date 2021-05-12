@@ -132,3 +132,10 @@ export const isEmailExist = (array,email) => {
   return isExist;
 }
 
+/* Method defination for slicinmg a string by character */
+export const sliceStringByLimit = (string,limit) => {
+  if(string.length > limit){
+    string = string.slice(0,limit) + '...';
+  }
+  return string;
+}

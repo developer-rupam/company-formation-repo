@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS, FILEPATH } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist } from '../utils/library'
+import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist,sliceStringByLimit } from '../utils/library'
 import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory, removeDirectoryAsignedUser } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
@@ -726,7 +726,7 @@ class FolderDetails extends React.Component {
                                                                             <label className="custom-control-label" htmlFor={list.entity_id}></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a> </td>
+                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{sliceStringByLimit(list.entity_name,30)}</a> </td>
 
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
