@@ -216,3 +216,16 @@ export const RenameFolder = (obj) => {
     var payload = JSON.stringify(obj);
     return axios.post(WEBSERVICE + '/directory/rename_folder', payload,headers);
 }
+/*** FUNCTION DEFINATION FOR Downloading Files ***/
+export const Download = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/files/download', payload,{headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+        'responseType':'blob',
+    }}
+    );
+}

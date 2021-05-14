@@ -5,8 +5,8 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import { SITENAMEALIAS, FILEPATH } from '../utils/init';
 import { Modal } from 'react-bootstrap';
-import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist,sliceStringByLimit } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory, removeDirectoryAsignedUser } from '../utils/service'
+import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist, sliceStringByLimit } from '../utils/library'
+import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory, removeDirectoryAsignedUser, Download } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList } from '../utils/redux/action'
@@ -37,10 +37,10 @@ class FolderDetails extends React.Component {
             assignedUsers: [],
             isReadyToReassign: false,
             selectedReducerFolderList: [],
-            page : 0,
-            noOfItemsPerPage : 50,
-            totalCount : 0,
-            sort : -1
+            page: 0,
+            noOfItemsPerPage: 50,
+            totalCount: 0,
+            sort: -1
 
 
         };
@@ -136,42 +136,42 @@ class FolderDetails extends React.Component {
         }
 
         if (isAbleToSubmit) {
-            
-                let payload = {
 
-                    "entity_name": this.folderNameRef.current.value,
-                    "entity_description": this.folderDetailsRef.current.value,
-                    "parent_directory_id": this.state.parentFolderId,
-                    "directory_owner": this.state.createdBy
+            let payload = {
+
+                "entity_name": this.folderNameRef.current.value,
+                "entity_description": this.folderDetailsRef.current.value,
+                "parent_directory_id": this.state.parentFolderId,
+                "directory_owner": this.state.createdBy
+
+            }
+
+            this.setState({ showLoader: true })
+            CreateDirectory(payload).then(function (res) {
+                var response = res.data;
+                this.setState({ showLoader: false })
+                if (response.errorResponse.errorStatusCode != 1000) {
+                    showToast('error', response.errorResponse.errorStatusType);
+                } else {
+                    showToast('success', 'Folder created successfully');
+                    this.folderNameRef.current.value = ''
+                    this.folderDetailsRef.current.value = ''
+                    this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false })
+                    var insertedEntityId = response.lastRecordId
+                    console.log(insertedEntityId)
+                    if (this.state.assignedUser.length != 0) {
+                        for (let i = 0; i < this.state.assignedUser.length; i++) {
+                            let iter = this.state.assignedUser[i]
+                            this.assignUserToEntity(iter, insertedEntityId)
+                        }
+                    }
+                    this.fetchAllParentDirectory()
 
                 }
-
-                this.setState({ showLoader: true })
-                CreateDirectory(payload).then(function (res) {
-                    var response = res.data;
-                    this.setState({ showLoader: false })
-                    if (response.errorResponse.errorStatusCode != 1000) {
-                        showToast('error', response.errorResponse.errorStatusType);
-                    } else {
-                        showToast('success', 'Folder created successfully');
-                        this.folderNameRef.current.value = ''
-                        this.folderDetailsRef.current.value = ''
-                        this.setState({ showCreateFolderModal: false, showCreateFolderDropDown: false, addPeopleToFolder: false })
-                        var insertedEntityId = response.lastRecordId
-                        console.log(insertedEntityId)
-                        if (this.state.assignedUser.length != 0) {
-                            for (let i = 0; i < this.state.assignedUser.length; i++) {
-                                let iter = this.state.assignedUser[i]
-                                this.assignUserToEntity(iter, insertedEntityId)
-                            }
-                        }
-                        this.fetchAllParentDirectory()
-
-                    }
-                }.bind(this)).catch(function (err) {
-                    this.setState({ showLoader: false })
-                    showHttpError(err)
-                }.bind(this))
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
         } else {
             showToast('error', 'Please provide valid information')
         }
@@ -362,7 +362,7 @@ class FolderDetails extends React.Component {
 
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     fetchAllParentDirectory = () => {
-        let payload = {entity_id : this.state.parentFolderId,page : this.state.page,limit:this.state.noOfItemsPerPage,sort:this.state.sort,searchQuery:this.state.searchQuery,asigned_user_id:''}
+        let payload = { entity_id: this.state.parentFolderId, page: this.state.page, limit: this.state.noOfItemsPerPage, sort: this.state.sort, searchQuery: this.state.searchQuery, asigned_user_id: '' }
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
             var response = res.data;
@@ -373,7 +373,7 @@ class FolderDetails extends React.Component {
 
                 let arr = [];
                 //arr = arr.reverse();
-                this.setState({ foldersList: response.response,totalCount : response.totalCount })
+                this.setState({ foldersList: response.response, totalCount: response.totalCount })
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
                 console.log(this.props.globalState)
@@ -391,7 +391,7 @@ class FolderDetails extends React.Component {
         if (param != '') {
             for (let i = 0; i < this.props.globalState.clientListReducer.clientsList.length; i++) {
                 let iter = this.props.globalState.clientListReducer.clientsList[i]
-                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1) {
+                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1 || (iter.user_email).toLowerCase().indexOf((param).toLowerCase()) != -1) {
                     arr.push(iter)
                 }
             }
@@ -648,19 +648,25 @@ class FolderDetails extends React.Component {
 
     /** Method defination for handle download files **/
     handleDownloadFiles = () => {
-        let files = document.getElementsByClassName('downloadFile')
-        console.log(files)
-        console.log(files.length)
-        console.log(typeof(files))
-        console.log(this.state.selectedEntityArray)
-        for(let i=0;i<files.length;i++){
-            let id = files[i].getAttribute('id')
-            console.log(this.state.selectedEntityArray.includes(id))
-            if(this.state.selectedEntityArray.includes(id)){
-                files[i].click()
-            }
+        if(this.state.selectedEntityArray.length !== 0){
+            let payload = { entity_id: this.state.selectedEntityArray}
+            this.setState({ showLoader: true })
+            Download(payload).then(function (res) {
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', this.state.parentFolderId + '.zip');
+                document.body.appendChild(link);
+                link.click();
+                this.setState({ showLoader: false })
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
+        }else{
+            showToast('error', 'Please select file/files for download first');
         }
-      
+
     }
 
 
@@ -726,7 +732,7 @@ class FolderDetails extends React.Component {
                                                                             <label className="custom-control-label" htmlFor={list.entity_id}></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{sliceStringByLimit(list.entity_name,30)}</a> </td>
+                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{sliceStringByLimit(list.entity_name, 30)}</a> </td>
 
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
