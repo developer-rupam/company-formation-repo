@@ -652,7 +652,7 @@ class FolderDetails extends React.Component {
             let payload = { entity_id: this.state.selectedEntityArray}
             this.setState({ showLoader: true })
             Download(payload).then(function (res) {
-                const url = window.URL.createObjectURL(new Blob([res]));
+                const url = window.URL.createObjectURL(new Blob([res.data]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', this.state.parentFolderId + '.zip');
