@@ -519,7 +519,7 @@ closeEntityInfoModal = () => {
                                 <div className="col-md-12">
                                     <div className="card card_cstm same_dv_table">
                                     <div className="card-header">
-                                        <div className="d-flex justify-content-between align-items-center">
+                                        <div className="head-job">
                                             <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Shared Folders</div>
                                             <div className="lft-hdr">
                                                         <label>Sort : </label>
@@ -545,7 +545,7 @@ closeEntityInfoModal = () => {
                                         </div>
                                     </div>
                                     <div className="card-body custom_card_body_sharedfolders">
-                                        <div className="dash_lft_t">
+                                        <div className="dash_lft_t" style={{overflowX:"auto"}}>
                                             <table className="table_all table dt-responsive nowrap">
                                                 <thead>
                                                 <tr>

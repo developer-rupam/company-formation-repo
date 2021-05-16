@@ -706,7 +706,7 @@ class FolderDetails extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="card-body custom_card_body_sharedfolders">
-                                                <div className="dash_lft_t">
+                                                <div className="dash_lft_t" style={{overflowX:"auto"}}>
                                                     <table className="table_all table dt-responsive nowrap">
                                                         <thead>
                                                             <tr>
@@ -732,7 +732,7 @@ class FolderDetails extends React.Component {
                                                                             <label className="custom-control-label" htmlFor={list.entity_id}></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{sliceStringByLimit(list.entity_name, 30)}</a> </td>
+                                                                    <td><span className="select" onClick={() => { manipulateFavoriteEntity(list.entity_id, []) }}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a> </td>
 
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />

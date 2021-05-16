@@ -2405,10 +2405,10 @@ div#chart_div_bar {
 	box-shadow: 0 0 3px 1px #0000001c;
 }
 
-.lft-hdr {
+/* .lft-hdr {
 	display: flex;
 	align-items: center;
-}
+} */
 
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
@@ -3517,3 +3517,118 @@ div.dropdown.open > div.list {
 .maine .tab-bar-content.active {
   display: block;
 }
+
+.head-job {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+}
+i.fas.fa-user-friends.mr-1 {
+    width: 22px;
+    margin-top: 3px;
+}
+i.fas.fa-folder {
+    margin: 3px 10px 0 0;
+}
+i.fas.fa-home.mr-2 {
+    margin-top: 4px;
+}
+i.fas.fa-cog.mr-2 {
+    margin: 5px 0;
+}
+.lft-hdr {
+    display: inline-flex;
+    width: 24%;
+    margin: 0 50px 0 0;
+}
+
+.lft-hdr label {
+    display: block;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    width: 101px;
+}
+
+.custom-control-label:after, .custom-control-label:before {
+    position: absolute;
+    top: .15625rem;
+    left: -1.5rem;
+    display: block;
+    width: 22px !important;
+    height: 22px !important;
+    content: "";
+}
+
+.form-check-inline .form-check-input {
+    position: static;
+    margin-top: 0;
+    margin-right: .3125rem;
+    margin-left: 0;
+    width: 39px !important;
+    height: 20px !important;
+}
+input[type=checkbox]{
+    box-sizing: border-box;
+    padding: 0;
+    position: static;
+    margin-top: 0;
+    margin-right: .3125rem;
+    margin-left: 0;
+    width: 39px !important;
+    height: 20px !important;
+}
+.remb input#remember {
+    padding-left: 0px !important;
+    width: auto !important;
+}
+.remb .custom-control {
+    position: relative;
+    display: block;
+    min-height: 1.3125rem;
+    padding-left: 10px;
+}
+@media screen and (max-width: 991.98px) {
+	.app-header .navbar-nav {
+		flex-direction: column !important;
+		align-items: center;
+	}
+	.app-header .navbar-brand {
+		position: absolute;
+		top: 0;
+		left: 40%;
+		margin-left: -77.5px;
+	}
+	
+	.app-header .navbar-brand {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 165px;
+		height: 65px;
+		margin-right: 0;
+		background: #d6ecff;
+		box-shadow: 0 0 11px 2px rgb(0 0 0 / 11%);
+	}
+	.lft-hdr {
+		display: flex;
+		width: 100%;
+		margin: 0 50px 4px 0;
+	}
+	.table_all tbody tr td:first-child a {
+		font-weight: 400!important;
+		color: #000!important;
+		text-align: left;
+	}
+	.head-job {
+		display: inherit;
+		align-items: center;
+	}
+	}
+
+	
+	
+	@media screen and (max-width: 767.98px) {}
+	
+	@media screen and (max-width: 575.98px) {}
+	
+	@media screen and (max-width: 321.98px) {}

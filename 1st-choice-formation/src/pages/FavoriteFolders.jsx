@@ -390,7 +390,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                         </div>
                                     </div>
                                     <div className="card-body custom_card_body_sharedfolders">
-                                        <div className="dash_lft_t">
+                                        <div className="dash_lft_t" style={{overflowX:"auto"}}>
                                             <table className="table_all table dt-responsive nowrap">
                                                 <thead>
                                                 <tr>

@@ -26,8 +26,10 @@ import { connect } from 'react-redux';
        let element =  document.querySelector('.app')
        if(element.classList.contains('sidebar-lg-show')){
         element.classList.remove('sidebar-lg-show')
+        element.classList.remove('sidebar-show')
        }else{
         element.classList.add('sidebar-lg-show')
+        element.classList.add('sidebar-show')
        }
     }
 
@@ -56,7 +58,7 @@ import { connect } from 'react-redux';
             <Fragment>
                  <header className="app-header navbar">
                     <button className="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
-                    <span className="navbar-toggler-icon"></span>
+                    <span className="navbar-toggler-icon" onClick={this.toggleSidebar} data-toggle="sidebar-lg-show"></span>
                     </button>
                     <Link className="navbar-brand" to="/dashboard">
                     <img className="navbar-brand-full img-fluid" src={require('../assets/image/logo.png')} alt="Logo"/>

@@ -274,7 +274,7 @@ import { Modal } from 'react-bootstrap';
                                         </div>
                                     </div>
                                     <div className="card-body custom_card_body_browesclient">
-                                        <div className="dash_lft_t">
+                                        <div className="dash_lft_t" style={{overflowX:"auto"}}>
                                             <table className="table table-striped table-bordered dt-responsive text-center">
                                                 <thead>
                                                 <tr>

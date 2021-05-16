@@ -531,21 +531,18 @@ class PersonalFolders extends React.Component {
                                     <div className="col-md-12">
                                         <div className="card card_cstm same_dv_table">
                                             <div className="card-header">
-                                                <div className="d-flex justify-content-between align-items-center">
+                                                <div className="head-job">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Personal Folders</div>
                                                     <div className="lft-hdr">
-                                                        <label>Sort : </label>
-                                                    </div>
-                                                    <div className="lft-hdr">
+                                                    <label>Sort : </label>
                                                         <select className="form-control" onChange={(e) => { this.handleFolderSorting(e.target.value) }}>
                                                             <option value="-1">Decending Order </option>
                                                             <option value="1">Ascending Order</option>
                                                         </select>
                                                     </div>
+                                                    
                                                     <div className="lft-hdr">
-                                                        <label>Search : </label>
-                                                    </div>
-                                                    <div className="lft-hdr">
+                                                    <label>Search : </label>
                                                         <input type="text" className="form-control" placeholder="Search folder" onKeyUp={(e) => { this.searchEntity(e.target.value) }} />
                                                     </div>
                                                     {JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role === 'ADMIN' && <div className="addbutton">
@@ -557,7 +554,7 @@ class PersonalFolders extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="card-body custom_card_body_sharedfolders">
-                                                <div className="dash_lft_t">
+                                                <div className="dash_lft_t" style={{overflowX:"auto"}}>
                                                     <table className="table_all table dt-responsive nowrap">
                                                         <thead>
                                                             <tr>
