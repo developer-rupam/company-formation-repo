@@ -43,13 +43,15 @@ import { showToast,showHttpError } from '../utils/library'
         }
         this.setState({showLoader : true})
         GetAllUser(payload).then(function(res){
-            this.setState({showLoader : false})
+            
             var response = res.data;
             if(response.errorResponse.errorStatusCode != 1000){
                 showToast('error',response.errorResponse.errorStatusType);
+                this.setState({showLoader : false})
             }else{
                 let employeesList = response.response;
                 this.props.setEmployeeList(employeesList);
+                this.setState({showLoader : false})
             }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
