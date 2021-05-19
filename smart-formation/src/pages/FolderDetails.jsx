@@ -40,7 +40,11 @@ class FolderDetails extends React.Component {
             page: 0,
             noOfItemsPerPage: 50,
             totalCount: 0,
-            sort: -1
+            sort: -1,
+            totalPageToRender: 10,
+            pageRenderingStartsAt: 0,
+            pageButtonArr: [],
+            paginationType: 'increase'
 
 
         };
@@ -377,6 +381,7 @@ class FolderDetails extends React.Component {
                 this.props.setPersonalFoldersList(this.state.foldersList);
                 console.log(this.state.foldersList)
                 console.log(this.props.globalState)
+                this.handlePaginationLogic();
 
             }
         }.bind(this)).catch(function (err) {
@@ -668,6 +673,49 @@ class FolderDetails extends React.Component {
         }
 
     }
+     /* method defination for handling pagination logic */
+     handlePaginationLogic = () => {
+        console.log("Page : ", this.state.page + 1)
+        /* logic for pagination page button rendering */
+        // let totalPageToRender = Math.ceil(this.state.totalCount/this.state.noOfItemsPerPage)
+
+        let start = this.state.pageRenderingStartsAt
+        let end = start + this.state.totalPageToRender
+        console.log(start, end)
+        console.log(this.state.page + 1, end)
+        if (parseInt(this.state.page + 1) >= parseInt(end)) {
+            if (this.state.paginationType == 'increase') {
+                start = start + this.state.totalPageToRender - 1;
+                end = end + this.state.totalPageToRender
+            } else {
+                start = start - this.state.totalPageToRender - 1;
+                end = end - this.state.totalPageToRender + 1
+            }
+        } else {
+            if (this.state.page < this.state.totalPageToRender) {
+                start = 0;
+                end = 10;
+            } else {
+                start = this.state.page - this.state.totalPageToRender / 2;
+                end = this.state.page + this.state.totalPageToRender / 2;
+            }
+        }
+
+        console.log(start, end)
+        let pageButtonArr = [];
+        if (end > Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)) {
+            end = Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage)
+        }
+        for (let i = start; i < end; i++) {
+            pageButtonArr.push(i)
+        }
+        this.setState({
+            pageButtonArr: pageButtonArr,
+            pageRenderingStartsAt: start
+        }, () => {
+            //console.log(this.state.totalPageToRender,this.state.page)
+        })
+    }
 
 
     render() {
@@ -748,6 +796,36 @@ class FolderDetails extends React.Component {
 
                                                         </tbody> : <tbody><tr><td className="text-center" colSpan="4">Folder is Empty </td></tr></tbody>}
                                                     </table>
+                                                    {this.state.foldersList.length > this.state.noOfItemsPerPage / 2 && <nav aria-label="Page navigation example">
+                                                        <ul className="pagination justify-content-center">
+                                                            {this.state.page > 0 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" tabindex="-1" onClick={(e) => {
+                                                                    this.setState({
+                                                                        page: this.state.page - 1,
+                                                                        paginationType: 'decrease'
+                                                                    }, () => {
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Previous</a>
+                                                            </li>}
+                                                            {this.state.pageButtonArr.map((pagi) =>
+                                                                <li className={this.state.page === pagi ? "page-item active" : "page-item"} key={pagi}><a className="page-link" href="javascript:void(0)" onClick={(e) => {
+                                                                    this.setState({ page: pagi, paginationType: 'increase' }, () => {
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>{pagi + 1}</a></li>)}
+                                                            {Math.ceil(this.state.totalCount / this.state.noOfItemsPerPage) > this.state.page + 1 && <li className="page-item">
+                                                                <a className="page-link" href="javascript:void(0)" onClick={(e) => {
+                                                                    this.setState({
+                                                                        page: this.state.page + 1,
+                                                                        paginationType: 'increase'
+                                                                    }, () => {
+                                                                        this.fetchAllParentDirectory();
+                                                                    })
+                                                                }}>Next</a>
+                                                            </li>}
+                                                        </ul>
+                                                    </nav>}
                                                 </div>
                                             </div>
                                         </div>
