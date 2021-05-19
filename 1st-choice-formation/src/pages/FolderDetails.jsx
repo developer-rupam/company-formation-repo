@@ -736,7 +736,8 @@ class FolderDetails extends React.Component {
                                                     <div className="lft-hdr">
                                                         {this.state.loggedInUserRole === 'ADMIN' && this.state.selectedEntityArray.length > 0 ? <Fragment>
                                                             <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={this.handleDeleteByMutliSelect}> <i className="fas fa-trash-alt mr-2"></i>Delete Selected</a>
-
+                                                            </Fragment> : ''}
+                                                            {this.state.selectedEntityArray.length > 0 ?<Fragment>
                                                             <a href="javascript:void(0)" className="ml-2 btn btn-success" onClick={this.handleDownloadFiles}> <i class="fas fa-file-download mr-2"></i>Download Selected</a>
 
                                                         </Fragment> : ''}
