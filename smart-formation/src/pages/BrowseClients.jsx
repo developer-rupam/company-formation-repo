@@ -52,10 +52,10 @@ class BrowseClients extends React.Component {
 
     /*** FUNCTION DEFINATION FOR SELECTING ALPHABET OF CLIENTS NAME ***/
     selectClientNameAlphabet = (e) => {
-        this.setState({ selectedAlphabetOfClient: e.target.value })
+        this.setState({ selectedAlphabetOfClient: e.target.value,searchQuery : '' })
         setTimeout(function () {
             console.log(this.state.selectedAlphabetOfClient)
-            this.renderClientList()
+            this.getAllClientsList()
         }.bind(this), 1000)
     }
 
@@ -66,15 +66,22 @@ class BrowseClients extends React.Component {
             pageNo: page
         })
         setTimeout(() => {
-            this.renderClientList()
+            this.getAllClientsList()
         }, 1000);
     }
 
     /**** FUNCTION DEFINATION TO GET CLIENT LIST****/
     getAllClientsList = () => {
+        let searchQuery = '';
+        if(this.state.selectedAlphabetOfClient != ''){
+            searchQuery = this.state.selectedAlphabetOfClient
+        }else{
+            searchQuery = this.state.searchQuery
+        }
         let payload = {
             page_no: this.state.pageNo,
-            page_size: this.state.limitForCall,
+            page_size: this.state.noOfItemsPerPage,
+            searchQuery : this.state.searchQuery
         }
         this.setState({ showLoader: true })
         GetAllUser(payload).then(function (res) {
@@ -104,11 +111,12 @@ class BrowseClients extends React.Component {
     /**** FUNCTION DEFINATION TO RENDER CLIENT LIST *****/
     renderClientList = () => {
         let clients = this.props.globalState.clientListReducer.clientsList;
-        let end = this.state.noOfItemsPerPage * this.state.pageNo;
-        let start = end - this.state.noOfItemsPerPage;
-        let list = [];
+        console.log(clients)
+       // let end = this.state.noOfItemsPerPage * this.state.pageNo;
+        //let start = end - this.state.noOfItemsPerPage;
+       // let list = [];
 
-        if (this.state.selectedAlphabetOfClient != '') {
+       /*  if (this.state.selectedAlphabetOfClient != '') {
             for (let i = 0; i < clients.length; i++) {
                 let firstCharcterOfName = clients[i].user_name.charAt(0);
                 let firstCharcterOfEmail = clients[i].user_email.charAt(0);
@@ -131,8 +139,8 @@ class BrowseClients extends React.Component {
                     list.push(clients[i]);
                 }
             }
-        }
-        this.setState({ clientsList: list });
+        } */
+        this.setState({ clientsList: clients });
     }
 
     /**** FUNCTION DEFINATION FOR DELETING CLIENT ****/
@@ -228,7 +236,7 @@ class BrowseClients extends React.Component {
         this.setState({ searchQuery: param })
         setTimeout(function () {
             console.log(this.state.searchQuery)
-            this.renderClientList()
+            this.getAllClientsList()
         }.bind(this), 1000)
     }
 
