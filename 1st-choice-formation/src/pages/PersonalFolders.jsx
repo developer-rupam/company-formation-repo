@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, manipulateRemoveFavoriteEntity, isEntityExist } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, GetDirectory,RenameFolder } from '../utils/service'
+import { CreateDirectory, GetAllSubDirectory, addDirectoryAssignedUser, removeDirectory, getFavouriteDirectoriesByUser, GetDirectory,RenameFolder,GetUserDetails,GetAllUser } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList, setFavoriteFoldersList } from '../utils/redux/action'
@@ -267,15 +267,33 @@ class PersonalFolders extends React.Component {
     isUserMatched = (param) => {
         let arr = []
         if (param != '') {
-            for (let i = 0; i < this.props.globalState.clientListReducer.clientsList.length; i++) {
-                let iter = this.props.globalState.clientListReducer.clientsList[i]
-                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1 || (iter.user_email).toLowerCase().indexOf((param).toLowerCase()) != -1) {
-                    arr.push(iter)
-                }
+            this.setState({ showLoader: true })
+            let payload = {
+                page_no: 1,
+                page_size: 50,
+                searchQuery : param
             }
+            GetAllUser(payload).then(function (res) {
+                var response = res.data;
+                if (response.errorResponse.errorStatusCode != 1000) {
+                    this.setState({ showLoader: false })
+                    showToast('error', response.errorResponse.errorStatusType);
+                } else {
+                    this.setState({ showLoader: false })
+                    if(response.response != undefined){
+
+                        this.setState({ userListWithSearchQuery: response.response })
+                    }else{
+                        this.setState({ userListWithSearchQuery: [] })
+                    }
+                }
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
         } else {
         }
-        this.setState({ userListWithSearchQuery: arr })
+       
         //console.log(this.state.userListWithSearchQuery)
     }
 
@@ -407,7 +425,7 @@ class PersonalFolders extends React.Component {
 
     /***  Function defination for handling file folder information ****/
     getFileFolderInfo = (param) => {
-
+        console.log(param);
         /* Entity Size */
         let id = param.entity_id
         let name = param.entity_name
@@ -429,21 +447,29 @@ class PersonalFolders extends React.Component {
 
         /* Entity Assignee */
         let nameArr = [];
-        let clients = this.props.globalState.clientListReducer.clientsList
-        if (param.asigned_user_ids.length !== 0 && clients.length !== 0) {
+        if (param.asigned_user_ids.length !== 0 ) {
             for (let i = 0; i < param.asigned_user_ids.length; i++) {
                 let id = param.asigned_user_ids[i];
-                for (let j = 0; j < clients.length; j++) {
-                    if (id === clients[j].user_id) {
-                        //console.log('here')
-                        nameArr.push(clients[j].user_name);
-                    }
+                this.setState({ showLoader: true });
+                let payload = {
+                    user_id :id
                 }
-
+                GetUserDetails(payload).then(function (res) {
+                    let response = res.data;
+                    if(response.errorResponse.errorStatusCode != 1000){
+                        showToast('error',response.errorResponse.errorStatusType);
+                    }else{
+                        nameArr = this.state.selectedFolderAssignedTo
+                        nameArr.push(response.response.user_name);
+                        this.setState({ selectedFolderAssignedTo: nameArr });
+                    }
+                }.bind(this)).catch(function (err) {
+                    this.setState({ showLoader: false })
+                    showHttpError(err)
+                }.bind(this))
+        
             }
         }
-        this.setState({ selectedFolderAssignedTo: nameArr });
-
 
     }
 
@@ -533,7 +559,6 @@ class PersonalFolders extends React.Component {
                                             <div className="card-header">
                                                 <div className="head-job">
                                                     <div className="lft-hdr"><span><i className="fas fa-folder-open"></i></span>Personal Folders</div>
-                                                   
                                                     <div className="lft-hdr">
                                                     <label>Sort : </label>
                                                         <select className="form-control" onChange={(e) => { this.handleFolderSorting(e.target.value) }}>
@@ -541,7 +566,7 @@ class PersonalFolders extends React.Component {
                                                             <option value="1">Ascending Order</option>
                                                         </select>
                                                     </div>
-                                                   
+                                                    
                                                     <div className="lft-hdr">
                                                     <label>Search : </label>
                                                         <input type="text" className="form-control" placeholder="Search folder" onKeyUp={(e) => { this.searchEntity(e.target.value) }} />
@@ -562,7 +587,6 @@ class PersonalFolders extends React.Component {
                                                                 <th>Name</th>
                                                                 {/* <th>Size</th> */}
                                                                 <th>Uploaded</th>
-                                                                <th>Create</th>
                                                                 <th>Details</th>
                                                             </tr>
                                                         </thead>
@@ -587,9 +611,7 @@ class PersonalFolders extends React.Component {
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
                                                                     </td>
-                                                                    <td>
-                                                                        {this.getEntityOwnerDetails(list.directory_owner).ownerName}
-                                                                    </td>
+                                                                    
                                                                     <td>
                                                                         {list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id) }}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}
                                                                         <a href="javascript:void(0)" className="ml-2 btn btn-danger" onClick={() => { this.handleDeleteEntity(list.entity_id) }}> <i className="fas fa-trash-alt" ></i>Delete</a>

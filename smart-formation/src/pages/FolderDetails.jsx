@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS, FILEPATH } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast, showConfirm, showHttpError, manipulateFavoriteEntity, isEntityExist, sliceStringByLimit } from '../utils/library'
-import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory, removeDirectoryAsignedUser, Download } from '../utils/service'
+import { CreateDirectory, GetAllSubDirectory, CreateFile, addDirectoryAssignedUser, removeDirectory, removeDirectoryAsignedUser, Download,GetAllUser,GetUserDetails } from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { setPersonalFoldersList } from '../utils/redux/action'
@@ -394,15 +394,33 @@ class FolderDetails extends React.Component {
     isUserMatched = (param) => {
         let arr = []
         if (param != '') {
-            for (let i = 0; i < this.props.globalState.clientListReducer.clientsList.length; i++) {
-                let iter = this.props.globalState.clientListReducer.clientsList[i]
-                if ((iter.user_name).toLowerCase().indexOf((param).toLowerCase()) != -1 || (iter.user_email).toLowerCase().indexOf((param).toLowerCase()) != -1) {
-                    arr.push(iter)
-                }
+            this.setState({ showLoader: true })
+            let payload = {
+                page_no: 1,
+                page_size: 50,
+                searchQuery : param
             }
+            GetAllUser(payload).then(function (res) {
+                var response = res.data;
+                if (response.errorResponse.errorStatusCode != 1000) {
+                    this.setState({ showLoader: false })
+                    showToast('error', response.errorResponse.errorStatusType);
+                } else {
+                    this.setState({ showLoader: false })
+                    if(response.response != undefined){
+
+                        this.setState({ userListWithSearchQuery: response.response })
+                    }else{
+                        this.setState({ userListWithSearchQuery: [] })
+                    }
+                }
+            }.bind(this)).catch(function (err) {
+                this.setState({ showLoader: false })
+                showHttpError(err)
+            }.bind(this))
         } else {
         }
-        this.setState({ userListWithSearchQuery: arr })
+       
         //console.log(this.state.userListWithSearchQuery)
     }
 
@@ -589,18 +607,27 @@ class FolderDetails extends React.Component {
             console.log('parentFolderId', this.state.parentFolderId)
             console.log('entity_id', arr[i].entity_id)
             if (this.state.parentFolderId == arr[i].entity_id) {
-                let clients = this.props.globalState.clientListReducer.clientsList;
-                for (let j = 0; j < clients.length; j++) {
-                    if (arr[i].asigned_user_ids.includes(clients[j].user_id)) {
-                        assignee.push(clients[j])
+                this.setState({ showLoader: true });
+                let payload = {
+                    user_id :arr[i].asigned_user_ids
+                }
+                GetUserDetails(payload).then(function (res) {
+                    let response = res.data;
+                    if(response.errorResponse.errorStatusCode != 1000){
+                        showToast('error',response.errorResponse.errorStatusType);
+                    }else{
+                       // assignee = this.state.assignedUsers
+                        assignee.push(response.response);
+                       // assigneeIds = this.state.assignedUsers
+                        assigneeIds.push(response.response.user_id);
+                        this.setState({ assignedUsers: assignee, assignedUser: assigneeIds })
                     }
-                }
-                for (let j = 0; j < arr[i].asigned_user_ids.length; j++) {
-                    assigneeIds.push(arr[i].asigned_user_ids[j])
-
-                }
+                }.bind(this)).catch(function (err) {
+                    this.setState({ showLoader: false })
+                    showHttpError(err)
+                }.bind(this))
                 console.log(assignee)
-                this.setState({ assignedUsers: assignee, assignedUser: assigneeIds })
+               
                 break;
             }
         }
@@ -768,7 +795,6 @@ class FolderDetails extends React.Component {
                                                                 <th>Name</th>
                                                                 {/* <th>Size</th> */}
                                                                 <th>Uploaded</th>
-                                                                <th>Create</th>
                                                                 <th>Details</th>
                                                             </tr>
                                                         </thead>
@@ -786,7 +812,7 @@ class FolderDetails extends React.Component {
                                                                     <td>
                                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created} />
                                                                     </td>
-                                                                    <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
+                                                                   
                                                                     <td>
                                                                         {list.is_directory ? <button className="btn btn-primary" onClick={() => { this.handleFolderDetails(list.entity_id, list.entity_name) }}> <i className="fas fa-eye"></i>  Details</button> : <Fragment>
                                                                             <a href={FILEPATH + list.entity_location.replace("../", "")} target="_blank" className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>

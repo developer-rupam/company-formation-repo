@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { SITENAMEALIAS } from '../utils/init';
 import { Modal } from 'react-bootstrap';
 import { showToast,showConfirm,showHttpError,manipulateRemoveFavoriteEntity } from '../utils/library'
-import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,GetDirectory,RenameFolder} from '../utils/service'
+import {CreateDirectory,GetAllSubDirectory,getFavouriteDirectoriesByUser,GetDirectory,RenameFolder,GetUserDetails,GetAllUser} from '../utils/service'
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import {setFavoriteFoldersList} from '../utils/redux/action'
@@ -261,18 +261,18 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
     /***  Function defination for handling file folder information ****/
     getFileFolderInfo = (param) => {
-
+        console.log(param);
         /* Entity Size */
         let id = param.entity_id
         let name = param.entity_name
         let location = param.entity_location
         this.showLoader = true;
-        let payload = {directoryName : id}
+        let payload = { directoryName: id }
         GetDirectory(payload).then(function (res) {
             let response = res.data.response;
-            if(response !== null){
+            if (response !== null) {
                 let size = response.folderSize;
-                this.setState({ showLoader : false,selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
                     this.openEntityInfoModal();
                 });
             }
@@ -283,21 +283,29 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
         /* Entity Assignee */
         let nameArr = [];
-        let clients = this.props.globalState.clientListReducer.clientsList
-        if(param.asigned_user_ids.length !== 0 && clients.length !== 0){
-            for(let i=0;i<param.asigned_user_ids.length;i++){
+        if (param.asigned_user_ids.length !== 0 ) {
+            for (let i = 0; i < param.asigned_user_ids.length; i++) {
                 let id = param.asigned_user_ids[i];
-                for(let j=0;j<clients.length;j++){
-                    if(id === clients[j].user_id){
-                        console.log('here')
-                        nameArr.push(clients[j].user_name) ;
-                    }
+                this.setState({ showLoader: true });
+                let payload = {
+                    user_id :id
                 }
-               
+                GetUserDetails(payload).then(function (res) {
+                    let response = res.data;
+                    if(response.errorResponse.errorStatusCode != 1000){
+                        showToast('error',response.errorResponse.errorStatusType);
+                    }else{
+                        nameArr = this.state.selectedFolderAssignedTo
+                        nameArr.push(response.response.user_name);
+                        this.setState({ selectedFolderAssignedTo: nameArr });
+                    }
+                }.bind(this)).catch(function (err) {
+                    this.setState({ showLoader: false })
+                    showHttpError(err)
+                }.bind(this))
+        
             }
         }
-        this.setState({ selectedFolderAssignedTo : nameArr});
-
 
     }
     /*** Method defination for handling folder sorting ***/
@@ -397,7 +405,6 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     <th>Name</th>
                                                     {/* <th>Size</th> */}
                                                     <th>Uploaded</th>
-                                                    <th>Create</th>
                                                     <th>Details</th>
                                                 </tr>
                                                 </thead>
@@ -411,7 +418,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                                                     <td>
                                                         <Moment format="YYYY/MM/DD HH:mm:ss" date={list.entity_created}/>
                                                     </td>
-                                                    <td>{this.getEntityOwnerDetails(list.directory_owner).ownerName}</td>
+                                                  
                                                     <td>{list.is_directory ? <button className="btn btn-primary"  onClick={()=>{this.handleFolderDetails(list.entity_id)}}> <i className="fas fa-eye"></i>  Details</button> : <a href={list.entity_location} className="btn btn-warning"> <i className="fas fa-eye"></i> Show</a>}</td>
                                                 </tr>)}
                                                 
