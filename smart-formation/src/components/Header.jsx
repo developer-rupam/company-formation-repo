@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { SITENAME,SITENAMEALIAS,BASEURL } from '../utils/init';
-import { storeCurrentRoute,logout } from '../utils/library';
+import { storeCurrentRoute,logout ,showToast,showHttpError} from '../utils/library';
+import { GlobalSearch } from '../utils/service';
 import { withRouter } from 'react-router-dom';
 import {setSearch } from "../utils/redux/action"
 import { connect } from 'react-redux';
@@ -10,7 +11,10 @@ import { connect } from 'react-redux';
  class Header extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            showLoader:false,
+            searchList : [],
+        }
 
         /*** REFERENCE FOR INPUT DATA FIELD ***/
         this.searchFieldRef = React.createRef();
@@ -42,12 +46,37 @@ import { connect } from 'react-redux';
 
     handleSearchSubmit = (e) => {
         e.preventDefault();
-        console.log(this.searchFieldRef.current.value)
-        this.props.setSearch(this.searchFieldRef.current.value);
-        setTimeout(() => {
-            
-            console.log(this.props) 
-        }, 1000);
+
+            let payload = {searchQuery : this.searchFieldRef.current.value }
+            GlobalSearch(payload).then(function(res){
+                var response = res.data;
+                if(response.errorResponse.errorStatusCode != 1000){
+                    this.setState({showLoader : false})
+                    showToast('error',response.errorResponse.errorStatusType);
+                }else{
+                    let arr = [];
+                    if(response.response.user != undefined){
+                        let user = response.response.user
+                        for(let i=0;i<user.length;i++){
+
+                            arr.push(user[i]);
+                        }
+                    }
+                    if(response.response.directory != undefined){
+                    let entity = response.response.directory
+                    for(let i=0;i<entity.length;i++){
+
+                        arr.push(entity[i]);
+                    }
+                    }
+                    this.setState({searchList : arr,showLoader : false},()=>{
+                        console.log(this.state.searchList)
+                    })
+                }
+             }.bind(this)).catch(function(err){
+                this.setState({showLoader : false})
+                showHttpError(err)
+            }.bind(this))
       
     }
 
@@ -73,14 +102,22 @@ import { connect } from 'react-redux';
                         </li>
                     </ul>
                      <ul className="nav navbar-nav ml-auto top_menu">
-                        {/* <li className="nav-item">
+                        <li className="nav-item">
                             <div className="searchheader">
                                 <form onSubmit={this.handleSearchSubmit}>
                                     <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef}/>
+                                    {this.state.searchList.length > 0 && <div className="autocomplete-items">
+                                        {this.state.searchList.map((list) => 
+                                            <div>
+                                                {list.user_name != undefined ?  <Link to={'/update-client/' + list.user_id}><i className="fas fa-user"></i>{list.user_name}({list.user_email})</Link> : <Link to={'/folder-details/'+list.entity_id+'/shared_folder'}><i className="fas fa-folder"></i>{list.entity_name}</Link>}
+                                            </div>
+                                        )}
+                                       
+                                    </div>}
                                     <button type="submit"><i className="fas fa-search"></i></button>
                                 </form>
                             </div>
-                        </li> */}
+                        </li>
                         <li className="nav-item">
                             <Link className="nav-link" to={BASEURL}><i className="nav-icon fas fa-question-circle mr-1" style={{marginTop:'2.1px'}}></i>Help</Link>
                         </li>

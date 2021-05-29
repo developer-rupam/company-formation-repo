@@ -224,3 +224,8 @@ export const Download = (obj) => {
         headers: { 'Content-Type': 'application/json'}
     });
 }
+/*** FUNCTION DEFINATION FOR Global search ***/
+export const GlobalSearch = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/user/search', payload,headers);
+}
