@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
         this.state = {
             showLoader:false,
             searchList : [],
+            showClearSearchButton : false
         }
 
         /*** REFERENCE FOR INPUT DATA FIELD ***/
@@ -46,7 +47,8 @@ import { connect } from 'react-redux';
 
     handleSearchSubmit = (e) => {
         e.preventDefault();
-
+        if(this.searchFieldRef.current.value != ''){
+            this.setState({showLoader : true,showClearSearchButton:false})
             let payload = {searchQuery : this.searchFieldRef.current.value }
             GlobalSearch(payload).then(function(res){
                 var response = res.data;
@@ -69,7 +71,7 @@ import { connect } from 'react-redux';
                         arr.push(entity[i]);
                     }
                     }
-                    this.setState({searchList : arr,showLoader : false},()=>{
+                    this.setState({searchList : arr,showLoader : false,showClearSearchButton:true},()=>{
                         console.log(this.state.searchList)
                     })
                 }
@@ -77,9 +79,17 @@ import { connect } from 'react-redux';
                 this.setState({showLoader : false})
                 showHttpError(err)
             }.bind(this))
-      
+        }
     }
-
+    /* Method defination for validating serch field */
+    validateSearchField = (e) => {
+        let searchVal = this.searchFieldRef.current.value
+        if(searchVal == ''){
+            this.setState({searchList : [],showClearSearchButton:false})
+        }else{
+            this.setState({showClearSearchButton:true})
+        }
+    }
 
 
     render() {
@@ -105,7 +115,7 @@ import { connect } from 'react-redux';
                         <li className="nav-item">
                             <div className="searchheader">
                                 <form onSubmit={this.handleSearchSubmit}>
-                                    <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef}/>
+                                    <input type="text" placeholder="Search" className="form-control" ref={this.searchFieldRef} onKeyUp={this.validateSearchField}/>
                                     {this.state.searchList.length > 0 && <div className="autocomplete-items">
                                         {this.state.searchList.map((list) => 
                                             <div>
@@ -114,7 +124,10 @@ import { connect } from 'react-redux';
                                         )}
                                        
                                     </div>}
-                                    <button type="submit"><i className="fas fa-search"></i></button>
+                                    {!this.state.showClearSearchButton ? <button type="submit"><i className="fas fa-search"></i></button> : <button type="button" onClick={()=>{
+                                         this.setState({searchList : [],showClearSearchButton:false});
+                                         this.searchFieldRef.current.value = '';
+                                    }}><i className="fas fa-times"></i></button>}
                                 </form>
                             </div>
                         </li>
