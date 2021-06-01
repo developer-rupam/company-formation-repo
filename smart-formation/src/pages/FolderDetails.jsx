@@ -1048,9 +1048,9 @@ class FolderDetails extends React.Component {
             exact: true,
             strict: false
         })
-        // console.log(match.params)
+         console.log(match.params)
         //console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))))
-        console.log(this.state.loggedInUserRole)
+        //console.log(this.state.loggedInUserRole)
         this.setState({ parentFolderId: match.params.param1 }, () => {
 
             this.getFolderDetails(match.params.param1, match.params.param2);
@@ -1059,6 +1059,26 @@ class FolderDetails extends React.Component {
 
 
     }
+
+    componentDidUpdate(prevProps) {
+        let match = matchPath(this.props.history.location.pathname, {
+            path: '/folder-details/:param1/:param2',
+            exact: true,
+            strict: false
+        })
+         console.log(match.params)
+        console.log(this.state.parentFolderId,match.params.param1)
+        if(this.state.parentFolderId != match.params.param1){
+           
+             this.setState({ parentFolderId: match.params.param1 }, () => {
+                
+                this.getFolderDetails(match.params.param1, match.params.param2);
+    
+            })
+           
+        }
+    }
+   
 
 
 }
