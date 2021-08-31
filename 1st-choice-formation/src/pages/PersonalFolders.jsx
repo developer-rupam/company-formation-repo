@@ -439,6 +439,11 @@ class PersonalFolders extends React.Component {
                 this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
                     this.openEntityInfoModal();
                 });
+            }else{
+                let size = '';
+                this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                    this.openEntityInfoModal();
+                });
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })

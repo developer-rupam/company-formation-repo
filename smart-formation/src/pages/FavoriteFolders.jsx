@@ -275,6 +275,11 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
                     this.openEntityInfoModal();
                 });
+            }else{
+                let size = '';
+                this.setState({ showLoader: false, selectedEntityInfo: { size: size, name: name, id: id } }, () => {
+                    this.openEntityInfoModal();
+                });
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
