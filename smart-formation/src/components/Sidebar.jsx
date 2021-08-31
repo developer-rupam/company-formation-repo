@@ -79,7 +79,7 @@ import { withRouter } from 'react-router-dom';
 					  <i className="fas fa-folder"></i> Folders
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					  <NavLink className="dropdown-item" to="/personal-folders"> <i className=" fas fa-user"></i> Personal Folders</NavLink>
+					{this.state.loggedInUserRole == 'ADMIN' && <NavLink className="dropdown-item" to="/personal-folders"> <i className=" fas fa-user"></i> Personal Folders</NavLink>}
 					  <NavLink className="dropdown-item" to="/shared-folders"> <i className=" fas fa-user-friends"></i> Shared Folders</NavLink>
 					  <NavLink className="dropdown-item" to="/favorite-folders"> <i className=" fas fa-star"></i> Favorites</NavLink>
 					   {/*<div className="dropdown-divider"></div>
