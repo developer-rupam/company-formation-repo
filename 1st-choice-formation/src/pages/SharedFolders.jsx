@@ -586,7 +586,7 @@ closeEntityInfoModal = () => {
                                                 </thead>
                                                 <tbody>
                                                 {this.state.foldersList.map((list) =>
-                                                <tr className="pointer-cursor" key={list.entity_id}>
+                                                <tr className="" key={list.entity_id}>
                                                     <td><span className="select" onClick={()=>{manipulateFavoriteEntity(this.state.createdBy,[list.entity_id],() => {this.fetchAllParentDirectory()})}}><i className="far fa-star"></i></span><span className="foldericon"><i className={list.is_directory ? "fas fa-folder-open" : "fas fa-file-pdf"}></i></span><a href="#!">{list.entity_name}</a><span className="ml-2" onClick={() => { this.getFileFolderInfo(list) }}><i className="fas fa-info-circle"></i></span></td>
                                                     
                                                     <td>

@@ -21,7 +21,8 @@ import { showToast,showHttpError } from '../utils/library'
             loggedInUserName : 'Guest',
             recentFileList : [],
             hasAccessToManageEmployees : false,
-			hasAccessToManageClients : false
+			hasAccessToManageClients : false,
+            loggedInUserRole : ''
         };
 
         /**** BIND FUNCTIONS ****/
@@ -107,6 +108,7 @@ import { showToast,showHttpError } from '../utils/library'
         this.setState({
             hasAccessToManageClients : manageClients,
             hasAccessToManageEmployees : manageEmployees,
+            loggedInUserRole : session.user_role
         })
     }
 
@@ -215,6 +217,7 @@ import { showToast,showHttpError } from '../utils/library'
   }
 
 
+  
     render() {
         return (
                <Fragment>
@@ -263,7 +266,7 @@ import { showToast,showHttpError } from '../utils/library'
                                                         <div className="recent_file_item_filename">
                                                             <p>{list.entity_name}</p>
                                                             <ul className="recent_file_item_path">
-                                                                <li><a href="#!">Personal Folders</a></li>
+                                                                <li><a href="#!">Shared Folders</a></li>
                                                 <li><a href="#!">{this.getEntityOwnerDetails(list.directory_owner).ownerName}</a></li>
                                                             </ul>
                                                         </div>
@@ -289,15 +292,15 @@ import { showToast,showHttpError } from '../utils/library'
                                                {/*  <li><Link to="/dashboard"><span><i className="fas fa-share"></i></span>Share Files</Link></li>
                                                 <li><Link to="/dashboard"><span><i className="fas fa-reply"></i></span>Request Files</Link></li> */}
                                                 { (this.state.hasAccessToManageClients || this.state.hasAccessToManageEmployees) ? <li><Link to="/manage-user-home"><span><i className="fas fa-user-plus"></i></span>Create New User</Link></li> :''}
-                                                <li><Link to="/personal-folders"><span><i className="fas fa-folder"></i></span>Personal Folders</Link></li>
+                                                {this.state.loggedInUserRole == 'ADMIN' &&<li><Link to="/personal-folders"><span><i className="fas fa-folder"></i></span>Personal Folders</Link></li>}
                                                 <li className={this.state.hasAccessToManageClients ? '' : 'ml-2'} style={{marginTop : '-16px'}}><Link to="/shared-folders"><span><i className="fas fa-folder-open"></i></span>Shared Folders</Link></li>
-                                                <li className={this.state.hasAccessToManageClients ? '' : 'ml-2'} style={{marginTop : '-36px'}}><Link to="/favorite-folders"><span><i className="fas fa-star"></i></span>Favorites</Link></li>
+                                                {this.state.loggedInUserRole == 'ADMIN' && <li className={this.state.hasAccessToManageClients ? '' : 'ml-2'} style={{marginTop : '-36px'}}><Link to="/favorite-folders"><span><i className="fas fa-star"></i></span>Favorites</Link></li>}
                                             </ul>
                                         </div>
                                     </div>
                                     </div>
                                 </div>
-                                <div className="col-md-6">
+                                {/*<div className="col-md-6">
                                     <div className="card card_cstm same_dv_table">
                                         <div className="card-header">
                                         <div className="d-flex justify-content-between align-items-center">
@@ -317,14 +320,14 @@ import { showToast,showHttpError } from '../utils/library'
                                     <div className="card-body custom_card_body_tutorials">
                                         <div className="tutorials_area">
                                             <h5>Coming soon...</h5>
-                                            {/* <nav>
+                                             <nav>
                                             <div className="nav nav-tabs" id="nav-tab" role="tablist">
                                                 <a className="nav-item nav-link active" id="nav-videos-tab" data-toggle="tab" href="#nav-videos" role="tab" aria-controls="nav-videos" aria-selected="true">Videos</a>
                                                 <a className="nav-item nav-link" id="nav-helpfullinks-tab" data-toggle="tab" href="#nav-helpfullinks" role="tab" aria-controls="nav-helpfullinks" aria-selected="false">Helpful Links</a>
                                             </div>
-                                            </nav> */}
+                                            </nav> 
                                             <div className="tab-content" id="nav-tabContent">
-                                            {/* <div className="tab-pane fade show active" id="nav-videos" role="tabpanel" aria-labelledby="nav-videos-tab">
+                                             <div className="tab-pane fade show active" id="nav-videos" role="tabpanel" aria-labelledby="nav-videos-tab">
                                             <div className="video_area">
                                                 <div className="col-md-12">
                                                     <div className="row">
@@ -361,19 +364,19 @@ import { showToast,showHttpError } from '../utils/library'
                                                     </div>
                                                 </div>
                                             </div>
-                                            </div> */}
-                                            {/* <div className="tab-pane fade" id="nav-helpfullinks" role="tabpanel" aria-labelledby="nav-helpfullinks-tab">
+                                            </div> 
+                                            <div className="tab-pane fade" id="nav-helpfullinks" role="tabpanel" aria-labelledby="nav-helpfullinks-tab">
                                                 <div className="helpful_area">
                                                     <ul>
                                                         <li><a href="#!">Link1</a></li>
                                                     </ul>
                                                 </div>
-                                            </div> */}
+                                            </div>
                                             </div>
                                         </div>
                                     </div>
                                     </div>
-                                </div>
+                                </div>*/}
                             </div>
                         </div>
                         </div>
@@ -414,6 +417,8 @@ import { showToast,showHttpError } from '../utils/library'
 
         /*** CALLING FUNCTION FOR GET ALL RECENT FILES***/
         this.getRecentFiles()
+
+      
     }
     
 }
