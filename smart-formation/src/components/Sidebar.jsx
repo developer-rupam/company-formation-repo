@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 			hasAccessToManageEmployees : false,
 			hasAccessToManageClients : false,
 			hasPermissionToAccessPersonalSettings : false,
+			hasPermissionToChangePassword : false,
 			loggedInUserRole : ''
 		}
 
@@ -57,6 +58,7 @@ import { withRouter } from 'react-router-dom';
 			hasAccessToManageClients : manageClients,
 			hasAccessToManageEmployees : manageEmployees,
 			hasPermissionToAccessPersonalSettings:session.access_user_settings,
+			hasPermissionToChangePassword:session.change_password,
 			loggedInUserRole : session.user_role
 		})
 	}
@@ -79,7 +81,7 @@ import { withRouter } from 'react-router-dom';
 					  <i className="fas fa-folder"></i> Folders
 					</Link>
 					<div className="dropdown-menu" aria-labelledby="navbarDropdown">
-					{this.state.loggedInUserRole == 'ADMIN' && <NavLink className="dropdown-item" to="/personal-folders"> <i className=" fas fa-user"></i> Personal Folders</NavLink>}
+					  {this.state.loggedInUserRole == 'ADMIN' && <NavLink className="dropdown-item" to="/personal-folders"> <i className=" fas fa-user"></i> Personal Folders</NavLink>}
 					  <NavLink className="dropdown-item" to="/shared-folders"> <i className=" fas fa-user-friends"></i> Shared Folders</NavLink>
 					  <NavLink className="dropdown-item" to="/favorite-folders"> <i className=" fas fa-star"></i> Favorites</NavLink>
 					   {/*<div className="dropdown-divider"></div>
@@ -126,7 +128,7 @@ import { withRouter } from 'react-router-dom';
 					  <i className="fas fa-cog mr-2"></i>Settings
 					</Link>
 					 <div className="dropdown-menu">
-					 {this.state.hasPermissionToAccessPersonalSettings ? <NavLink className="dropdown-item " to="/personal-settings" activeClassName="active">Personal Settings</NavLink>: ''}
+					 {this.state.hasPermissionToChangePassword ? <NavLink className="dropdown-item " to="/personal-settings" activeClassName="active">Personal Settings</NavLink>: ''}
 
 					 {this.state.loggedInUserRole === 'ADMIN' && <NavLink className="dropdown-item " to="/email-settings" activeClassName="active">Email Settings</NavLink>}
 					</div>
