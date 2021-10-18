@@ -81,7 +81,7 @@ import 'suneditor/dist/css/suneditor.min.css';
                 }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -104,7 +104,7 @@ import 'suneditor/dist/css/suneditor.min.css';
                 }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
     

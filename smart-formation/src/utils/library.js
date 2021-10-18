@@ -1,7 +1,7 @@
-import { SITENAMEALIAS } from './init'
+import { SITENAMEALIAS,FILEPATH,BASEURL } from './init'
 import Swal from 'sweetalert2'
-import {addUserFavouriteDirectory,removeUserFavouriteDirectory} from './service'
-
+import {addUserFavouriteDirectory,removeUserFavouriteDirectory,getEntitySize} from './service'
+const axios = require('axios');
 
 /*** function defination for storing current route ***/
 export const storeCurrentRoute = (route) =>{
@@ -46,11 +46,13 @@ export const showToast = (type,message) => {
 }
 
 /***  funtion defination for showing http error ***/
-export const showHttpError = (error) => {
+export const showHttpError = (error,props) => {
   if(error.response != undefined){
     var code = error.response.code;
-    if(code == '401'){
-      showToast('error','Authentication Failed')
+    //console.log(props)
+    if(code == '401' || error.toString().indexOf('401') != -1){
+      showToast('error','Authentication Failed,please login again')
+      props.history.push('/')
     }else if(code == '404' || code == '403' || code == '400'){
       showToast('error','Failed to connect with the server');
     }else if(code == '500'){
@@ -83,7 +85,7 @@ export const manipulateFavoriteEntity = (param,array,callback) => {
     }
 }.bind(this)).catch(function(err){
    // this.setState({showLoader : false})
-    showHttpError(err)
+      showHttpError(err,this.props)
 }.bind(this))
 }
 
@@ -107,7 +109,7 @@ export const manipulateRemoveFavoriteEntity = (param,entity,callback) => {
     }
 }.bind(this)).catch(function(err){
    // this.setState({showLoader : false})
-    showHttpError(err)
+      showHttpError(err,this.props)
 }.bind(this))
 }
 
@@ -139,3 +141,6 @@ export const sliceStringByLimit = (string,limit) => {
   }
   return string;
 }
+
+
+

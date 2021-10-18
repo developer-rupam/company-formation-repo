@@ -216,7 +216,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             }
          }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -363,7 +363,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             }
          }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -741,7 +741,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
                         }
                     }.bind(this)).catch(function(err){
                         this.setState({showLoader : false})
-                        showHttpError(err)
+                        showHttpError(err,this.props)
                     }.bind(this))
         }
         

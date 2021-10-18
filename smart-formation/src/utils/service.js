@@ -1,15 +1,27 @@
 import { SITENAMEALIAS,WEBSERVICE,FILEPATH } from './init'
 import Swal from 'sweetalert2'
 const axios = require('axios');
-
+console.log(localStorage.getItem(SITENAMEALIAS + '_session'))
 /*** Initializing headers ***/
-const headers = {headers: {
-    'Content-Type': 'application/json',
-    'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
-    'X-Frame-Options' : 'SAMEORIGIN',
-    'X-Content-Type-Options' : 'nosniff',
-    'Access-Control-Allow-Headers': "*"
-}}
+if(localStorage.getItem(SITENAMEALIAS + '_session') !== null){
+    var headers = {headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+        'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
+    }}
+}else{
+    var headers = {headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+    }}
+}
+
 
 
 

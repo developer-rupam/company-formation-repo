@@ -174,7 +174,7 @@ class FolderDetails extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                showHttpError(err,this.props)
             }.bind(this))
         } else {
             showToast('error', 'Please provide valid information')
@@ -316,7 +316,7 @@ class FolderDetails extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err)
+                    showHttpError(err,this.props)
                 }.bind(this))
             } else {
                 showToast('error', 'Please provide pdf files only')
@@ -353,7 +353,7 @@ class FolderDetails extends React.Component {
         //             }
         //         }.bind(this)).catch(function(err){
         //             this.setState({showLoader : false})
-        //             showHttpError(err)
+        //             showHttpError(err,this.props)
         //         }.bind(this))
 
         //    }else{
@@ -386,7 +386,7 @@ class FolderDetails extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -416,7 +416,7 @@ class FolderDetails extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                showHttpError(err,this.props)
             }.bind(this))
         } else {
         }
@@ -498,7 +498,7 @@ class FolderDetails extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+            showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -528,7 +528,7 @@ class FolderDetails extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                showHttpError(err,this.props)
             }.bind(this))
         })
     }
@@ -592,7 +592,7 @@ class FolderDetails extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err)
+                    showHttpError(err,this.props)
                 }.bind(this))
             }
 
@@ -624,7 +624,7 @@ class FolderDetails extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err)
+                    showHttpError(err,this.props)
                 }.bind(this))
                 console.log(assignee)
                
@@ -667,7 +667,7 @@ class FolderDetails extends React.Component {
                         }
                     }.bind(this)).catch(function (err) {
                         this.setState({ showLoader: false })
-                        showHttpError(err)
+                        showHttpError(err,this.props)
                     }.bind(this))
                 }
             })
@@ -693,7 +693,7 @@ class FolderDetails extends React.Component {
                 this.setState({ showLoader: false })
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                showHttpError(err,this.props)
             }.bind(this))
         }else{
             showToast('error', 'Please select file/files for download first');
