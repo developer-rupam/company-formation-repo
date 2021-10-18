@@ -43,7 +43,7 @@ export default class ForgotPassword extends React.Component {
                }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
         }else{
             showToast('error','Please proivide email');
@@ -66,7 +66,7 @@ export default class ForgotPassword extends React.Component {
                }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
         }else{
             showToast('error','Please proivide otp');
@@ -88,7 +88,7 @@ export default class ForgotPassword extends React.Component {
                }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
        }
     }

@@ -163,7 +163,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
 
         } else {
@@ -208,7 +208,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -289,7 +289,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
         } else {
         }
@@ -352,7 +352,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -372,7 +372,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err)
+                  showHttpError(err,this.props)
             }.bind(this))
         })
     }
@@ -401,7 +401,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -447,7 +447,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+              showHttpError(err,this.props)
         }.bind(this))
 
         /* Entity Assignee */
@@ -470,7 +470,7 @@ class PersonalFolders extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err)
+                      showHttpError(err,this.props)
                 }.bind(this))
         
             }
@@ -544,7 +544,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err)
+              showHttpError(err,this.props)
         }.bind(this))
     }
     render() {
