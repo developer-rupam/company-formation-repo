@@ -52,6 +52,7 @@ export const showHttpError = (error,props) => {
     //console.log(props)
     if(code == '401' || error.toString().indexOf('401') != -1){
       showToast('error','Authentication Failed,please login again')
+      localStorage.removeItem(SITENAMEALIAS + '_session');
       props.history.push('/')
     }else if(code == '404' || code == '403' || code == '400'){
       showToast('error','Failed to connect with the server');
