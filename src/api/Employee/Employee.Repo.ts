@@ -51,7 +51,7 @@ export const getEmployeeByEmployeeId = async (employeeId: string): Promise<IEmpl
       {
         employee_id: employeeId,
       },
-      { _id: 0, __v: 0 }
+      { _id: 0, __v: 0, employee_password: 0 }
     );
     const emloyeeResult: IEmployee = doc?.toObject();
     return emloyeeResult;
@@ -77,7 +77,7 @@ export const getAllEmployees = async (pageNo:number,pageSize:number): Promise<Ar
   try {
     const SKIP:number=(pageNo-1)*pageSize;
     const LIMIT:number=pageSize;
-    const doc = await EmployeeModel.find({},{_id:0,__v:0}).skip(SKIP).limit(LIMIT);
+    const doc = await EmployeeModel.find({},{_id:0,__v:0, employee_password:0}).skip(SKIP).limit(LIMIT);
     const emloyeeResult: Array<IEmployee> = doc.map((singleDoc) => singleDoc.toObject());
     return emloyeeResult;
   } catch (error) {
@@ -86,8 +86,7 @@ export const getAllEmployees = async (pageNo:number,pageSize:number): Promise<Ar
 };
 export const updateEmployeeById = async (employee: IEmployee): Promise<number> => {
   try {
-    const doc= await EmployeeModel.updateOne({ employee_id: employee.employee_id},{$set:{
-     
+    const setData: any = {
       employee_name: employee.employee_name,
       employee_email: employee.employee_email,
       employee_company: employee.employee_company,
@@ -121,7 +120,12 @@ export const updateEmployeeById = async (employee: IEmployee): Promise<number> =
       manage_folder_template: employee.manage_folder_template,
       manage_remote_upload_form: employee.manage_remote_upload_form,
       manage_file_drop: employee.manage_file_drop,
-    }},{ upsert:false });
+    };
+    if(employee.employee_password && employee.employee_password.trim()){
+      setData.employee_password = employee.employee_password.trim();
+    }
+
+    const doc= await EmployeeModel.updateOne({ employee_id: employee.employee_id},{$set: setData},{ upsert:false });
     const emloyeeResult =  doc.nModified;
     return emloyeeResult;
   } catch (error) {

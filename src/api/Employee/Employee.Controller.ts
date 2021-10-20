@@ -1,11 +1,21 @@
 import * as UserService from "./Employee.Service";
 import { Result } from "../../helpers/Result";
 import { Request, Response, NextFunction } from "express";
+import { authorizeToken } from "../Authentication/Token.Repo";
 
 export const createEmployee = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const result: Result = await UserService.createEmployee(req.body);
-    res.status(200).json(result);
+    const token = await authorizeToken(req.headers)
+    if(token){
+      const result: Result = await UserService.createEmployee(req.body);
+      res.status(200).json(result);
+    }else{
+      const result = {
+        status: 401,
+        message: 'Token Expired / Token Mismatch'
+      }
+      res.status(401).json(result);
+    }
   } catch (error) {
     console.log(error);
 
@@ -15,8 +25,17 @@ export const createEmployee = async (req: Request,res: Response,next: NextFuncti
 
 export const getAllEmployees = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const result: Result = await UserService.getAllEmployees(req.body);
-    res.status(200).json(result);
+    const token = await authorizeToken(req.headers)
+    if(token){
+      const result: Result = await UserService.getAllEmployees(req.body);
+      res.status(200).json(result);
+    }else{
+      const result = {
+        status: 401,
+        message: 'Token Expired / Token Mismatch'
+      }
+      res.status(401).json(result);
+    }
   } catch (error) {
     console.log(error);
 
@@ -25,8 +44,17 @@ export const getAllEmployees = async (req: Request,res: Response,next: NextFunct
 };
 export const getEmployeeByEmployeeId = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const result: Result = await UserService.getEmployeeByEmployeeId(req.body);
-    res.status(200).json(result);
+    const token = await authorizeToken(req.headers)
+    if(token){
+      const result: Result = await UserService.getEmployeeByEmployeeId(req.body);
+      res.status(200).json(result);
+    }else{
+      const result = {
+        status: 401,
+        message: 'Token Expired / Token Mismatch'
+      }
+      res.status(401).json(result);
+    }
   } catch (error) {
     console.log(error);
 
@@ -35,8 +63,17 @@ export const getEmployeeByEmployeeId = async (req: Request,res: Response,next: N
 };
 export const removeEmployeeById = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const result: Result = await UserService.removeEmployeeById(req.body);
-    res.status(200).json(result);
+    const token = await authorizeToken(req.headers)
+    if(token){
+      const result: Result = await UserService.removeEmployeeById(req.body);
+      res.status(200).json(result);
+    }else{
+      const result = {
+        status: 401,
+        message: 'Token Expired / Token Mismatch'
+      }
+      res.status(401).json(result);
+    }
   } catch (error) {
     console.log(error);
 
@@ -45,8 +82,17 @@ export const removeEmployeeById = async (req: Request,res: Response,next: NextFu
 };
 export const updateEmployeeById = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const result: Result = await UserService.updateEmployeeById(req.body);
-    res.status(200).json(result);
+    const token = await authorizeToken(req.headers)
+    if(token){
+      const result: Result = await UserService.updateEmployeeById(req.body);
+      res.status(200).json(result);
+    }else{
+      const result = {
+        status: 401,
+        message: 'Token Expired / Token Mismatch'
+      }
+      res.status(401).json(result);
+    }
   } catch (error) {
     console.log(error);
 
