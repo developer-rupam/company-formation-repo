@@ -19,7 +19,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showLoader : false,
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
-            createdBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createdBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
@@ -154,7 +154,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                         if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN'){
                             arr.push(folders[i]);
                         }else{
-                            if(folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                            if(folders[i].directory_owner == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)){
                                 arr.push(folders[i]);
                             }
                         }
@@ -189,9 +189,9 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
         if(clients != undefined ){
             for(let i=0;i<clients.length;i++){
-            if(param == clients[i].user_id){
+            if(param == atob(clients[i].user_id)){
                 ownerObj = {
-                ownerId : clients[i].user_id,
+                ownerId : atob(clients[i].user_id),
                 ownerName : clients[i].user_name,
                 ownerRole : clients[i].user_role,
                 ownerCompany : clients[i].user_company,
@@ -232,7 +232,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
     /**** FUNCTION DEFINATION TO GET FAVORITE ENTITY LIST ****/
     getFavoriteEntities = () => {
-        let payload = {'user_id' : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id}
+        let payload = {'user_id' : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)}
         this.setState({showLoader : true})
         console.log(payload)
         getFavouriteDirectoriesByUser(payload).then(function(res){

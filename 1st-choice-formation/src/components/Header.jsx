@@ -50,7 +50,7 @@ class Header extends React.Component {
         if (this.searchFieldRef.current.value != '') {
             this.setState({ showLoader: true, showClearSearchButton: false })
             let loggedInUserRole = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role;
-            let loggedInUserId = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id;
+            let loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id);
             let payload = { searchQuery: this.searchFieldRef.current.value }
             GlobalSearch(payload).then(function (res) {
                 var response = res.data;
@@ -130,7 +130,7 @@ class Header extends React.Component {
                                     {this.state.searchList.length > 0 && <div className="autocomplete-items">
                                         {this.state.searchList.map((list) =>
                                             <div>
-                                                {list.user_name != undefined ? <Link to={'/update-client/' + list.user_id}><i className="fas fa-user"></i>{list.user_name}({list.user_email})</Link> : <Link to={'/folder-details/' + list.entity_id + '/shared_folder'}><i className="fas fa-folder"></i>{list.entity_name}</Link>}
+                                                {list.user_name != undefined ? <Link to={'/update-client/' + atob(list.user_id)}><i className="fas fa-user"></i>{list.user_name}({list.user_email})</Link> : <Link to={'/folder-details/' + list.entity_id + '/shared_folder'}><i className="fas fa-folder"></i>{list.entity_name}</Link>}
                                             </div>
                                         )}
 

@@ -77,7 +77,7 @@ class Dashboard extends React.Component {
                 let allClientsList = response.response;
                 let clientsList = [];
                 for (let i = 0; i < allClientsList.length; i++) {
-                    if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
+                    if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
                         clientsList.push(allClientsList[i])
                     }
                 }
@@ -121,7 +121,7 @@ class Dashboard extends React.Component {
             payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: '' }
         } else {
 
-            payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id }
+            payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) }
         }
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
@@ -140,8 +140,8 @@ class Dashboard extends React.Component {
                     }else{
                         let userIds = folders[i].asigned_user_ids
                         for(let j=0;j<userIds.length;j++){
-                            console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
-                            if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                            console.log(userIds[j],atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id))
+                            if(userIds[j] == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)){
                                 arr.push(folders[i]);
                             }
                         }
@@ -180,9 +180,9 @@ class Dashboard extends React.Component {
 
         if (clients != undefined) {
             for (let i = 0; i < clients.length; i++) {
-                if (param == clients[i].user_id) {
+                if (param == atob(clients[i].user_id)) {
                     ownerObj = {
-                        ownerId: clients[i].user_id,
+                        ownerId: atob(clients[i].user_id),
                         ownerName: clients[i].user_name,
                         ownerRole: clients[i].user_role,
                         ownerCompany: clients[i].user_company,

@@ -50,7 +50,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             personalFolderList : [],
             userType : 'EMPLOYEE',
             userRole : 'EMPLOYEE',
-            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            userCreatedBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             isUserGrouped : false,
             showAssignFolderModal : false,
             folderListWithSearchQuery : [],

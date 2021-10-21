@@ -26,7 +26,7 @@ import 'suneditor/dist/css/suneditor.min.css';
                 {id:2,type:'create_entity',messageBody: ''},
                 {id:3,type:'send_login_credential',messageBody: ''},
             ],
-            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            userCreatedBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             createClientMessageBody : '',
             createEntityMessageBody : '',
             sendLoginCredentialMessageBody : '',

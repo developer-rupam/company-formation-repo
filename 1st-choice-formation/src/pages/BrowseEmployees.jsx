@@ -82,7 +82,7 @@ import { Modal } from 'react-bootstrap';
                 let allEmployeesList = response.response;
                 let employeesList = [];
                 for(let i=0;i<allEmployeesList.length;i++){
-                    if(allEmployeesList[i].user_role == 'EMPLOYEE' && allEmployeesList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                    if(allEmployeesList[i].user_role == 'EMPLOYEE' && allEmployeesList[i].created_by == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)){
                         console.log(this.state.selectedAlphabetOfEmployee)
                         if(this.state.selectedAlphabetOfEmployee != ''){
                             console.log('if')

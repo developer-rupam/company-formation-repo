@@ -20,7 +20,7 @@ class FolderDetails extends React.Component {
             showCreateFolderModal: false,
             showUploadFileModal: false,
             showCreateFolderDropDown: false,
-            createdBy: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createdBy: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder: false,
             addPeopleToFile: false,
@@ -194,9 +194,9 @@ class FolderDetails extends React.Component {
 
         if (clients != undefined) {
             for (let i = 0; i < clients.length; i++) {
-                if (param == clients[i].user_id) {
+                if (param == atob(clients[i].user_id)) {
                     ownerObj = {
-                        ownerId: clients[i].user_id,
+                        ownerId: atob(clients[i].user_id),
                         ownerName: clients[i].user_name,
                         ownerRole: clients[i].user_role,
                         ownerCompany: clients[i].user_company,
@@ -619,7 +619,7 @@ class FolderDetails extends React.Component {
                        // assignee = this.state.assignedUsers
                         assignee.push(response.response);
                        // assigneeIds = this.state.assignedUsers
-                        assigneeIds.push(response.response.user_id);
+                        assigneeIds.push(atob(response.response.user_id));
                         this.setState({ assignedUsers: assignee, assignedUser: assigneeIds })
                     }
                 }.bind(this)).catch(function (err) {
@@ -647,7 +647,7 @@ class FolderDetails extends React.Component {
                     let user = this.state.assignedUsers[i]
                     let payload = {
                         entity_id: this.state.parentFolderId,
-                        user_id: user.user_id
+                        user_id: atob(user.user_id)
                     }
                     this.setState({ showLoader: true })
                     removeDirectoryAsignedUser(payload).then(function (res) {
@@ -984,10 +984,10 @@ class FolderDetails extends React.Component {
                             </div>
                             <ul className="">
                                 {this.state.userListWithSearchQuery.map((list) =>
-                                    <li className="list-group-item" key={list.user_id}>
+                                    <li className="list-group-item" key={atob(list.user_id)}>
                                         <div className="row">
                                             <div className="col-md-2">
-                                                <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={() => { this.handleSelectUser(list.user_id) }} />
+                                                <input type="checkbox" checked={this.isUserAlreadyAssigned(atob(list.user_id)) ? 'checked' : ''} onClick={() => { this.handleSelectUser(atob(list.user_id)) }} />
                                             </div>
                                             <div className="col-md-8">{list.user_name}({list.user_email})</div>
                                         </div>
@@ -1012,7 +1012,7 @@ class FolderDetails extends React.Component {
 
                             <ul className="">
                                 {this.state.assignedUsers.map((peps) =>
-                                    <li className="list-group-item" key={peps.user_id}>
+                                    <li className="list-group-item" key={atob(peps.user_id)}>
                                         <div className="row">
                                             <div className="col-md-2">
                                                 <i className="fas fa-user-tie"></i>
