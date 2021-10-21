@@ -29,7 +29,7 @@ class UpdateClient extends React.Component {
             personalFolderList: [],
             userType: 'CLIENT',
             userRole: 'CLIENT',
-            userCreatedBy: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            userCreatedBy: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             isUserGrouped: false,
             showAssignFolderModal: false,
             folderListWithSearchQuery: [],
@@ -124,7 +124,7 @@ class UpdateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
 
     }
@@ -166,7 +166,7 @@ class UpdateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -257,7 +257,7 @@ class UpdateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
     /*** FUNCTION DEFINATION FOR OPENING UPLOAD MODAL ***/
@@ -296,7 +296,7 @@ class UpdateClient extends React.Component {
                 "entity_name": this.folderNameRef.current.value,
                 "entity_description": this.folderDetailsRef.current.value,
                 "parent_directory_id": "",
-                "directory_owner": JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id
+                "directory_owner": atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
 
             }
 
@@ -323,7 +323,7 @@ class UpdateClient extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         } else {
             showToast('error', 'Please provide valid information')
@@ -345,7 +345,7 @@ class UpdateClient extends React.Component {
                 let folders = response.response
                 for (let i = 0; i < folders.length; i++) {
 
-                    if (folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
+                    if (folders[i].directory_owner == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
                         arr.push(folders[i]);
                     }
                 }
@@ -357,7 +357,7 @@ class UpdateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -386,7 +386,7 @@ class UpdateClient extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         })
     }
@@ -776,7 +776,7 @@ class UpdateClient extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
 

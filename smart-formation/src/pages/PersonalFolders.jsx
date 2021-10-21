@@ -19,7 +19,7 @@ class PersonalFolders extends React.Component {
             showLoader: false,
             showCreateFolderModal: false,
             showCreateFolderDropDown: false,
-            createdBy: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createdBy: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             addPeopleToFolder: false,
             totalCharacterForFolderDetails: 1000,
             foldersList: [],
@@ -163,7 +163,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
 
         } else {
@@ -187,7 +187,7 @@ class PersonalFolders extends React.Component {
                 let folders = response.response
                 for (let i = 0; i < folders.length; i++) {
 
-                    if (folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
+                    if (folders[i].directory_owner == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
                         /* if (this.state.searchQuery != '') {
                             if (folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1) {
 
@@ -208,7 +208,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -222,9 +222,9 @@ class PersonalFolders extends React.Component {
 
         if (clients != undefined) {
             for (let i = 0; i < clients.length; i++) {
-                if (param == clients[i].user_id) {
+                if (param == atob(clients[i].user_id)) {
                     ownerObj = {
-                        ownerId: clients[i].user_id,
+                        ownerId: atob(clients[i].user_id),
                         ownerName: clients[i].user_name,
                         ownerRole: clients[i].user_role,
                         ownerCompany: clients[i].user_company,
@@ -289,7 +289,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         } else {
         }
@@ -352,7 +352,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -372,7 +372,7 @@ class PersonalFolders extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         })
     }
@@ -386,7 +386,7 @@ class PersonalFolders extends React.Component {
 
     /**** FUNCTION DEFINATION TO GET FAVORITE ENTITY LIST ****/
     getFavoriteEntities = () => {
-        let payload = { 'user_id': JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id }
+        let payload = { 'user_id': atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) }
         this.setState({ showLoader: true })
         console.log(payload)
         getFavouriteDirectoriesByUser(payload).then(function (res) {
@@ -401,7 +401,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -447,7 +447,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
 
         /* Entity Assignee */
@@ -470,7 +470,7 @@ class PersonalFolders extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err,this.props)
+                      showHttpError(err,this.props)
                 }.bind(this))
         
             }
@@ -544,7 +544,7 @@ class PersonalFolders extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
     render() {
@@ -744,10 +744,10 @@ class PersonalFolders extends React.Component {
                             </div>
                             <ul className="">
                                 {this.state.userListWithSearchQuery.map((list) =>
-                                    <li className="list-group-item" key={list.user_id}>
+                                    <li className="list-group-item" key={atob(list.user_id)}>
                                         <div className="row">
                                             <div className="col-md-2">
-                                                <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={() => { this.handleSelectUser(list.user_id) }} />
+                                                <input type="checkbox" checked={this.isUserAlreadyAssigned(atob(list.user_id)) ? 'checked' : ''} onClick={() => { this.handleSelectUser(atob(list.user_id)) }} />
                                             </div>
                                             <div className="col-md-8">{list.user_name}({list.user_email})</div>
                                         </div>

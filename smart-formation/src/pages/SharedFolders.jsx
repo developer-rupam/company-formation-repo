@@ -19,7 +19,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showLoader : false,
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
-            createdBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            createdBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
@@ -90,7 +90,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         })
     }
@@ -179,7 +179,7 @@ closeEntityInfoModal = () => {
                 }
             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }else{
             showToast('error','Please provide valid information')
@@ -224,10 +224,10 @@ closeEntityInfoModal = () => {
                             //console.log(folders[i])
                             let userIds = folders[i].asigned_user_ids
                             console.log(userIds)
-                            console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
+                            console.log(atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id))
                             for(let j=0;j<userIds.length;j++){
-                                //console.log(userIds[j],JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
-                                if(userIds[j] == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                                //console.log(userIds[j],atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id))
+                                if(userIds[j] == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)){
                                     console.log('here')
                                     if(this.state.searchQuery != ''){
                                         if(folders[i].entity_name.toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) !== -1){
@@ -260,7 +260,7 @@ closeEntityInfoModal = () => {
                 }
             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
    }
 
@@ -274,9 +274,9 @@ closeEntityInfoModal = () => {
 
         if(clients != undefined ){
             for(let i=0;i<clients.length;i++){
-            if(param == clients[i].user_id){
+            if(param == atob(clients[i].user_id)){
                 ownerObj = {
-                ownerId : clients[i].user_id,
+                ownerId : atob(clients[i].user_id),
                 ownerName : clients[i].user_name,
                 ownerRole : clients[i].user_role,
                 ownerCompany : clients[i].user_company,
@@ -370,7 +370,7 @@ closeEntityInfoModal = () => {
                 }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
 
@@ -400,7 +400,7 @@ closeEntityInfoModal = () => {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err,this.props)
+                      showHttpError(err,this.props)
                 }.bind(this))
             } else {
             }
@@ -438,7 +438,7 @@ closeEntityInfoModal = () => {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
     
             /* Entity Assignee */
@@ -461,7 +461,7 @@ closeEntityInfoModal = () => {
                         }
                     }.bind(this)).catch(function (err) {
                         this.setState({ showLoader: false })
-                        showHttpError(err,this.props)
+                          showHttpError(err,this.props)
                     }.bind(this))
             
                 }
@@ -533,7 +533,7 @@ closeEntityInfoModal = () => {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
     
@@ -721,10 +721,10 @@ closeEntityInfoModal = () => {
                         </div>
                             <ul className="">
                               {this.state.userListWithSearchQuery.map((list) =>
-                                <li className="list-group-item" key={list.user_id}>
+                                <li className="list-group-item" key={atob(list.user_id)}>
                                   <div className="row">
                                       <div className="col-md-2">
-                                          <input type="checkbox" checked={this.isUserAlreadyAssigned(list.user_id) ? 'checked' : ''} onClick={()=>{this.handleSelectUser(list.user_id)}}/>
+                                          <input type="checkbox" checked={this.isUserAlreadyAssigned(atob(list.user_id)) ? 'checked' : ''} onClick={()=>{this.handleSelectUser(atob(list.user_id))}}/>
                                       </div>
                               <div className="col-md-8">{list.user_name}({list.user_email})</div>
                                   </div>

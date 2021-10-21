@@ -27,7 +27,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
         let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')))
         if(session.user_type == 'ADMIN' || session.user_type == 'CLIENT'){
             let payload = {
-                user_id : session.user_id
+                user_id : atob(session.user_id)
             }
             this.setState({showLoader : true})
             GetUserDetails(payload).then(function(res){
@@ -47,11 +47,11 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }
             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }else{
             let payload = {
-                user_id : session.user_id
+                user_id : atob(session.user_id)
             }
             this.setState({showLoader : true})
             GetEmployeeDetails(payload).then(function(res){
@@ -71,7 +71,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }
             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
 		
@@ -84,7 +84,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
     handleUpdatePersonalData = () => {
         if(this.state.sessionObj.user_role == 'ADMIN' || this.state.sessionObj.user_role == 'CLIENT'){
             var payload  = {
-                "user_id": this.state.sessionObj.user_id,
+                "user_id": atob(this.state.sessionObj.user_id),
                 "user_name": this.state.sessionObj.user_name,
                 "user_email": this.state.sessionEmail,
                 "user_password": this.state.sessionPassword,
@@ -109,7 +109,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }
              }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }else{
             let payload = {
@@ -162,7 +162,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }
             }.bind(this)).catch(function(err){
                 this.setState({showLoader : false})
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
     }

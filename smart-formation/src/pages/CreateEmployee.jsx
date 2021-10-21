@@ -50,7 +50,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             personalFolderList : [],
             userType : 'EMPLOYEE',
             userRole : 'EMPLOYEE',
-            userCreatedBy : JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            userCreatedBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             isUserGrouped : false,
             showAssignFolderModal : false,
             folderListWithSearchQuery : [],
@@ -216,7 +216,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             }
          }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -363,7 +363,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
             }
          }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -741,7 +741,7 @@ import {setPersonalFoldersList} from '../utils/redux/action'
                         }
                     }.bind(this)).catch(function(err){
                         this.setState({showLoader : false})
-                        showHttpError(err,this.props)
+                          showHttpError(err,this.props)
                     }.bind(this))
         }
         

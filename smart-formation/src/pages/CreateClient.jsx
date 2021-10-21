@@ -25,7 +25,7 @@ class CreateClient extends React.Component {
             personalFolderList: [],
             userType: 'CLIENT',
             userRole: 'CLIENT',
-            userCreatedBy: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id,
+            userCreatedBy: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
             isUserGrouped: false,
             showAssignFolderModal: false,
             folderListWithSearchQuery: [],
@@ -193,7 +193,7 @@ class CreateClient extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }, 3000);
     }
@@ -342,7 +342,7 @@ class CreateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -376,13 +376,13 @@ class CreateClient extends React.Component {
         }
 
         if (isAbleToSubmit) {
-           
+         
                 let payload = {
 
                     "entity_name": this.folderNameRef.current.value,
                     "entity_description": this.folderDetailsRef.current.value,
                     "parent_directory_id": "",
-                    "directory_owner": JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id
+                    "directory_owner": atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
 
                 }
 
@@ -409,7 +409,7 @@ class CreateClient extends React.Component {
                     }
                 }.bind(this)).catch(function (err) {
                     this.setState({ showLoader: false })
-                    showHttpError(err,this.props)
+                      showHttpError(err,this.props)
                 }.bind(this))
         } else {
             showToast('error', 'Please provide valid information')
@@ -432,7 +432,7 @@ class CreateClient extends React.Component {
                 let folders = response.response
                 for (let i = 0; i < folders.length; i++) {
 
-                    if (folders[i].directory_owner == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
+                    if (folders[i].directory_owner == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
                         arr.push(folders[i]);
                     }
                 }
@@ -444,7 +444,7 @@ class CreateClient extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -469,7 +469,7 @@ class CreateClient extends React.Component {
                 let allClientsList = response.response;
                 let clientsList = [];
                 for(let i=0;i<allClientsList.length;i++){
-                    if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id){
+                    if(allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)){
                         clientsList.push(allClientsList[i])
                     }
                 }
@@ -478,7 +478,7 @@ class CreateClient extends React.Component {
             }
         }.bind(this)).catch(function(err){
             this.setState({showLoader : false})
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -826,7 +826,7 @@ class CreateClient extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
 

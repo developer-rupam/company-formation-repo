@@ -93,7 +93,7 @@ class BrowseClients extends React.Component {
                 let allClientsList = response.response;
                 let clientsList = [];
                 for (let i = 0; i < allClientsList.length; i++) {
-                    if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) {
+                    if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
                         clientsList.push(allClientsList[i]);
                     }
                 }
@@ -104,7 +104,7 @@ class BrowseClients extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
     }
 
@@ -160,7 +160,7 @@ class BrowseClients extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                showHttpError(err,this.props)
+                  showHttpError(err,this.props)
             }.bind(this))
         }
 
@@ -195,7 +195,7 @@ class BrowseClients extends React.Component {
             }
         }.bind(this)).catch(function (err) {
             this.setState({ showLoader: false })
-            showHttpError(err,this.props)
+              showHttpError(err,this.props)
         }.bind(this))
 
 
@@ -328,11 +328,11 @@ class BrowseClients extends React.Component {
                                                         </thead>
                                                         <tbody>
                                                             {this.state.clientsList.map((list) =>
-                                                                <tr key={list.user_id}>
+                                                                <tr key={atob(list.user_id)}>
                                                                     <td>
                                                                         <div className="custom-control custom-checkbox">
-                                                                            <input type="checkbox" className="custom-control-input checkbox desCheckBox" onClick={(event) => { this.handleSelectMultiUser(event) }} data-id={list.user_id} id={list.user_id} />
-                                                                            <label className="custom-control-label" htmlFor={list.user_id}></label>
+                                                                            <input type="checkbox" className="custom-control-input checkbox desCheckBox" onClick={(event) => { this.handleSelectMultiUser(event) }} data-id={atob(list.user_id)} id={atob(list.user_id)} />
+                                                                            <label className="custom-control-label" htmlFor={atob(list.user_id)}></label>
                                                                         </div>
                                                                     </td>
                                                                     <td>{list.user_name}</td>
@@ -345,8 +345,8 @@ class BrowseClients extends React.Component {
                                                                     </td>
                                                                     <td>
                                                                         <div className="ac_bot d-flex justify-content-center">
-                                                                            <Link to={'/update-client/' + list.user_id} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
-                                                                            <a href="javascript:void(0)" className="btn btn-light view_dlt" onClick={() => { this.propagateConfirmPasswordModal(list.user_id) }}><i className="fas fa-user-minus"></i></a>
+                                                                            <Link to={'/update-client/' + atob(list.user_id)} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
+                                                                            <a href="javascript:void(0)" className="btn btn-light view_dlt" onClick={() => { this.propagateConfirmPasswordModal(atob(list.user_id)) }}><i className="fas fa-user-minus"></i></a>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
