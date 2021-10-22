@@ -173,7 +173,7 @@ class BrowseClients extends React.Component {
         let session = JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')));
 
         //if(session.user_role == 'ADMIN'){
-        let email = session.user_email
+        let email = atob(session.user_email)
         /*  }else{
              var email = session.employee_email
          } */
@@ -336,7 +336,7 @@ class BrowseClients extends React.Component {
                                                                         </div>
                                                                     </td>
                                                                     <td>{list.user_name}</td>
-                                                                    <td>{list.user_email}</td>
+                                                                    <td>{atob(list.user_email)}</td>
                                                                     <td>{list.user_company}</td>
                                                                     <td>
 

@@ -130,7 +130,7 @@ class Header extends React.Component {
                                     {this.state.searchList.length > 0 && <div className="autocomplete-items">
                                         {this.state.searchList.map((list) =>
                                             <div>
-                                                {list.user_name != undefined ? <Link to={'/update-client/' + atob(list.user_id)}><i className="fas fa-user"></i>{list.user_name}({list.user_email})</Link> : <Link to={'/folder-details/' + list.entity_id + '/shared_folder'}><i className="fas fa-folder"></i>{list.entity_name}</Link>}
+                                                {list.user_name != undefined ? <Link to={'/update-client/' + atob(list.user_id)}><i className="fas fa-user"></i>{list.user_name}({atob(list.user_email)})</Link> : <Link to={'/folder-details/' + list.entity_id + '/shared_folder'}><i className="fas fa-folder"></i>{list.entity_name}</Link>}
                                             </div>
                                         )}
 

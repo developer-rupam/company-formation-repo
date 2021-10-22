@@ -128,7 +128,7 @@ export const isEntityExist = (array,name) => {
 export const isEmailExist = (array,email) => {
   let isExist = false;
   for(let i=0;i<array.length;i++){
-    if(array[i].user_email.toLowerCase() === email.toLowerCase()){
+    if(atob(array[i].user_email).toLowerCase() === email.toLowerCase()){
       isExist = true;
     }
   }

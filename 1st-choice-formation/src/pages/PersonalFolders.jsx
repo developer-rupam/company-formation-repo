@@ -228,7 +228,7 @@ class PersonalFolders extends React.Component {
                         ownerName: clients[i].user_name,
                         ownerRole: clients[i].user_role,
                         ownerCompany: clients[i].user_company,
-                        ownerEmail: clients[i].user_email,
+                        ownerEmail: atob(clients[i].user_email),
                     }
                     break;
                 }
@@ -749,7 +749,7 @@ class PersonalFolders extends React.Component {
                                             <div className="col-md-2">
                                                 <input type="checkbox" checked={this.isUserAlreadyAssigned(atob(list.user_id)) ? 'checked' : ''} onClick={() => { this.handleSelectUser(atob(list.user_id)) }} />
                                             </div>
-                                            <div className="col-md-8">{list.user_name}({list.user_email})</div>
+                                            <div className="col-md-8">{list.user_name}({atob(list.user_email)})</div>
                                         </div>
                                     </li>)}
                             </ul>

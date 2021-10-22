@@ -195,7 +195,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
                 ownerName : clients[i].user_name,
                 ownerRole : clients[i].user_role,
                 ownerCompany : clients[i].user_company,
-                ownerEmail : clients[i].user_email,
+                ownerEmail : atob(clients[i].user_email),
                 }
                 break;
             }

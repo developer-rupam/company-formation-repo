@@ -38,7 +38,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }else{
                     this.setState({
                         sessionName : response.response.user_name,
-                        sessionEmail : response.response.user_email,
+                        sessionEmail : atob(response.response.user_email),
                         sessionPassword : response.response.user_password,
                         sessionCompany : response.response.user_company,
                         sessionObj : response.response,
@@ -62,7 +62,7 @@ import {UpdateUser,UpdateEmployeeService,GetUserDetails,GetEmployeeDetails} from
                 }else{
                     this.setState({
                         sessionName : response.response.employee_name,
-                        sessionEmail : response.response.employee_email,
+                        sessionEmail : atob(response.response.employee_email),
                         sessionPassword : response.response.employee_password,
                         sessionCompany : response.response.employee_company,
                         sessionObj : response.response,

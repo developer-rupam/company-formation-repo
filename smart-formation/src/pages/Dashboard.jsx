@@ -186,7 +186,7 @@ class Dashboard extends React.Component {
                         ownerName: clients[i].user_name,
                         ownerRole: clients[i].user_role,
                         ownerCompany: clients[i].user_company,
-                        ownerEmail: clients[i].user_email,
+                        ownerEmail: atob(clients[i].user_email),
                     }
                     break;
                 }

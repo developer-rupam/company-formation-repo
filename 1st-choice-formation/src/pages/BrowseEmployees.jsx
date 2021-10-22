@@ -87,7 +87,7 @@ import { Modal } from 'react-bootstrap';
                         if(this.state.selectedAlphabetOfEmployee != ''){
                             console.log('if')
                             let firstCharcterOfName =  allEmployeesList[i].employee_name.charAt(0);
-                            let firstCharcterOfEmail =  allEmployeesList[i].employee_email.charAt(0);
+                            let firstCharcterOfEmail =  atob(allEmployeesList[i].employee_email).charAt(0);
                             
                             if(firstCharcterOfEmail.toLowerCase() == this.state.selectedAlphabetOfEmployee || firstCharcterOfName.toLowerCase() == this.state.selectedAlphabetOfEmployee){
                                 employeesList.push(allEmployeesList[i])
@@ -95,7 +95,7 @@ import { Modal } from 'react-bootstrap';
                         }else if(this.state.searchQuery !== ''){
                             console.log('else if')
                             let firstName =  allEmployeesList[i].employee_name;                            
-                            let email =  allEmployeesList[i].employee_email;                            
+                            let email =  atob(allEmployeesList[i].employee_email);                            
                             if(firstName.toLowerCase().indexOf(this.state.searchQuery) !== -1 || email.toLowerCase().indexOf(this.state.searchQuery) !== -1){
                                 console.log(allEmployeesList[i])
                                 employeesList.push(allEmployeesList[i])
@@ -146,7 +146,7 @@ import { Modal } from 'react-bootstrap';
         let session =  JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session')));
         
         //if(session.user_role == 'ADMIN'){
-            let email = session.user_email
+            let email = atob(session.user_email)
        /*  }else{
             var email = session.employee_email
         } */
@@ -293,23 +293,23 @@ import { Modal } from 'react-bootstrap';
                                                 </thead>
                                                 <tbody>
                                                 {this.state.employeesList.map((list) =>
-                                                <tr key={list.employee_id}>
+                                                <tr key={atob(list.employee_id)}>
                                                     <td>
                                                         <div className="custom-control custom-checkbox">
-                                                            <input type="checkbox" className="custom-control-input checkbox" onClick={(event)=>{this.handleSelectMultiUser(event)}} data-id={list.employee_id} id={list.employee_id}/>
-                                                            <label className="custom-control-label" htmlFor={list.employee_id}></label>
+                                                            <input type="checkbox" className="custom-control-input checkbox" onClick={(event)=>{this.handleSelectMultiUser(event)}} data-id={atob(list.employee_id)} id={atob(list.employee_id)}/>
+                                                            <label className="custom-control-label" htmlFor={atob(list.employee_id)}></label>
                                                         </div>
                                                     </td>
                                                     <td>{list.employee_name}</td>
-                                                    <td>{list.employee_email}</td>
+                                                    <td>{atob(list.employee_email)}</td>
                                                     <td>{list.employee_company}</td>
                                                     <td> 
                                                         <Moment format="YYYY/MM/DD" date={list.user_created}/>
                                                     </td>
                                                     <td>
                                                         <div className="ac_bot d-flex justify-content-center">
-                                                            <Link to={'/update-employee/'+list.employee_id} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
-                                                            <a href="javascript:void(0)" className="btn btn-light view_dlt" onClick={()=>{this.propagateConfirmPasswordModal(list.employee_id)}}><i className="fas fa-user-minus"></i></a>
+                                                            <Link to={'/update-employee/'+atob(list.employee_id)} className="btn btn-light view_edit"><i className="fas fa-user-edit"></i></Link>
+                                                            <a href="javascript:void(0)" className="btn btn-light view_dlt" onClick={()=>{this.propagateConfirmPasswordModal(atob(list.employee_id))}}><i className="fas fa-user-minus"></i></a>
                                                         </div>
                                                     </td>
                                                 </tr>

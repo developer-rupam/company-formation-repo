@@ -110,15 +110,15 @@ import {setPersonalFoldersList} from '../utils/redux/action'
         if(employeesList != undefined && employeesList.length != 0){
             console.log(employeesList.length)
             for(let i=0;i<employeesList.length;i++){
-                if(employeesList[i].employee_id === param){
-                    console.log(employeesList[i].employee_id+'  ____ '+param)
+                if(atob(employeesList[i].employee_id) === param){
+                    console.log(atob(employeesList[i].employee_id)+'  ____ '+param)
                     console.log(employeesList[i])
                     this.setState({showLoader : true})
                     setTimeout(() => {
                         
                         this.setState({
                             employeeName : employeesList[i].employee_name,
-                            employeeEmail : employeesList[i].employee_email,
+                            employeeEmail : atob(employeesList[i].employee_email),
                             employeePassword : employeesList[i].employee_password,
                             employeeCompany : employeesList[i].employee_company,
                             hasPermissionToChangePassword:employeesList[i].change_password,

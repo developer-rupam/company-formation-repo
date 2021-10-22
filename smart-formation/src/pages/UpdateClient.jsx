@@ -111,7 +111,7 @@ class UpdateClient extends React.Component {
 
                     this.setState({
                         clientName: clientsList.user_name,
-                        clientEmail: clientsList.user_email,
+                        clientEmail: atob(clientsList.user_email),
                         clientPassword: clientsList.user_password,
                         clientCompany: clientsList.user_company,
                         hasPermissionToChangePassword: clientsList.change_password,
