@@ -17,6 +17,7 @@ import SharedFolders from './pages/SharedFolders'
 import FavoriteFolders from './pages/FavoriteFolders'
 import FolderDetails from './pages/FolderDetails'
 import ForgotPassword from './pages/ForgotPassword'
+import OtpAuth from './pages/OtpAuth'
 import {BrowserRouter as Router, Switch,Route,withRouter,NavLink} from 'react-router-dom';
 import { SITENAMEALIAS } from './utils/init';
 import ProtectedRoute from './utils/ProtectedRoute'
@@ -28,6 +29,7 @@ function App() {
         <Switch>
           <Route path="/" component={Login} exact/>
           <Route path="/forgot-password" component={ForgotPassword}/>
+          <Route path="/otp-auth" component={OtpAuth} />
           <ProtectedRoute path="/dashboard" component={Dashboard} />
           <ProtectedRoute path="/browse-clients" component={BrowseClients} />
           <ProtectedRoute path="/create-client" component={CreateClient} />

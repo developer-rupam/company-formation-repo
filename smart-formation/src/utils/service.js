@@ -449,3 +449,27 @@ export const GlobalSearch = (obj) => {
         'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
     }});
 }
+/*** FUNCTION DEFINATION FORsending otp ***/
+export const SentOtpForLogin = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/otp/send_otp', payload,{headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+        'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
+    }});
+}
+/*** FUNCTION DEFINATION FOR verifing otp ***/
+export const VerifyOtpForLogin = (obj) => {
+    var payload = JSON.stringify(obj);
+    return axios.post(WEBSERVICE + '/otp/verify_otp', payload,{headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+        'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
+    }});
+}
