@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { SITENAME, SITENAMEALIAS, BASEURL } from '../utils/init';
 import { storeCurrentRoute, logout, showToast, showHttpError } from '../utils/library';
-import { GlobalSearch } from '../utils/service';
+import { GlobalSearch, LogoutUser } from '../utils/service';
 import { withRouter } from 'react-router-dom';
 import { setSearch } from "../utils/redux/action"
 import { connect } from 'react-redux';
@@ -41,8 +41,20 @@ class Header extends React.Component {
 
     /*** FUNCTION DEFINATION FOR LOGOUT ***/
     logout = () => {
-        localStorage.removeItem(SITENAMEALIAS + '_session');
-        this.props.history.push('/')
+        this.setState({ showLoader: true })
+        LogoutUser().then(function (res) {
+            var response = res.data;
+            if (response.errorResponse.errorStatusCode != 1000) {
+                this.setState({ showLoader: false })
+                showToast('error', response.errorResponse.errorStatusType);
+            } else {
+                localStorage.removeItem(SITENAMEALIAS + '_session');
+                this.props.history.push('/')
+            }
+        }.bind(this)).catch(function (err) {
+            this.setState({ showLoader: false })
+            showHttpError(err, this.props)
+        }.bind(this))
     }
 
     handleSearchSubmit = (e) => {
@@ -76,8 +88,8 @@ class Header extends React.Component {
                             if (loggedInUserRole == 'ADMIN') {
                                 arr.push(entity[i]);
                             } else {
-                                if(entity[i].asigned_user_ids.includes(loggedInUserId)){
-                                    arr.push(entity[i]); 
+                                if (entity[i].asigned_user_ids.includes(loggedInUserId)) {
+                                    arr.push(entity[i]);
                                 }
                             }
                         }
@@ -88,7 +100,7 @@ class Header extends React.Component {
                 }
             }.bind(this)).catch(function (err) {
                 this.setState({ showLoader: false })
-                  showHttpError(err,this.props)
+                showHttpError(err, this.props)
             }.bind(this))
         }
     }
@@ -142,7 +154,7 @@ class Header extends React.Component {
                                 </form>
                             </div>
                         </li>
-                       {/*  <li className="nav-item">
+                        {/*  <li className="nav-item">
                             <Link className="nav-link" to={BASEURL}><i className="nav-icon fas fa-question-circle mr-1" style={{ marginTop: '2.1px' }}></i>Help</Link>
                         </li>
                         <li className="nav-item">

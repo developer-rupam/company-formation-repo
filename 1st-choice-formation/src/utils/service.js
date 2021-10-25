@@ -473,3 +473,14 @@ export const VerifyOtpForLogin = (obj) => {
         'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
     }});
 }
+/*** FUNCTION DEFINATION FOR logout user ***/
+export const LogoutUser = () => {
+    return axios.post(WEBSERVICE + '/user/logout', {},{headers: {
+        'Content-Type': 'application/json',
+        'Strict-Transport-Security' : 'max-age=63072000; includeSubDomains; preload',
+        'X-Frame-Options' : 'SAMEORIGIN',
+        'X-Content-Type-Options' : 'nosniff',
+        'Access-Control-Allow-Headers': "*",
+        'Authorization' : "bearer " + JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).token,
+    }});
+}
