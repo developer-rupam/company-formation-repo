@@ -20,7 +20,7 @@ class FolderDetails extends React.Component {
             showCreateFolderModal: false,
             showUploadFileModal: false,
             showCreateFolderDropDown: false,
-            createdBy: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
+            createdBy: '',
             loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder: false,
             addPeopleToFile: false,
@@ -1042,6 +1042,8 @@ class FolderDetails extends React.Component {
     }
     componentDidMount() {
 
+
+
         /*** FOLDER DETIALS LIST ***/
         const match = matchPath(this.props.history.location.pathname, {
             path: '/folder-details/:param1/:param2',
@@ -1052,7 +1054,17 @@ class FolderDetails extends React.Component {
         //console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))))
         //console.log(this.state.loggedInUserRole)
         this.setState({ parentFolderId: match.params.param1 }, () => {
-
+            let loggedInUserId = ''
+            let sess
+            if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'EMPLOYEE'){
+                loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).employee_id)
+            }else{
+                
+                loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
+            }
+            this.setState({
+                createdBy : loggedInUserId
+            })
             this.getFolderDetails(match.params.param1, match.params.param2);
 
         })
