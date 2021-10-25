@@ -19,7 +19,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showLoader : false,
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
-            createdBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
+            createdBy : '',
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
             foldersList : [],
@@ -232,7 +232,13 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
 
     /**** FUNCTION DEFINATION TO GET FAVORITE ENTITY LIST ****/
     getFavoriteEntities = () => {
-        let payload = {'user_id' : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)}
+        let payload = {}
+        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'EMPLOYEE'){
+             payload = {'user_id' : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).employee_id)}
+        }else{
+
+             payload = {'user_id' : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)}
+        }    
         this.setState({showLoader : true})
         console.log(payload)
         getFavouriteDirectoriesByUser(payload).then(function(res){
@@ -562,6 +568,17 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
         )
     }
     componentDidMount(){
+        let loggedInUserId = ''
+        let sess
+        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'EMPLOYEE'){
+            loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).employee_id)
+        }else{
+            
+            loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
+        }
+        this.setState({
+            createdBy : loggedInUserId
+        })
        /*** FETCH FAVORITE FOLDER LIST IF FAVORITE LIST IS NOT AVAILABLE ***/
         this.getFavoriteEntities();
        

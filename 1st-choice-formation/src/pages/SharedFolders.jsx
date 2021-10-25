@@ -19,7 +19,7 @@ import { Link,withRouter,browserHistory,matchPath, Redirect  } from 'react-route
             showLoader : false,
             showCreateFolderModal : false,
             showCreateFolderDropDown : false,
-            createdBy : atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id),
+            createdBy : '',
             loggedInUserRole: JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role,
             addPeopleToFolder : false,
             totalCharacterForFolderDetails : 1000,
@@ -770,6 +770,17 @@ closeEntityInfoModal = () => {
         )
     }
     componentDidMount(){
+        let loggedInUserId = ''
+        let sess
+        if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'EMPLOYEE'){
+            loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).employee_id)
+        }else{
+            
+            loggedInUserId = atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)
+        }
+        this.setState({
+            createdBy : loggedInUserId
+        })
        /*** Get all parent folder's ***/ 
        this.fetchAllParentDirectory();
    }

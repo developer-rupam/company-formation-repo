@@ -116,12 +116,16 @@ class Dashboard extends React.Component {
     /*** FUNCTION DEFINATION TO GET ALL PARENT DIRECTORY AS PER AS USER TYPE ***/
     getRecentFiles = () => {
         let payload = {}
+        console.log(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))))
         if (JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'ADMIN') {
 
             payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: '' }
-        } else {
+        } else if(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_role == 'CLIENT') {
 
             payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id) }
+        }else{
+            payload = { entity_id: '', page: 0, limit: 10, sort: -1, searchQuery: '', asigned_user_id: atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).employee_id) }
+
         }
         this.setState({ showLoader: true })
         GetAllSubDirectory(payload).then(function (res) {
