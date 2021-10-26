@@ -65,7 +65,7 @@ export default class Login extends React.Component {
                }else{
                 Swal.fire({
                     icon: 'success',
-                    title: 'You are being redirected',
+                    title: 'You are now logged in',
                     showConfirmButton: false,
                     timer: 2000
                   })

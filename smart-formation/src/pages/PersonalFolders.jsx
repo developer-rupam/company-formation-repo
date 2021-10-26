@@ -379,9 +379,17 @@ class PersonalFolders extends React.Component {
 
     /*** FUNTION DEFINATION FOR search ENTITY NAME ***/
     searchEntity = (param) => {
-        this.setState({ searchQuery: param }, () => {
-            this.fetchAllParentDirectory();
-        })
+        if (param != '') {
+            if (param.length >= 3) {
+                this.setState({ searchQuery: param, page: 0 }, () => {
+                    this.fetchAllParentDirectory();
+                })
+            }
+        } else {
+            this.setState({ searchQuery: '', page: 0 }, () => {
+                this.fetchAllParentDirectory();
+            })
+        }
     }
 
     /**** FUNCTION DEFINATION TO GET FAVORITE ENTITY LIST ****/

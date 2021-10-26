@@ -17,7 +17,7 @@ class Dashboard extends React.Component {
         this.state = {
             showLoader: false,
             pageNo: 1,
-            noOfItemsPerPage: 100000,
+            noOfItemsPerPage: 100,
             loggedInUserName: 'Guest',
             recentFileList: [],
             hasAccessToManageEmployees: false,

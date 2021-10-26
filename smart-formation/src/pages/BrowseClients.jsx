@@ -233,11 +233,21 @@ class BrowseClients extends React.Component {
 
     /*** FUNCTION DEFINATION FOR SEARCH CLIENTS ****/
     handleSearchClient = (param) => {
-        this.setState({ searchQuery: param })
-        setTimeout(function () {
-            console.log(this.state.searchQuery)
-            this.getAllClientsList()
-        }.bind(this), 1000)
+        if(param != ''){
+            if(param.length>=3){
+                this.setState({ searchQuery: param,pageNo:1,activePage:1 })
+                setTimeout(function () {
+                    console.log(this.state.searchQuery)
+                    this.getAllClientsList()
+                }.bind(this), 1000)
+            }
+        }else{
+            this.setState({ searchQuery: '',pageNo:1,activePage:1 })
+            setTimeout(function () {
+                console.log(this.state.searchQuery)
+                this.getAllClientsList()
+            }.bind(this), 1000)
+        }
     }
 
     /**** FUNCTION DEFINATION FOR SELECTION ALL USERS ****/
