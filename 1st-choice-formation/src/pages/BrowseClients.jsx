@@ -93,7 +93,7 @@ class BrowseClients extends React.Component {
                 let allClientsList = response.response;
                 let clientsList = [];
                 for (let i = 0; i < allClientsList.length; i++) {
-                    if (allClientsList[i].user_role == 'CLIENT' && allClientsList[i].created_by == atob(JSON.parse(atob(localStorage.getItem(SITENAMEALIAS + '_session'))).user_id)) {
+                    if (allClientsList[i].user_role == 'CLIENT' ) {
                         clientsList.push(allClientsList[i]);
                     }
                 }
